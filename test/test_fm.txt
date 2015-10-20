@@ -1,0 +1,15 @@
+FEATURE_NUM 3;
+CONTEXT_NUM 1;
+ATTRIBUTES_NUM [ 1, 0, 0 ];
+DOMAIN_ATTRIBUTES [0, 5 ];
+DOMAIN_CONTEXT [ 0, 2 ];
+INITIAL_FEATURES [ 1, 1, 1 ];
+INITIAL_ATTRIBUTES [ 5 ];
+[
+  feature[1] = 1 impl feature[0] = 1,
+  feature[2] = 1 impl feature[0] = 1,
+  feature[0] = 1 impl (feature[1] = 1 or feature[2] = 1),
+  feature[0] = 1 impl (attribute[0][0] > feature[1]*2 + feature[2]*2),
+  feature[1] = 1 impl context[0] != 1,
+  feature[0] = 1,
+  feature[0] = 1 impl context[0] <= 1 ]
