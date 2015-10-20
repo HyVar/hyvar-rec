@@ -82,17 +82,17 @@ constraint forall(c in contexts) (
 
 array[feats] of var 0..1: diff_feat;
 constraint forall( f in feats) (
-  diff_feat[f] = 0 <-> feat[f] < init_feat[f]
+  diff_feat[f] = 0 <-> feat[f] >= init_feat[f] 
 );
 
 array[attrs] of var 0..1: diff_attr;
 constraint forall( a in attrs) (
-  diff_attr[a] = 0 <-> attr[a] != init_attr[a]
+  diff_attr[a] = 0 <-> attr[a] = init_attr[a]
 );
 
 array [1..2] of var int: obj_array;
-constraint obj_array[1] = sum(diff_feat);
-constraint obj_array[2] = sum(diff_attr);
+constraint obj_array[1] = sum(f in feats) (diff_feat[f]);
+constraint obj_array[2] = sum(a in attrs) (diff_attr[a]);
 
 function ann: my_search(array[int] of var int: objs) = (
   % post initial constraints to check if solution is still valid
