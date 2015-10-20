@@ -16,7 +16,8 @@ be easily supported.
 Requirements:
 
  - Python 2.7
- - antlr4 module for python
+ - antlr4-python2-runtime module for python
  - MiniZinc Search (http://www.minizinc.org/minisearch/)
+ - psutil
 
 

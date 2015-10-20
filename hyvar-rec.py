@@ -6,9 +6,6 @@ Usage: hyvarRec.py [<options>] <input_file> <context file>
     -k, --keep
 """
 
-import json
-import re
-from subprocess import Popen,PIPE
 import sys, getopt
 import os
 import logging as log
@@ -20,9 +17,6 @@ import time
 import settings
 from solver import Solver
 import SpecificationGrammar.SpecTranslator as SpecTranslator
-from doctest import SKIP
-from numpy.numarray.numerictypes import MAX_INT_SIZE
-# from solver import Solver
 
 DEVNULL = open(os.devnull, 'wb')
 
