@@ -42,12 +42,13 @@ op : LEQ | EQ | GEQ | LT | GT | NEQ ;
 
 arithmetic_op : PLUS | MINUS | TIMES ;
 
-bool2Op : AND | OR | IMPL | IFF;
+bool2Op : AND | OR | IMPL | IFF | XOR;
 bool1Op : NOT;
 boolFact : TRUE | FALSE;
 
 AND : 'and';
 OR : 'or';
+XOR : 'xor';
 NOT : 'not';
 TRUE : 'true';
 FALSE : 'false';

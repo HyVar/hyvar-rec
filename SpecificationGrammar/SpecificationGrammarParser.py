@@ -7,7 +7,7 @@ from io import StringIO
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"*\u008e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u"+\u008e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
         buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\3\2\3\2")
         buf.write(u"\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2")
         buf.write(u"\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2/\n\2\3\3\3\3\3\3\3\3")
@@ -19,17 +19,17 @@ def serializedATN():
         buf.write(u"\6r\n\6\f\6\16\6u\13\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3")
         buf.write(u"\7\3\7\3\7\3\7\5\7\u0082\n\7\3\b\3\b\3\t\3\t\3\n\3\n")
         buf.write(u"\3\13\3\13\3\f\3\f\3\f\2\4\b\n\r\2\4\6\b\n\f\16\20\22")
-        buf.write(u"\24\26\2\6\3\2\37$\3\2%\'\4\2\24\25\31\32\3\2\27\30\u0091")
+        buf.write(u"\24\26\2\6\3\2 %\3\2&(\4\2\24\26\32\33\3\2\30\31\u0091")
         buf.write(u"\2\30\3\2\2\2\4\60\3\2\2\2\6=\3\2\2\2\bW\3\2\2\2\nk\3")
         buf.write(u"\2\2\2\f\u0081\3\2\2\2\16\u0083\3\2\2\2\20\u0085\3\2")
         buf.write(u"\2\2\22\u0087\3\2\2\2\24\u0089\3\2\2\2\26\u008b\3\2\2")
-        buf.write(u"\2\30\31\7\3\2\2\31\32\7)\2\2\32\33\7\4\2\2\33\34\7\5")
-        buf.write(u"\2\2\34\35\7)\2\2\35\36\7\4\2\2\36\37\7\6\2\2\37 \5\4")
+        buf.write(u"\2\30\31\7\3\2\2\31\32\7*\2\2\32\33\7\4\2\2\33\34\7\5")
+        buf.write(u"\2\2\34\35\7*\2\2\35\36\7\4\2\2\36\37\7\6\2\2\37 \5\4")
         buf.write(u"\3\2 !\7\4\2\2!\"\7\7\2\2\"#\5\4\3\2#$\7\4\2\2$%\7\b")
         buf.write(u"\2\2%&\5\4\3\2&\'\7\4\2\2\'(\7\t\2\2()\5\4\3\2)*\7\4")
         buf.write(u"\2\2*+\7\n\2\2+.\5\4\3\2,-\7\4\2\2-/\5\6\4\2.,\3\2\2")
-        buf.write(u"\2./\3\2\2\2/\3\3\2\2\2\609\7\13\2\2\61\66\7)\2\2\62")
-        buf.write(u"\63\7\f\2\2\63\65\7)\2\2\64\62\3\2\2\2\658\3\2\2\2\66")
+        buf.write(u"\2./\3\2\2\2/\3\3\2\2\2\609\7\13\2\2\61\66\7*\2\2\62")
+        buf.write(u"\63\7\f\2\2\63\65\7*\2\2\64\62\3\2\2\2\658\3\2\2\2\66")
         buf.write(u"\64\3\2\2\2\66\67\3\2\2\2\67:\3\2\2\28\66\3\2\2\29\61")
         buf.write(u"\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\7\r\2\2<\5\3\2\2\2=F\7")
         buf.write(u"\13\2\2>C\5\b\5\2?@\7\f\2\2@B\5\b\5\2A?\3\2\2\2BE\3\2")
@@ -40,18 +40,18 @@ def serializedATN():
         buf.write(u"UX\3\2\2\2VX\5\26\f\2WJ\3\2\2\2WN\3\2\2\2WR\3\2\2\2W")
         buf.write(u"V\3\2\2\2X_\3\2\2\2YZ\f\7\2\2Z[\5\22\n\2[\\\5\b\5\b\\")
         buf.write(u"^\3\2\2\2]Y\3\2\2\2^a\3\2\2\2_]\3\2\2\2_`\3\2\2\2`\t")
-        buf.write(u"\3\2\2\2a_\3\2\2\2bc\b\6\1\2cd\7&\2\2dl\5\n\6\5ef\7\16")
-        buf.write(u"\2\2fg\5\n\6\2gh\7\17\2\2hl\3\2\2\2il\7)\2\2jl\5\f\7")
-        buf.write(u"\2kb\3\2\2\2ke\3\2\2\2ki\3\2\2\2kj\3\2\2\2ls\3\2\2\2")
-        buf.write(u"mn\f\6\2\2no\5\20\t\2op\5\n\6\7pr\3\2\2\2qm\3\2\2\2r")
-        buf.write(u"u\3\2\2\2sq\3\2\2\2st\3\2\2\2t\13\3\2\2\2us\3\2\2\2v")
-        buf.write(u"w\7\20\2\2wx\7)\2\2x\u0082\7\r\2\2yz\7\21\2\2z{\7)\2")
-        buf.write(u"\2{\u0082\7\r\2\2|}\7\22\2\2}~\7)\2\2~\177\7\23\2\2\177")
-        buf.write(u"\u0080\7)\2\2\u0080\u0082\7\r\2\2\u0081v\3\2\2\2\u0081")
+        buf.write(u"\3\2\2\2a_\3\2\2\2bc\b\6\1\2cd\7\'\2\2dl\5\n\6\5ef\7")
+        buf.write(u"\16\2\2fg\5\n\6\2gh\7\17\2\2hl\3\2\2\2il\7*\2\2jl\5\f")
+        buf.write(u"\7\2kb\3\2\2\2ke\3\2\2\2ki\3\2\2\2kj\3\2\2\2ls\3\2\2")
+        buf.write(u"\2mn\f\6\2\2no\5\20\t\2op\5\n\6\7pr\3\2\2\2qm\3\2\2\2")
+        buf.write(u"ru\3\2\2\2sq\3\2\2\2st\3\2\2\2t\13\3\2\2\2us\3\2\2\2")
+        buf.write(u"vw\7\20\2\2wx\7*\2\2x\u0082\7\r\2\2yz\7\21\2\2z{\7*\2")
+        buf.write(u"\2{\u0082\7\r\2\2|}\7\22\2\2}~\7*\2\2~\177\7\23\2\2\177")
+        buf.write(u"\u0080\7*\2\2\u0080\u0082\7\r\2\2\u0081v\3\2\2\2\u0081")
         buf.write(u"y\3\2\2\2\u0081|\3\2\2\2\u0082\r\3\2\2\2\u0083\u0084")
         buf.write(u"\t\2\2\2\u0084\17\3\2\2\2\u0085\u0086\t\3\2\2\u0086\21")
         buf.write(u"\3\2\2\2\u0087\u0088\t\4\2\2\u0088\23\3\2\2\2\u0089\u008a")
-        buf.write(u"\7\26\2\2\u008a\25\3\2\2\2\u008b\u008c\t\5\2\2\u008c")
+        buf.write(u"\7\27\2\2\u008a\25\3\2\2\2\u008b\u008c\t\5\2\2\u008c")
         buf.write(u"\27\3\2\2\2\f.\669CFW_ks\u0081")
         return buf.getvalue()
 
@@ -70,20 +70,21 @@ class SpecificationGrammarParser ( Parser ):
                      u"'ATTRIBUTES_NUM'", u"'DOMAIN_ATTRIBUTES'", u"'DOMAIN_CONTEXT'", 
                      u"'INITIAL_FEATURES'", u"'INITIAL_ATTRIBUTES'", u"'['", 
                      u"','", u"']'", u"'('", u"')'", u"'context['", u"'feature['", 
-                     u"'attribute['", u"']['", u"'and'", u"'or'", u"'not'", 
-                     u"'true'", u"'false'", u"'impl'", u"'iff'", u"'exists'", 
-                     u"'forall'", u"'sum'", u"'cost'", u"'<='", u"'='", 
-                     u"'>='", u"'<'", u"'>'", u"'!='", u"'+'", u"'-'", u"'*'" ]
+                     u"'attribute['", u"']['", u"'and'", u"'or'", u"'xor'", 
+                     u"'not'", u"'true'", u"'false'", u"'impl'", u"'iff'", 
+                     u"'exists'", u"'forall'", u"'sum'", u"'cost'", u"'<='", 
+                     u"'='", u"'>='", u"'<'", u"'>'", u"'!='", u"'+'", u"'-'", 
+                     u"'*'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"AND", u"OR", u"NOT", 
-                      u"TRUE", u"FALSE", u"IMPL", u"IFF", u"EXISTS", u"FORALL", 
-                      u"SUM", u"COST", u"LEQ", u"EQ", u"GEQ", u"LT", u"GT", 
-                      u"NEQ", u"PLUS", u"MINUS", u"TIMES", u"ID", u"INT", 
-                      u"WS" ]
+                      u"<INVALID>", u"<INVALID>", u"AND", u"OR", u"XOR", 
+                      u"NOT", u"TRUE", u"FALSE", u"IMPL", u"IFF", u"EXISTS", 
+                      u"FORALL", u"SUM", u"COST", u"LEQ", u"EQ", u"GEQ", 
+                      u"LT", u"GT", u"NEQ", u"PLUS", u"MINUS", u"TIMES", 
+                      u"ID", u"INT", u"WS" ]
 
     RULE_data = 0
     RULE_int_list = 1
@@ -121,27 +122,28 @@ class SpecificationGrammarParser ( Parser ):
     T__16=17
     AND=18
     OR=19
-    NOT=20
-    TRUE=21
-    FALSE=22
-    IMPL=23
-    IFF=24
-    EXISTS=25
-    FORALL=26
-    SUM=27
-    COST=28
-    LEQ=29
-    EQ=30
-    GEQ=31
-    LT=32
-    GT=33
-    NEQ=34
-    PLUS=35
-    MINUS=36
-    TIMES=37
-    ID=38
-    INT=39
-    WS=40
+    XOR=20
+    NOT=21
+    TRUE=22
+    FALSE=23
+    IMPL=24
+    IFF=25
+    EXISTS=26
+    FORALL=27
+    SUM=28
+    COST=29
+    LEQ=30
+    EQ=31
+    GEQ=32
+    LT=33
+    GT=34
+    NEQ=35
+    PLUS=36
+    MINUS=37
+    TIMES=38
+    ID=39
+    INT=40
+    WS=41
 
     def __init__(self, input):
         super(SpecificationGrammarParser, self).__init__(input)
@@ -1045,6 +1047,9 @@ class SpecificationGrammarParser ( Parser ):
         def IFF(self):
             return self.getToken(SpecificationGrammarParser.IFF, 0)
 
+        def XOR(self):
+            return self.getToken(SpecificationGrammarParser.XOR, 0)
+
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_bool2Op
 
@@ -1066,7 +1071,7 @@ class SpecificationGrammarParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 133
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.XOR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self.consume()
