@@ -27,7 +27,8 @@ class MyVisitor(SpecificationGrammarVisitor):
       'or' : "\\/",
       'and': '/\\',
       'impl': "->",
-      'iff' : "<->"           
+      'iff' : "<->",
+      'xor' : " xor "         
     }
     txt = node.getText()
     if txt in switcher:
