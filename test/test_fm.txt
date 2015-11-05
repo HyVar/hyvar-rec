@@ -1,15 +1,29 @@
-FEATURE_NUM 3;
-CONTEXT_NUM 1;
-ATTRIBUTES_NUM [ 1, 0, 0 ];
-DOMAIN_ATTRIBUTES [0, 5 ];
-DOMAIN_CONTEXT [ 0, 2 ];
-INITIAL_FEATURES [ 1, 1, 1 ];
-INITIAL_ATTRIBUTES [ 5 ];
-[
-  feature[1] = 1 impl feature[0] = 1,
-  feature[2] = 1 impl feature[0] = 1,
-  feature[0] = 1 impl (feature[1] = 1 or feature[2] = 1),
-  feature[0] = 1 impl (attribute[0][0] > feature[1]*2 + feature[2]*2),
-  feature[1] = 1 impl context[0] != 1,
-  feature[0] = 1,
-  feature[0] = 1 impl context[0] <= 1 ]
+FEATURE_NUM 16;
+CONTEXT_NUM 2;
+ATTRIBUTES_NUM [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1];
+DOMAIN_ATTRIBUTES [ 0 , 300];
+DOMAIN_CONTEXT [0 , 2 , 0 , 2];
+INITIAL_FEATURES [1 , 1 , 1 , 1 , 1 , 1 , 1 , 0 , 1 , 0 , 1 , 0 , 0 , 1 , 0 , 1];
+INITIAL_ATTRIBUTES [200];
+[ feature[0] = 1 , 
+  feature[0] = 1 impl (feature[4] = 1 and feature[5] = 1 and feature[1] = 1 and feature[2] = 1) , 
+  (feature[6] = 1 or feature[7] = 1) impl feature[4] = 1 , 
+  feature[4] = 1 impl (feature[6] = 1 xor feature[7] = 1) , 
+  (feature[8] = 1 or feature[9] = 1) impl feature[5] = 1 , 
+  feature[5] = 1 impl (feature[8] = 1 xor feature[9] = 1) , 
+  (feature[14] = 1 or feature[15] = 1) impl feature[1] = 1 , 
+  feature[1] = 1 impl (feature[15] = 1) , 
+  (feature[11] = 1 or feature[10] = 1) impl feature[3] = 1 , 
+  feature[3] = 1 impl (feature[11] = 1 or feature[10] = 1), 
+  (feature[12] = 1 or feature[13] = 1) impl feature[10] = 1 , 
+  feature[10] = 1 impl (feature[12] = 1 xor feature[13] = 1) , 
+  feature[6] = 1 impl feature[8] = 1 , 
+  feature[7] = 1 impl feature[9] = 1 , 
+  feature[14] = 1 impl (feature[11] = 1 and feature[10] = 1) , 
+  feature[15] = 1 impl feature[10] = 1 , 
+  feature[15] = 1 impl (attribute[15][0] >  180  impl feature[13] = 1) , 
+  feature[6] = 1 impl context[0] =  0  , 
+  feature[7] = 1 impl context[0] =  1  , 
+  feature[15] = 1 impl (context[1] =  1  impl attribute[15][0] <=  160 ) , 
+  feature[15] = 1 impl (context[0] =  1  impl attribute[15][0] <=  110 ) , 
+  feature[15] = 1 impl (context[1] =  2  impl attribute[15][0] <=  100 )]

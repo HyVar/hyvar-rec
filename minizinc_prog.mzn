@@ -90,9 +90,10 @@ constraint forall( a in attrs) (
   diff_attr[a] = 0 <-> attr[a] = init_attr[a]
 );
 
-array [1..2] of var int: obj_array;
+array [1..3] of var int: obj_array;
 constraint obj_array[1] = sum(f in feats) (diff_feat[f]);
 constraint obj_array[2] = sum(a in attrs) (diff_attr[a]);
+constraint obj_array[3] = - sum(attr);
 
 function ann: my_search(array[int] of var int: objs) = (
   % post initial constraints to check if solution is still valid
@@ -130,4 +131,4 @@ solve search my_search(obj_array);
 
 output ["features = " ++ show(feat) ++ "\n",
    "attributes = " ++ show(attr) ++ "\n",
-   "%OBJVAR " ++ show(obj_array[1]) ++ " " ++ show(obj_array[2]) ++ "\n" ];
+   "%OBJVAR " ++ show(obj_array) ++ "\n" ];
