@@ -41,14 +41,13 @@ main {
 		writeFile@File(write_file_request)();
 
 		// Run command
-		//println@Console( "Running command for files " + spec_file + " " + spec_file )();
 		command_request = "python";
   	command_request.args[0] = "hyvar-rec.py";
 		command_request.args[1] = spec_file;
 		command_request.args[2] = context_file;
 		exec@Exec( command_request )( output );
-		//println@Console( "exit code: " + string(output.exitCode) )();
-		//println@Console( "stderr: " + string(output.stderr) )();
+		println@Console( "exit code: " + string(output.exitCode) )();
+		println@Console( "stderr: " + string(output.stderr) )();
   	response.configuration = string(output)
 	} ] {nullProcess}
 }

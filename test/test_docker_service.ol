@@ -26,9 +26,9 @@ main {
 	readfile_request.filename = "test_context.txt";
 	readFile@File(readfile_request)(request.context);
 
-	readfile_request.filename = "test_context.fm";
+	readfile_request.filename = "test_fm.txt";
 	readFile@File(readfile_request)(request.specification);
 	
 	process@ReconfiguratorService(request)(response);
-	println@Console( "Specification sent. Final configuration:\n" + response.configuration )()
+	println@Console( response.configuration )()
 }
