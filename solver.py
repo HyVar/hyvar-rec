@@ -77,7 +77,7 @@ class Solver:
       cmd = [settings.MINISEARCH_COMMAND,
           "--stdlib-dir", stdlib_path,
           "--solver", self.solver,
-          "--mzn-globals-dir", self.globals_dir,
+          "-I", self.globals_dir,
           self.mzn_file, self.dzn_file]
     
     self.process = Popen( cmd, stdout=PIPE, stderr=PIPE )
