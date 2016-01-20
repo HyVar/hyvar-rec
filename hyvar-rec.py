@@ -170,6 +170,7 @@ def main(argv):
     elif opt in ("-o", "--ofile"):
       output_file = arg
     elif opt in ("-k", "--keep"):
+      global KEEP
       KEEP = True
     elif opt in ("-v", "--verbose"):
       log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
@@ -195,6 +196,7 @@ def main(argv):
   mzn_file = "/tmp/" + pid + ".mzn"
   dzn_file = "/tmp/" + pid + ".dzn"
   
+  global TMP_FILES
   TMP_FILES = [ mzn_file , dzn_file ]
  
   log.info("Processing specification")
@@ -226,9 +228,10 @@ def main(argv):
       outfile.write("constraint " + i + ";\n") 
        
   log.info("Running solvers")
-   
+  
+  global RUNNING_SOLVERS
   RUNNING_SOLVERS = [
-    Solver("gecode", mzn_file, dzn_file, "gecode") ]
+     Solver("default", mzn_file, dzn_file, "", "gecode") ]
    
   for i in RUNNING_SOLVERS:
     i.run()

@@ -24,19 +24,16 @@ def get_last_solution(buf):
   for line in lines:
     if line.startswith("=========="):
       end = True
-    if line.startswith("%"):
-      sol = line + "\n" + sol
-    else:     
-      if not find:
-        if line.startswith("----------"):
-          find = True
-        else:
-          buf += line + "\n"
-      if find:
-        if line.startswith("----------"):
-          continue
-        else:
-          sol = line + "\n" + sol
+    if not find:
+      if line.startswith("----------"):
+        find = True
+      else:
+        buf += line + "\n"
+    else:
+      if line.startswith("----------"):
+        break
+      else:
+        sol = line + "\n" + sol
   return (sol,buf,end)
   
 
@@ -55,11 +52,12 @@ class Solver:
   # Stderr of the process
   err = None
   
-  def __init__(self, solver, mzn_file, dzn_file, id):
+  def __init__(self, solver, mzn_file, dzn_file, globals_dir, id_string):
     self.solver = solver
     self.mzn_file = mzn_file
     self.dzn_file = dzn_file
-    self.id = id
+    self.global_dir = globals_dir
+    self.id_string = id_string
   
   def run(self):
     
@@ -71,10 +69,18 @@ class Solver:
           if os.path.exists(full_path):
             stdlib_path = os.path.dirname(full_path)[:-3] + "share" + os.sep + "minizinc"
       
-    self.process = Popen( [settings.MINISEARCH_COMMAND,
+    if self.solver == "default":
+      cmd = [settings.MINISEARCH_COMMAND,
           "--stdlib-dir", stdlib_path,
-          #"--solver", self.solver,
-          self.mzn_file, self.dzn_file], stdout=PIPE, stderr=PIPE )
+          self.mzn_file, self.dzn_file]
+    else:
+      cmd = [settings.MINISEARCH_COMMAND,
+          "--stdlib-dir", stdlib_path,
+          "--solver", self.solver,
+          "--mzn-globals-dir", self.globals_dir,
+          self.mzn_file, self.dzn_file]
+    
+    self.process = Popen( cmd, stdout=PIPE, stderr=PIPE )
     # For non-blocking read.
     fd = self.process.stdout.fileno()
     fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -94,4 +100,4 @@ class Solver:
     return self.ended
   
   def get_id(self):
-    return self.id
+    return self.id_string
