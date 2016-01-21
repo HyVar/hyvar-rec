@@ -26,22 +26,20 @@ hyvar-rec could be installed using docker container technology
 It can therefore be used simply sending a get request to the server deployed by
 using docker.
 
-The file to build the docker images is contained in the docker folder. In the 
-following we will give the instructions to deploy hyvar rec locally assuming the use
-of a Linux machine. 
-Similar task can be performed on other operating systems and we invite the 
-interested user to consult the docker manual to find out how to perform the same 
-task on his/her operating system.
+The file to build the docker images is contained in the docker folder. In the
+following we will give the instructions to deploy hyvar-rec locally assuming
+the use of a Linux machine.  Similar task can be performed on other operating
+systems and we invite the interested user to consult the docker manual to
+find out how to perform the same task on his/her operating system.
 
-The Dockerfile needed to generate the container image is
-stored in the docker subfolder. Assuming Docker is installed and \<PATH\> is the 
-path to the hyvar-rec folder, it is possible to deploy hyvar-rec with:
+The Dockerfile needed to generate the container image is stored in the
+docker subfolder. Assuming Docker is installed and \<PATH\> is the path to
+the hyvar-rec folder, it is possible to deploy hyvar-rec with:
 
 ```
 sudo docker build -t hyvarrec <PATH>/docker
 sudo docker run -d -p 9000:9001 --name hyvarrec_container hyvarrec
 ```
-Some test examples file can be located in the test subfolder.
 
 Assuming \<SPEC\> is the string containing the fm specification and \<CONTEXT\>
 the string containing the contextual information (please see below for the formal
@@ -52,7 +50,11 @@ is possible to perform the following get requests
 http://<IP>:9000/process?specification=<SPEC>&context=<CONTEXT>
 ```
 
+Example:
+
+```
 http://localhost:9000/process?specification=FEATURE_NUM 16;%0D%0ACONTEXT_NUM 2;%0D%0AATTRIBUTES_NUM [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1];%0D%0ADOMAIN_ATTRIBUTES [ 0 , 300];%0D%0ADOMAIN_CONTEXT [0 , 2 , 0 , 2];%0D%0AINITIAL_FEATURES [1 , 1 , 1 , 1 , 1 , 1 , 1 , 0 , 1 , 0 , 1 , 0 , 0 , 1 , 0 , 1];%0D%0AINITIAL_ATTRIBUTES [200];%0D%0A[ feature[0] = 1 , %0D%0A  feature[0] = 1 impl (feature[4] = 1 and feature[5] = 1 and feature[1] = 1 and feature[2] = 1) , %0D%0A  (feature[6] = 1 or feature[7] = 1) impl feature[4] = 1 , %0D%0A  feature[4] = 1 impl (feature[6] = 1 xor feature[7] = 1) , %0D%0A  (feature[8] = 1 or feature[9] = 1) impl feature[5] = 1 , %0D%0A  feature[5] = 1 impl (feature[8] = 1 xor feature[9] = 1) , %0D%0A  (feature[14] = 1 or feature[15] = 1) impl feature[1] = 1 , %0D%0A  feature[1] = 1 impl (feature[15] = 1) , %0D%0A  (feature[11] = 1 or feature[10] = 1) impl feature[3] = 1 , %0D%0A  feature[3] = 1 impl (feature[11] = 1 or feature[10] = 1), %0D%0A  (feature[12] = 1 or feature[13] = 1) impl feature[10] = 1 , %0D%0A  feature[10] = 1 impl (feature[12] = 1 xor feature[13] = 1) , %0D%0A  feature[6] = 1 impl feature[8] = 1 , %0D%0A  feature[7] = 1 impl feature[9] = 1 , %0D%0A  feature[14] = 1 impl (feature[11] = 1 and feature[10] = 1) , %0D%0A  feature[15] = 1 impl feature[10] = 1 , %0D%0A  feature[15] = 1 impl (attribute[15][0] >  180  impl feature[13] = 1) , %0D%0A  feature[6] = 1 impl context[0] =  0  , %0D%0A  feature[7] = 1 impl context[0] =  1  , %0D%0A  feature[15] = 1 impl (context[1] =  1  impl attribute[15][0] <=  160 ) , %0D%0A  feature[15] = 1 impl (context[0] =  1  impl attribute[15][0] <=  110 ) , %0D%0A  feature[15] = 1 impl (context[1] =  2  impl attribute[15][0] <=  100 )]%0D%0A&context=1%0D%0A1%0D%0A
+```
 
 To clean up please lunch the following commands:
 
