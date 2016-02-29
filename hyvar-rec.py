@@ -6,6 +6,8 @@ Usage: hyvarRec.py [<options>] <input_file>
     -k, --keep
 """
 
+# TODO: add license info 
+
 __author__ = "Jacopo Mauro"
 __copyright__ = "Copyright 2016, Jacopo Mauro"
 __license__ = "ISC"
@@ -285,9 +287,9 @@ def main(argv):
         out_stream.write("\n")
         out_stream.flush()
       if i.is_ended():
-        json_sol["optimality"] = 1
-        json.dump(json_sol,out_stream)
-        out_stream.write("\n")
+        if json_sol != "":
+          json_sol["optimality"] = 1
+          json.dump(json_sol,out_stream)
         log.info("Search completed by " + i.get_id())
         ended = True
         continue

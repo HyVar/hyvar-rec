@@ -1,56 +1,73 @@
+/** For more information related to the use of jolie for receiving post and get
+operation please have a look at Jolie online documentation:
+http://docs.jolie-lang.org/#!documentation/web_applications/web_get_post.html
+**/
+
+
 include "console.iol"
 include "exec.iol"
 include "math.iol"
 include "file.iol"
+include "string_utils.iol"
 
+// execution is concurrent: more than one instance of hyvarrec can be run at the same time
 execution { concurrent }
 
-
-type ProcessRequest: void {
-  .specification: string
-  .context: string
-}
-
-type ProcessResponse: void {
-  .configuration: string
-}
-
-interface ReconfiguratorInterface {
+interface HyVarRecInterface {
 RequestResponse:
-  process( ProcessRequest )( ProcessResponse ),
+	// operation to get the hyvarrec tool response
+	// the input and output are json object (undefined type for jolie)
+  process( undefined )( undefined ),
+	// operation to check if the service is still alive and responding
   health( void )( void )
 }
 
 inputPort ReconfiguratorService {
+		// locally the server will be expecting request on port 9001
     Location: "socket://localhost:9001"
-    Protocol: http 
-    Interfaces: ReconfiguratorInterface
+		// the protocol used is http and the data send and receive in json
+    Protocol: http { .format = "json" }
+		// the server implements the HyVarRecInterface interface
+    Interfaces: HyVarRecInterface
 }
 
 
-main {
-	[ process( request )( response ) {
-		// Save files
-		random@Math()(num);
-		context_file = "/tmp/" + string(num) + ".context";
-		spec_file = "/tmp/" + string(num) + ".txt";
-		write_file_request.content = request.specification;
-		write_file_request.filename = spec_file;
-		writeFile@File(write_file_request)();
-		write_file_request.content = request.context;
-		write_file_request.filename = context_file;
-		writeFile@File(write_file_request)();
+/* The program waits for a request and process it.
+The operation can be process or healt
+*/
 
-		// Run command
+main {
+
+	[ process( request )( response ) {
+		println@Console( "Received request." )();
+		//println@Console( string(request) )();
+		// Save JSON string into a file stored in /tmp
+		random@Math()(num);
+		json_input_file = "/tmp/" + string(num) + "_in.json";
+		write_file_request.content = request;
+		write_file_request.filename = json_input_file;
+		writeFile@File(write_file_request)();
+		// Run HyVarRec
+		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	command_request.args[0] = "hyvar-rec.py";
-		command_request.args[1] = spec_file;
-		command_request.args[2] = context_file;
+		command_request.args[1] = json_input_file;
 		exec@Exec( command_request )( output );
-		println@Console( "exit code: " + string(output.exitCode) )();
-		println@Console( "stderr: " + string(output.stderr) )();
-  	response.configuration = string(output)
+		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
+		println@Console( "stderr of HyVarRec: " + string(output.stderr) )();
+		println@Console( "output of HyVarRec: " + string(output) )();
+		// Extracting last line of response to get last printed solution
+		split_request = string(output);
+		split_request.regex = "\n";
+		split@StringUtils( split_request ) ( lines );
+		// The response is the last line
+		if (#lines.result > 0) {
+			response = lines.result[#lines.result -1]
+		} else {
+			response = ""
+		}
 	} ] {nullProcess}
 	
+	// the healt process does not do anything except an
 	[ health( request )( response ) ] { nullProcess }
 }

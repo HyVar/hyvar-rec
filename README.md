@@ -1,16 +1,15 @@
 # hyvar-rec
 
-hyvar-rec is a tool that allows to reconfigure an existing product P valid for a 
+hyvar-rec is a tool that allows to reconfigure an existing configuration C valid for a 
 given SPL when it is subject to contextual changes.
 
-Given an existing product with its features and attributes hyvar-rec first 
-checks if the product is valid according to the current context. If not, it 
-tries to compute a new set of features and attributes that the new product 
-should support in order to be valid w.r.t. contextual information.
+Given an existing configuration C with its features and attributes hyvar-rec returns the
+best configuration that maximises the user preferences and is the most similar to
+the initial configuration C.
 
 hyvar-rec uses MiniZinc Search and in particular the Gecode solver to solve the 
-optimization problems involved in the reconfiguration. Other solver could be 
-easily supported.
+optimization problems involved in the reconfiguration.
+
 ----
 
 Requirement to install hyvar-rec from sources:
@@ -27,7 +26,8 @@ It can therefore be used simply sending a get request to the server deployed by
 using docker.
 
 The file to build the docker images is contained in the docker folder. In the
-following we will give the instructions to deploy hyvar-rec locally assuming
+following we will give the instructions to deploy hyvar-rec locally via docker
+assuming
 the use of a Linux machine.  Similar task can be performed on other operating
 systems and we invite the interested user to consult the docker manual to
 find out how to perform the same task on his/her operating system.
@@ -48,12 +48,6 @@ is possible to perform the following get requests
 
 ```
 http://<IP>:9000/process?specification=<SPEC>&context=<CONTEXT>
-```
-
-Example:
-
-```
-http://localhost:9000/process?specification=FEATURE_NUM 16;%0D%0ACONTEXT_NUM 2;%0D%0AATTRIBUTES_NUM [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1];%0D%0ADOMAIN_ATTRIBUTES [ 0 , 300];%0D%0ADOMAIN_CONTEXT [0 , 2 , 0 , 2];%0D%0AINITIAL_FEATURES [1 , 1 , 1 , 1 , 1 , 1 , 1 , 0 , 1 , 0 , 1 , 0 , 0 , 1 , 0 , 1];%0D%0AINITIAL_ATTRIBUTES [200];%0D%0A[ feature[0] = 1 , %0D%0A  feature[0] = 1 impl (feature[4] = 1 and feature[5] = 1 and feature[1] = 1 and feature[2] = 1) , %0D%0A  (feature[6] = 1 or feature[7] = 1) impl feature[4] = 1 , %0D%0A  feature[4] = 1 impl (feature[6] = 1 xor feature[7] = 1) , %0D%0A  (feature[8] = 1 or feature[9] = 1) impl feature[5] = 1 , %0D%0A  feature[5] = 1 impl (feature[8] = 1 xor feature[9] = 1) , %0D%0A  (feature[14] = 1 or feature[15] = 1) impl feature[1] = 1 , %0D%0A  feature[1] = 1 impl (feature[15] = 1) , %0D%0A  (feature[11] = 1 or feature[10] = 1) impl feature[3] = 1 , %0D%0A  feature[3] = 1 impl (feature[11] = 1 or feature[10] = 1), %0D%0A  (feature[12] = 1 or feature[13] = 1) impl feature[10] = 1 , %0D%0A  feature[10] = 1 impl (feature[12] = 1 xor feature[13] = 1) , %0D%0A  feature[6] = 1 impl feature[8] = 1 , %0D%0A  feature[7] = 1 impl feature[9] = 1 , %0D%0A  feature[14] = 1 impl (feature[11] = 1 and feature[10] = 1) , %0D%0A  feature[15] = 1 impl feature[10] = 1 , %0D%0A  feature[15] = 1 impl (attribute[15][0] >  180  impl feature[13] = 1) , %0D%0A  feature[6] = 1 impl context[0] =  0  , %0D%0A  feature[7] = 1 impl context[0] =  1  , %0D%0A  feature[15] = 1 impl (context[1] =  1  impl attribute[15][0] <=  160 ) , %0D%0A  feature[15] = 1 impl (context[0] =  1  impl attribute[15][0] <=  110 ) , %0D%0A  feature[15] = 1 impl (context[1] =  2  impl attribute[15][0] <=  100 )]%0D%0A&context=1%0D%0A1%0D%0A
 ```
 
 To clean up please lunch the following commands:
