@@ -67,7 +67,11 @@ class Solver:
       for path in os.getenv("PATH").split(os.path.pathsep):
           full_path = path + os.sep + settings.MINISEARCH_COMMAND
           if os.path.exists(full_path):
-            stdlib_path = os.path.dirname(full_path)[:-3] + "share" + os.sep + "minizinc"
+            # check if the stdlib is in ../share/minizinc as installed by default
+            last_dir = path.split(os.sep)[-1]
+            stdlib_path = path.replace(last_dir, os.sep + "share" + os.sep + "minizinc")
+            if not os.path.exists(stdlib_path):
+              raise Exception("Minizinc stdlib path not found - Please provide it in settings.py")
       
     if self.solver == "default":
       cmd = [settings.MINISEARCH_COMMAND,

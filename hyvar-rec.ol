@@ -17,7 +17,8 @@ type ProcessResponse: void {
 
 interface ReconfiguratorInterface {
 RequestResponse:
-  process( ProcessRequest )( ProcessResponse )
+  process( ProcessRequest )( ProcessResponse ),
+  health( void )( void )
 }
 
 inputPort ReconfiguratorService {
@@ -50,4 +51,6 @@ main {
 		println@Console( "stderr: " + string(output.stderr) )();
   	response.configuration = string(output)
 	} ] {nullProcess}
+	
+	[ health( request )( response ) ] { nullProcess }
 }

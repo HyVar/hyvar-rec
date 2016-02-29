@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Final configuration",
+  "type": "object",
+  "properties": {
+    "selectedFeatures": {
+      "description": "list representing wich features are selected",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "attributeValues": {
+      "description": "list representing the intial values of the attributes. The values of the attributes of non selected features are set to a value within their domain.",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "optimality": {
+      "description": "is the solution optimal or not.",
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "selectedFeatures",
+    "attributeValues",
+		"optimality"
+  ]
+}

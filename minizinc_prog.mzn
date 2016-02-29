@@ -90,35 +90,28 @@ constraint forall( a in attrs) (
   diff_attr[a] = 0 <-> attr[a] = init_attr[a]
 );
 
-array [1..3] of var int: obj_array;
-constraint obj_array[1] = sum(f in feats) (diff_feat[f]);
-constraint obj_array[2] = sum(a in attrs) (diff_attr[a]);
-constraint obj_array[3] = - sum(attr);
-
 function ann: my_search(array[int] of var int: objs) = (
-  % post initial constraints to check if solution is still valid
-  repeat (i in 1..1) ( scope( 
-    post (
-      forall( f in feats) (
-        feat[f] = init_feat[f]
-      ) /\ 
-      forall( a in attrs) (
-        attr[a] = init_attr[a]
-      ) 
-    )
-    /\
-    next() /\ commit() /\ print("%VALID\n") /\ print()
-  ))
-  \/
-  % if solution is not valid find one possible alternative
+  % TODO: use initial values when starting to check the solutions
+  %repeat (i in 1..1) ( scope( 
+  %  post (
+  %    forall( f in feats) (
+  %      feat[f] = init_feat[f]
+  %    ) /\ 
+  %    forall( a in attrs) (
+  %      attr[a] = init_attr[a]
+  %    ) 
+  %  )
+  %  /\
+  %  next() /\ commit() /\ print("%VALID\n") /\ print()
+  %))
   if next()
   then 
     commit() /\
-    print("%RECOMPUTING\n") /\
+    %print("%SOLUTION\n") /\
     print() /\
     repeat( scope( 
       let {array[1..length(objs)] of int:v=[ sol(objs[i])| i in 1..length(objs)]}
-        in  post(lex_less(objs,v)) /\
+        in  post(lex_greater(objs,v)) /\
             (next() /\ commit() /\ print("%RECOMPUTING\n") /\ print())  \/  break
           )
     )

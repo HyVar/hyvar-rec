@@ -7,52 +7,42 @@ from io import StringIO
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
-        buf.write(u"+\u008e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
-        buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\3\2\3\2")
-        buf.write(u"\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2")
-        buf.write(u"\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2/\n\2\3\3\3\3\3\3\3\3")
-        buf.write(u"\7\3\65\n\3\f\3\16\38\13\3\5\3:\n\3\3\3\3\3\3\4\3\4\3")
-        buf.write(u"\4\3\4\7\4B\n\4\f\4\16\4E\13\4\5\4G\n\4\3\4\3\4\3\5\3")
-        buf.write(u"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5X\n")
-        buf.write(u"\5\3\5\3\5\3\5\3\5\7\5^\n\5\f\5\16\5a\13\5\3\6\3\6\3")
-        buf.write(u"\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6l\n\6\3\6\3\6\3\6\3\6\7")
-        buf.write(u"\6r\n\6\f\6\16\6u\13\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3")
-        buf.write(u"\7\3\7\3\7\3\7\5\7\u0082\n\7\3\b\3\b\3\t\3\t\3\n\3\n")
-        buf.write(u"\3\13\3\13\3\f\3\f\3\f\2\4\b\n\r\2\4\6\b\n\f\16\20\22")
-        buf.write(u"\24\26\2\6\3\2 %\3\2&(\4\2\24\26\32\33\3\2\30\31\u0091")
-        buf.write(u"\2\30\3\2\2\2\4\60\3\2\2\2\6=\3\2\2\2\bW\3\2\2\2\nk\3")
-        buf.write(u"\2\2\2\f\u0081\3\2\2\2\16\u0083\3\2\2\2\20\u0085\3\2")
-        buf.write(u"\2\2\22\u0087\3\2\2\2\24\u0089\3\2\2\2\26\u008b\3\2\2")
-        buf.write(u"\2\30\31\7\3\2\2\31\32\7*\2\2\32\33\7\4\2\2\33\34\7\5")
-        buf.write(u"\2\2\34\35\7*\2\2\35\36\7\4\2\2\36\37\7\6\2\2\37 \5\4")
-        buf.write(u"\3\2 !\7\4\2\2!\"\7\7\2\2\"#\5\4\3\2#$\7\4\2\2$%\7\b")
-        buf.write(u"\2\2%&\5\4\3\2&\'\7\4\2\2\'(\7\t\2\2()\5\4\3\2)*\7\4")
-        buf.write(u"\2\2*+\7\n\2\2+.\5\4\3\2,-\7\4\2\2-/\5\6\4\2.,\3\2\2")
-        buf.write(u"\2./\3\2\2\2/\3\3\2\2\2\609\7\13\2\2\61\66\7*\2\2\62")
-        buf.write(u"\63\7\f\2\2\63\65\7*\2\2\64\62\3\2\2\2\658\3\2\2\2\66")
-        buf.write(u"\64\3\2\2\2\66\67\3\2\2\2\67:\3\2\2\28\66\3\2\2\29\61")
-        buf.write(u"\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\7\r\2\2<\5\3\2\2\2=F\7")
-        buf.write(u"\13\2\2>C\5\b\5\2?@\7\f\2\2@B\5\b\5\2A?\3\2\2\2BE\3\2")
-        buf.write(u"\2\2CA\3\2\2\2CD\3\2\2\2DG\3\2\2\2EC\3\2\2\2F>\3\2\2")
-        buf.write(u"\2FG\3\2\2\2GH\3\2\2\2HI\7\r\2\2I\7\3\2\2\2JK\b\5\1\2")
-        buf.write(u"KL\5\24\13\2LM\5\b\5\6MX\3\2\2\2NO\7\16\2\2OP\5\b\5\2")
-        buf.write(u"PQ\7\17\2\2QX\3\2\2\2RS\5\n\6\2ST\5\16\b\2TU\5\n\6\2")
-        buf.write(u"UX\3\2\2\2VX\5\26\f\2WJ\3\2\2\2WN\3\2\2\2WR\3\2\2\2W")
-        buf.write(u"V\3\2\2\2X_\3\2\2\2YZ\f\7\2\2Z[\5\22\n\2[\\\5\b\5\b\\")
-        buf.write(u"^\3\2\2\2]Y\3\2\2\2^a\3\2\2\2_]\3\2\2\2_`\3\2\2\2`\t")
-        buf.write(u"\3\2\2\2a_\3\2\2\2bc\b\6\1\2cd\7\'\2\2dl\5\n\6\5ef\7")
-        buf.write(u"\16\2\2fg\5\n\6\2gh\7\17\2\2hl\3\2\2\2il\7*\2\2jl\5\f")
-        buf.write(u"\7\2kb\3\2\2\2ke\3\2\2\2ki\3\2\2\2kj\3\2\2\2ls\3\2\2")
-        buf.write(u"\2mn\f\6\2\2no\5\20\t\2op\5\n\6\7pr\3\2\2\2qm\3\2\2\2")
-        buf.write(u"ru\3\2\2\2sq\3\2\2\2st\3\2\2\2t\13\3\2\2\2us\3\2\2\2")
-        buf.write(u"vw\7\20\2\2wx\7*\2\2x\u0082\7\r\2\2yz\7\21\2\2z{\7*\2")
-        buf.write(u"\2{\u0082\7\r\2\2|}\7\22\2\2}~\7*\2\2~\177\7\23\2\2\177")
-        buf.write(u"\u0080\7*\2\2\u0080\u0082\7\r\2\2\u0081v\3\2\2\2\u0081")
-        buf.write(u"y\3\2\2\2\u0081|\3\2\2\2\u0082\r\3\2\2\2\u0083\u0084")
-        buf.write(u"\t\2\2\2\u0084\17\3\2\2\2\u0085\u0086\t\3\2\2\u0086\21")
-        buf.write(u"\3\2\2\2\u0087\u0088\t\4\2\2\u0088\23\3\2\2\2\u0089\u008a")
-        buf.write(u"\7\27\2\2\u008a\25\3\2\2\2\u008b\u008c\t\5\2\2\u008c")
-        buf.write(u"\27\3\2\2\2\f.\669CFW_ks\u0081")
+        buf.write(u" y\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4")
+        buf.write(u"\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
+        buf.write(u"\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\3\2\3\2")
+        buf.write(u"\3\2\3\2\3\2\3\2\3\2\5\2,\n\2\3\3\3\3\3\3\3\4\3\4\3\4")
+        buf.write(u"\3\4\7\4\65\n\4\f\4\16\48\13\4\3\5\5\5;\n\5\3\5\3\5\3")
+        buf.write(u"\6\3\6\5\6A\n\6\3\7\3\7\3\7\3\7\5\7G\n\7\3\b\3\b\3\b")
+        buf.write(u"\3\b\7\bM\n\b\f\b\16\bP\13\b\3\t\3\t\3\t\3\t\3\t\3\t")
+        buf.write(u"\3\t\3\t\3\t\3\t\3\t\5\t]\n\t\3\n\3\n\3\n\3\n\3\13\3")
+        buf.write(u"\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\16\3")
+        buf.write(u"\16\3\17\3\17\3\20\3\20\3\21\3\21\3\22\3\22\3\22\2\2")
+        buf.write(u"\23\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"\2\7\3\2")
+        buf.write(u"\22\23\3\2\25\32\3\2\16\17\4\2\n\f\20\21\3\2\33\35r\2")
+        buf.write(u"+\3\2\2\2\4-\3\2\2\2\6\60\3\2\2\2\b:\3\2\2\2\n@\3\2\2")
+        buf.write(u"\2\fB\3\2\2\2\16H\3\2\2\2\20\\\3\2\2\2\22^\3\2\2\2\24")
+        buf.write(u"b\3\2\2\2\26f\3\2\2\2\30l\3\2\2\2\32n\3\2\2\2\34p\3\2")
+        buf.write(u"\2\2\36r\3\2\2\2 t\3\2\2\2\"v\3\2\2\2$,\5\4\3\2%&\t\2")
+        buf.write(u"\2\2&\'\7\3\2\2\'(\5\26\f\2()\7\4\2\2)*\7\2\2\3*,\3\2")
+        buf.write(u"\2\2+$\3\2\2\2+%\3\2\2\2,\3\3\2\2\2-.\5\6\4\2./\7\2\2")
+        buf.write(u"\3/\5\3\2\2\2\60\66\5\b\5\2\61\62\5\34\17\2\62\63\5\b")
+        buf.write(u"\5\2\63\65\3\2\2\2\64\61\3\2\2\2\658\3\2\2\2\66\64\3")
+        buf.write(u"\2\2\2\66\67\3\2\2\2\67\7\3\2\2\28\66\3\2\2\29;\5\"\22")
+        buf.write(u"\2:9\3\2\2\2:;\3\2\2\2;<\3\2\2\2<=\5\n\6\2=\t\3\2\2\2")
+        buf.write(u">A\5\32\16\2?A\5\f\7\2@>\3\2\2\2@?\3\2\2\2A\13\3\2\2")
+        buf.write(u"\2BF\5\16\b\2CD\5\30\r\2DE\5\16\b\2EG\3\2\2\2FC\3\2\2")
+        buf.write(u"\2FG\3\2\2\2G\r\3\2\2\2HN\5\20\t\2IJ\5\36\20\2JK\5\20")
+        buf.write(u"\t\2KM\3\2\2\2LI\3\2\2\2MP\3\2\2\2NL\3\2\2\2NO\3\2\2")
+        buf.write(u"\2O\17\3\2\2\2PN\3\2\2\2Q]\7\37\2\2R]\5\22\n\2S]\5\24")
+        buf.write(u"\13\2T]\5\26\f\2UV\5 \21\2VW\5\16\b\2W]\3\2\2\2XY\7\3")
+        buf.write(u"\2\2YZ\5\6\4\2Z[\7\4\2\2[]\3\2\2\2\\Q\3\2\2\2\\R\3\2")
+        buf.write(u"\2\2\\S\3\2\2\2\\T\3\2\2\2\\U\3\2\2\2\\X\3\2\2\2]\21")
+        buf.write(u"\3\2\2\2^_\7\5\2\2_`\7\37\2\2`a\7\6\2\2a\23\3\2\2\2b")
+        buf.write(u"c\7\7\2\2cd\7\37\2\2de\7\6\2\2e\25\3\2\2\2fg\7\b\2\2")
+        buf.write(u"gh\7\37\2\2hi\7\t\2\2ij\7\37\2\2jk\7\6\2\2k\27\3\2\2")
+        buf.write(u"\2lm\t\3\2\2m\31\3\2\2\2no\t\4\2\2o\33\3\2\2\2pq\t\5")
+        buf.write(u"\2\2q\35\3\2\2\2rs\t\6\2\2s\37\3\2\2\2tu\7\24\2\2u!\3")
+        buf.write(u"\2\2\2vw\7\r\2\2w#\3\2\2\2\t+\66:@FN\\")
         return buf.getvalue()
 
 
@@ -66,41 +56,42 @@ class SpecificationGrammarParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'FEATURE_NUM'", u"';'", u"'CONTEXT_NUM'", 
-                     u"'ATTRIBUTES_NUM'", u"'DOMAIN_ATTRIBUTES'", u"'DOMAIN_CONTEXT'", 
-                     u"'INITIAL_FEATURES'", u"'INITIAL_ATTRIBUTES'", u"'['", 
-                     u"','", u"']'", u"'('", u"')'", u"'context['", u"'feature['", 
-                     u"'attribute['", u"']['", u"'and'", u"'or'", u"'xor'", 
-                     u"'not'", u"'true'", u"'false'", u"'impl'", u"'iff'", 
-                     u"'exists'", u"'forall'", u"'sum'", u"'cost'", u"'<='", 
-                     u"'='", u"'>='", u"'<'", u"'>'", u"'!='", u"'+'", u"'-'", 
-                     u"'*'" ]
+    literalNames = [ u"<INVALID>", u"'('", u"')'", u"'context['", u"']'", 
+                     u"'feature['", u"'attribute['", u"']['", u"'and'", 
+                     u"'or'", u"'xor'", u"'not'", u"'true'", u"'false'", 
+                     u"'impl'", u"'iff'", u"'min'", u"'max'", u"'abs'", 
+                     u"'<='", u"'='", u"'>='", u"'<'", u"'>'", u"'!='", 
+                     u"'+'", u"'-'", u"'*'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"AND", u"OR", u"XOR", 
-                      u"NOT", u"TRUE", u"FALSE", u"IMPL", u"IFF", u"EXISTS", 
-                      u"FORALL", u"SUM", u"COST", u"LEQ", u"EQ", u"GEQ", 
-                      u"LT", u"GT", u"NEQ", u"PLUS", u"MINUS", u"TIMES", 
+                      u"AND", u"OR", u"XOR", u"NOT", u"TRUE", u"FALSE", 
+                      u"IMPL", u"IFF", u"MIN", u"MAX", u"ABS", u"LEQ", u"EQ", 
+                      u"GEQ", u"LT", u"GT", u"NEQ", u"PLUS", u"MINUS", u"TIMES", 
                       u"ID", u"INT", u"WS" ]
 
-    RULE_data = 0
-    RULE_int_list = 1
-    RULE_constraint_list = 2
-    RULE_constraint = 3
-    RULE_expr = 4
-    RULE_atom = 5
-    RULE_op = 6
-    RULE_arithmetic_op = 7
-    RULE_bool2Op = 8
-    RULE_bool1Op = 9
-    RULE_boolFact = 10
+    RULE_preference = 0
+    RULE_constraint = 1
+    RULE_b_expr = 2
+    RULE_b_term = 3
+    RULE_b_factor = 4
+    RULE_relation = 5
+    RULE_expr = 6
+    RULE_term = 7
+    RULE_context = 8
+    RULE_feature = 9
+    RULE_attribute = 10
+    RULE_comparison_op = 11
+    RULE_boolFact = 12
+    RULE_bool_binary_op = 13
+    RULE_arith_binary_op = 14
+    RULE_arith_unary_op = 15
+    RULE_unaryOp = 16
 
-    ruleNames =  [ u"data", u"int_list", u"constraint_list", u"constraint", 
-                   u"expr", u"atom", u"op", u"arithmetic_op", u"bool2Op", 
-                   u"bool1Op", u"boolFact" ]
+    ruleNames =  [ u"preference", u"constraint", u"b_expr", u"b_term", u"b_factor", 
+                   u"relation", u"expr", u"term", u"context", u"feature", 
+                   u"attribute", u"comparison_op", u"boolFact", u"bool_binary_op", 
+                   u"arith_binary_op", u"arith_unary_op", u"unaryOp" ]
 
     EOF = Token.EOF
     T__0=1
@@ -110,40 +101,29 @@ class SpecificationGrammarParser ( Parser ):
     T__4=5
     T__5=6
     T__6=7
-    T__7=8
-    T__8=9
-    T__9=10
-    T__10=11
-    T__11=12
-    T__12=13
-    T__13=14
-    T__14=15
-    T__15=16
-    T__16=17
-    AND=18
-    OR=19
-    XOR=20
-    NOT=21
-    TRUE=22
-    FALSE=23
-    IMPL=24
-    IFF=25
-    EXISTS=26
-    FORALL=27
-    SUM=28
-    COST=29
-    LEQ=30
-    EQ=31
-    GEQ=32
-    LT=33
-    GT=34
-    NEQ=35
-    PLUS=36
-    MINUS=37
-    TIMES=38
-    ID=39
-    INT=40
-    WS=41
+    AND=8
+    OR=9
+    XOR=10
+    NOT=11
+    TRUE=12
+    FALSE=13
+    IMPL=14
+    IFF=15
+    MIN=16
+    MAX=17
+    ABS=18
+    LEQ=19
+    EQ=20
+    GEQ=21
+    LT=22
+    GT=23
+    NEQ=24
+    PLUS=25
+    MINUS=26
+    TIMES=27
+    ID=28
+    INT=29
+    WS=30
 
     def __init__(self, input):
         super(SpecificationGrammarParser, self).__init__(input)
@@ -153,259 +133,98 @@ class SpecificationGrammarParser ( Parser ):
 
 
 
-    class DataContext(ParserRuleContext):
+    class PreferenceContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.DataContext, self).__init__(parent, invokingState)
+            super(SpecificationGrammarParser.PreferenceContext, self).__init__(parent, invokingState)
             self.parser = parser
 
 
         def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_data
+            return SpecificationGrammarParser.RULE_preference
 
      
         def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.DataContext, self).copyFrom(ctx)
+            super(SpecificationGrammarParser.PreferenceContext, self).copyFrom(ctx)
 
 
 
-    class AdataContext(DataContext):
+    class ConstraintPreferenceContext(PreferenceContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.DataContext)
-            super(SpecificationGrammarParser.AdataContext, self).__init__(parser)
+        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.PreferenceContext)
+            super(SpecificationGrammarParser.ConstraintPreferenceContext, self).__init__(parser)
             self.copyFrom(ctx)
 
-        def INT(self, i=None):
-            if i is None:
-                return self.getTokens(SpecificationGrammarParser.INT)
-            else:
-                return self.getToken(SpecificationGrammarParser.INT, i)
-        def int_list(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SpecificationGrammarParser.Int_listContext)
-            else:
-                return self.getTypedRuleContext(SpecificationGrammarParser.Int_listContext,i)
-
-        def constraint_list(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.Constraint_listContext,0)
+        def constraint(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,0)
 
 
         def accept(self, visitor):
-            if hasattr(visitor, "visitAdata"):
-                return visitor.visitAdata(self)
+            if hasattr(visitor, "visitConstraintPreference"):
+                return visitor.visitConstraintPreference(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class MinMaxPreferenceContext(PreferenceContext):
+
+        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.PreferenceContext)
+            super(SpecificationGrammarParser.MinMaxPreferenceContext, self).__init__(parser)
+            self.copyFrom(ctx)
+
+        def attribute(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.AttributeContext,0)
+
+        def EOF(self):
+            return self.getToken(SpecificationGrammarParser.EOF, 0)
+        def MIN(self):
+            return self.getToken(SpecificationGrammarParser.MIN, 0)
+        def MAX(self):
+            return self.getToken(SpecificationGrammarParser.MAX, 0)
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitMinMaxPreference"):
+                return visitor.visitMinMaxPreference(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
-    def data(self):
+    def preference(self):
 
-        localctx = SpecificationGrammarParser.DataContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 0, self.RULE_data)
+        localctx = SpecificationGrammarParser.PreferenceContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 0, self.RULE_preference)
         self._la = 0 # Token type
         try:
-            localctx = SpecificationGrammarParser.AdataContext(self, localctx)
-            self.enterOuterAlt(localctx, 1)
-            self.state = 22
-            self.match(SpecificationGrammarParser.T__0)
-            self.state = 23
-            self.match(SpecificationGrammarParser.INT)
-            self.state = 24
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 25
-            self.match(SpecificationGrammarParser.T__2)
-            self.state = 26
-            self.match(SpecificationGrammarParser.INT)
-            self.state = 27
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 28
-            self.match(SpecificationGrammarParser.T__3)
-            self.state = 29
-            self.int_list()
-            self.state = 30
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 31
-            self.match(SpecificationGrammarParser.T__4)
-            self.state = 32
-            self.int_list()
-            self.state = 33
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 34
-            self.match(SpecificationGrammarParser.T__5)
-            self.state = 35
-            self.int_list()
-            self.state = 36
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 37
-            self.match(SpecificationGrammarParser.T__6)
-            self.state = 38
-            self.int_list()
-            self.state = 39
-            self.match(SpecificationGrammarParser.T__1)
-            self.state = 40
-            self.match(SpecificationGrammarParser.T__7)
             self.state = 41
-            self.int_list()
-            self.state = 44
-            _la = self._input.LA(1)
-            if _la==SpecificationGrammarParser.T__1:
-                self.state = 42
+            token = self._input.LA(1)
+            if token in [SpecificationGrammarParser.T__0, SpecificationGrammarParser.T__2, SpecificationGrammarParser.T__4, SpecificationGrammarParser.T__5, SpecificationGrammarParser.NOT, SpecificationGrammarParser.TRUE, SpecificationGrammarParser.FALSE, SpecificationGrammarParser.ABS, SpecificationGrammarParser.INT]:
+                localctx = SpecificationGrammarParser.ConstraintPreferenceContext(self, localctx)
+                self.enterOuterAlt(localctx, 1)
+                self.state = 34
+                self.constraint()
+
+            elif token in [SpecificationGrammarParser.MIN, SpecificationGrammarParser.MAX]:
+                localctx = SpecificationGrammarParser.MinMaxPreferenceContext(self, localctx)
+                self.enterOuterAlt(localctx, 2)
+                self.state = 35
+                _la = self._input.LA(1)
+                if not(_la==SpecificationGrammarParser.MIN or _la==SpecificationGrammarParser.MAX):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self.consume()
+                self.state = 36
+                self.match(SpecificationGrammarParser.T__0)
+                self.state = 37
+                self.attribute()
+                self.state = 38
                 self.match(SpecificationGrammarParser.T__1)
-                self.state = 43
-                self.constraint_list()
+                self.state = 39
+                self.match(SpecificationGrammarParser.EOF)
 
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Int_listContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.Int_listContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_int_list
-
-     
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.Int_listContext, self).copyFrom(ctx)
-
-
-
-    class AintListContext(Int_listContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.Int_listContext)
-            super(SpecificationGrammarParser.AintListContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def INT(self, i=None):
-            if i is None:
-                return self.getTokens(SpecificationGrammarParser.INT)
             else:
-                return self.getToken(SpecificationGrammarParser.INT, i)
+                raise NoViableAltException(self)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAintList"):
-                return visitor.visitAintList(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-    def int_list(self):
-
-        localctx = SpecificationGrammarParser.Int_listContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 2, self.RULE_int_list)
-        self._la = 0 # Token type
-        try:
-            localctx = SpecificationGrammarParser.AintListContext(self, localctx)
-            self.enterOuterAlt(localctx, 1)
-            self.state = 46
-            self.match(SpecificationGrammarParser.T__8)
-            self.state = 55
-            _la = self._input.LA(1)
-            if _la==SpecificationGrammarParser.INT:
-                self.state = 47
-                self.match(SpecificationGrammarParser.INT)
-                self.state = 52
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                while _la==SpecificationGrammarParser.T__9:
-                    self.state = 48
-                    self.match(SpecificationGrammarParser.T__9)
-                    self.state = 49
-                    self.match(SpecificationGrammarParser.INT)
-                    self.state = 54
-                    self._errHandler.sync(self)
-                    _la = self._input.LA(1)
-
-
-
-            self.state = 57
-            self.match(SpecificationGrammarParser.T__10)
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Constraint_listContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.Constraint_listContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_constraint_list
-
-     
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.Constraint_listContext, self).copyFrom(ctx)
-
-
-
-    class AconstraintListContext(Constraint_listContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.Constraint_listContext)
-            super(SpecificationGrammarParser.AconstraintListContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def constraint(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SpecificationGrammarParser.ConstraintContext)
-            else:
-                return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,i)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAconstraintList"):
-                return visitor.visitAconstraintList(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-    def constraint_list(self):
-
-        localctx = SpecificationGrammarParser.Constraint_listContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_constraint_list)
-        self._la = 0 # Token type
-        try:
-            localctx = SpecificationGrammarParser.AconstraintListContext(self, localctx)
-            self.enterOuterAlt(localctx, 1)
-            self.state = 59
-            self.match(SpecificationGrammarParser.T__8)
-            self.state = 68
-            _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.T__11) | (1 << SpecificationGrammarParser.T__13) | (1 << SpecificationGrammarParser.T__14) | (1 << SpecificationGrammarParser.T__15) | (1 << SpecificationGrammarParser.NOT) | (1 << SpecificationGrammarParser.TRUE) | (1 << SpecificationGrammarParser.FALSE) | (1 << SpecificationGrammarParser.MINUS) | (1 << SpecificationGrammarParser.INT))) != 0):
-                self.state = 60
-                self.constraint(0)
-                self.state = 65
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                while _la==SpecificationGrammarParser.T__9:
-                    self.state = 61
-                    self.match(SpecificationGrammarParser.T__9)
-                    self.state = 62
-                    self.constraint(0)
-                    self.state = 67
-                    self._errHandler.sync(self)
-                    _la = self._input.LA(1)
-
-
-
-            self.state = 70
-            self.match(SpecificationGrammarParser.T__10)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -420,498 +239,196 @@ class SpecificationGrammarParser ( Parser ):
             super(SpecificationGrammarParser.ConstraintContext, self).__init__(parent, invokingState)
             self.parser = parser
 
+        def b_expr(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.B_exprContext,0)
+
+
+        def EOF(self):
+            return self.getToken(SpecificationGrammarParser.EOF, 0)
 
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_constraint
 
-     
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.ConstraintContext, self).copyFrom(ctx)
-
-
-    class AconstraintBracketsContext(ConstraintContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ConstraintContext)
-            super(SpecificationGrammarParser.AconstraintBracketsContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def constraint(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,0)
-
-
         def accept(self, visitor):
-            if hasattr(visitor, "visitAconstraintBrackets"):
-                return visitor.visitAconstraintBrackets(self)
+            if hasattr(visitor, "visitConstraint"):
+                return visitor.visitConstraint(self)
             else:
                 return visitor.visitChildren(self)
 
 
-    class AconstraintBool1OpContext(ConstraintContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ConstraintContext)
-            super(SpecificationGrammarParser.AconstraintBool1OpContext, self).__init__(parser)
-            self.copyFrom(ctx)
 
-        def bool1Op(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.Bool1OpContext,0)
+    def constraint(self):
 
-        def constraint(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,0)
+        localctx = SpecificationGrammarParser.ConstraintContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_constraint)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 43
+            self.b_expr()
+            self.state = 44
+            self.match(SpecificationGrammarParser.EOF)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
 
+    class B_exprContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.B_exprContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def b_term(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SpecificationGrammarParser.B_termContext)
+            else:
+                return self.getTypedRuleContext(SpecificationGrammarParser.B_termContext,i)
+
+
+        def bool_binary_op(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SpecificationGrammarParser.Bool_binary_opContext)
+            else:
+                return self.getTypedRuleContext(SpecificationGrammarParser.Bool_binary_opContext,i)
+
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_b_expr
 
         def accept(self, visitor):
-            if hasattr(visitor, "visitAconstraintBool1Op"):
-                return visitor.visitAconstraintBool1Op(self)
+            if hasattr(visitor, "visitB_expr"):
+                return visitor.visitB_expr(self)
             else:
                 return visitor.visitChildren(self)
 
 
-    class AboolFactContext(ConstraintContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ConstraintContext)
-            super(SpecificationGrammarParser.AboolFactContext, self).__init__(parser)
-            self.copyFrom(ctx)
+
+    def b_expr(self):
+
+        localctx = SpecificationGrammarParser.B_exprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_b_expr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 46
+            self.b_term()
+            self.state = 52
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.XOR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0):
+                self.state = 47
+                self.bool_binary_op()
+                self.state = 48
+                self.b_term()
+                self.state = 54
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class B_termContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.B_termContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def b_factor(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.B_factorContext,0)
+
+
+        def unaryOp(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.UnaryOpContext,0)
+
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_b_term
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitB_term"):
+                return visitor.visitB_term(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def b_term(self):
+
+        localctx = SpecificationGrammarParser.B_termContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 6, self.RULE_b_term)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 56
+            _la = self._input.LA(1)
+            if _la==SpecificationGrammarParser.NOT:
+                self.state = 55
+                self.unaryOp()
+
+
+            self.state = 58
+            self.b_factor()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class B_factorContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.B_factorContext, self).__init__(parent, invokingState)
+            self.parser = parser
 
         def boolFact(self):
             return self.getTypedRuleContext(SpecificationGrammarParser.BoolFactContext,0)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAboolFact"):
-                return visitor.visitAboolFact(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AconstraintBool2OpContext(ConstraintContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ConstraintContext)
-            super(SpecificationGrammarParser.AconstraintBool2OpContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def constraint(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SpecificationGrammarParser.ConstraintContext)
-            else:
-                return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,i)
-
-        def bool2Op(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.Bool2OpContext,0)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAconstraintBool2Op"):
-                return visitor.visitAconstraintBool2Op(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AconstraintExpressionContext(ConstraintContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ConstraintContext)
-            super(SpecificationGrammarParser.AconstraintExpressionContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SpecificationGrammarParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,i)
-
-        def op(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.OpContext,0)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAconstraintExpression"):
-                return visitor.visitAconstraintExpression(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-    def constraint(self, _p=0):
-        _parentctx = self._ctx
-        _parentState = self.state
-        localctx = SpecificationGrammarParser.ConstraintContext(self, self._ctx, _parentState)
-        _prevctx = localctx
-        _startState = 6
-        self.enterRecursionRule(localctx, 6, self.RULE_constraint, _p)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 85
-            la_ = self._interp.adaptivePredict(self._input,5,self._ctx)
-            if la_ == 1:
-                localctx = SpecificationGrammarParser.AconstraintBool1OpContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-
-                self.state = 73
-                self.bool1Op()
-                self.state = 74
-                self.constraint(4)
-                pass
-
-            elif la_ == 2:
-                localctx = SpecificationGrammarParser.AconstraintBracketsContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 76
-                self.match(SpecificationGrammarParser.T__11)
-                self.state = 77
-                self.constraint(0)
-                self.state = 78
-                self.match(SpecificationGrammarParser.T__12)
-                pass
-
-            elif la_ == 3:
-                localctx = SpecificationGrammarParser.AconstraintExpressionContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 80
-                self.expr(0)
-                self.state = 81
-                self.op()
-                self.state = 82
-                self.expr(0)
-                pass
-
-            elif la_ == 4:
-                localctx = SpecificationGrammarParser.AboolFactContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 84
-                self.boolFact()
-                pass
-
-
-            self._ctx.stop = self._input.LT(-1)
-            self.state = 93
-            self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    if self._parseListeners is not None:
-                        self.triggerExitRuleEvent()
-                    _prevctx = localctx
-                    localctx = SpecificationGrammarParser.AconstraintBool2OpContext(self, SpecificationGrammarParser.ConstraintContext(self, _parentctx, _parentState))
-                    self.pushNewRecursionContext(localctx, _startState, self.RULE_constraint)
-                    self.state = 87
-                    if not self.precpred(self._ctx, 5):
-                        from antlr4.error.Errors import FailedPredicateException
-                        raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                    self.state = 88
-                    self.bool2Op()
-                    self.state = 89
-                    self.constraint(6) 
-                self.state = 95
-                self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.unrollRecursionContexts(_parentctx)
-        return localctx
-
-    class ExprContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.ExprContext, self).__init__(parent, invokingState)
-            self.parser = parser
+        def relation(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.RelationContext,0)
 
 
         def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_expr
-
-     
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.ExprContext, self).copyFrom(ctx)
-
-
-    class AexprArithmeticContext(ExprContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ExprContext)
-            super(SpecificationGrammarParser.AexprArithmeticContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self, i=None):
-            if i is None:
-                return self.getTypedRuleContexts(SpecificationGrammarParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,i)
-
-        def arithmetic_op(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.Arithmetic_opContext,0)
-
+            return SpecificationGrammarParser.RULE_b_factor
 
         def accept(self, visitor):
-            if hasattr(visitor, "visitAexprArithmetic"):
-                return visitor.visitAexprArithmetic(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AexprMinusContext(ExprContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ExprContext)
-            super(SpecificationGrammarParser.AexprMinusContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def MINUS(self):
-            return self.getToken(SpecificationGrammarParser.MINUS, 0)
-        def expr(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,0)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAexprMinus"):
-                return visitor.visitAexprMinus(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AexprBracketsContext(ExprContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ExprContext)
-            super(SpecificationGrammarParser.AexprBracketsContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,0)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAexprBrackets"):
-                return visitor.visitAexprBrackets(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AexprIntContext(ExprContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ExprContext)
-            super(SpecificationGrammarParser.AexprIntContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def INT(self):
-            return self.getToken(SpecificationGrammarParser.INT, 0)
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAexprInt"):
-                return visitor.visitAexprInt(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AexprIdContext(ExprContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.ExprContext)
-            super(SpecificationGrammarParser.AexprIdContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def atom(self):
-            return self.getTypedRuleContext(SpecificationGrammarParser.AtomContext,0)
-
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAexprId"):
-                return visitor.visitAexprId(self)
+            if hasattr(visitor, "visitB_factor"):
+                return visitor.visitB_factor(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
-    def expr(self, _p=0):
-        _parentctx = self._ctx
-        _parentState = self.state
-        localctx = SpecificationGrammarParser.ExprContext(self, self._ctx, _parentState)
-        _prevctx = localctx
-        _startState = 8
-        self.enterRecursionRule(localctx, 8, self.RULE_expr, _p)
+
+    def b_factor(self):
+
+        localctx = SpecificationGrammarParser.B_factorContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 8, self.RULE_b_factor)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 105
+            self.state = 62
             token = self._input.LA(1)
-            if token in [SpecificationGrammarParser.MINUS]:
-                localctx = SpecificationGrammarParser.AexprMinusContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-
-                self.state = 97
-                self.match(SpecificationGrammarParser.MINUS)
-                self.state = 98
-                self.expr(3)
-
-            elif token in [SpecificationGrammarParser.T__11]:
-                localctx = SpecificationGrammarParser.AexprBracketsContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 99
-                self.match(SpecificationGrammarParser.T__11)
-                self.state = 100
-                self.expr(0)
-                self.state = 101
-                self.match(SpecificationGrammarParser.T__12)
-
-            elif token in [SpecificationGrammarParser.INT]:
-                localctx = SpecificationGrammarParser.AexprIntContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 103
-                self.match(SpecificationGrammarParser.INT)
-
-            elif token in [SpecificationGrammarParser.T__13, SpecificationGrammarParser.T__14, SpecificationGrammarParser.T__15]:
-                localctx = SpecificationGrammarParser.AexprIdContext(self, localctx)
-                self._ctx = localctx
-                _prevctx = localctx
-                self.state = 104
-                self.atom()
-
-            else:
-                raise NoViableAltException(self)
-
-            self._ctx.stop = self._input.LT(-1)
-            self.state = 113
-            self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    if self._parseListeners is not None:
-                        self.triggerExitRuleEvent()
-                    _prevctx = localctx
-                    localctx = SpecificationGrammarParser.AexprArithmeticContext(self, SpecificationGrammarParser.ExprContext(self, _parentctx, _parentState))
-                    self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                    self.state = 107
-                    if not self.precpred(self._ctx, 4):
-                        from antlr4.error.Errors import FailedPredicateException
-                        raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                    self.state = 108
-                    self.arithmetic_op()
-                    self.state = 109
-                    self.expr(5) 
-                self.state = 115
-                self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.unrollRecursionContexts(_parentctx)
-        return localctx
-
-    class AtomContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.AtomContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_atom
-
-     
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.AtomContext, self).copyFrom(ctx)
-
-
-
-    class AatomContexContext(AtomContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.AtomContext)
-            super(SpecificationGrammarParser.AatomContexContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def INT(self):
-            return self.getToken(SpecificationGrammarParser.INT, 0)
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAatomContex"):
-                return visitor.visitAatomContex(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AatomFeatureContext(AtomContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.AtomContext)
-            super(SpecificationGrammarParser.AatomFeatureContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def INT(self):
-            return self.getToken(SpecificationGrammarParser.INT, 0)
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAatomFeature"):
-                return visitor.visitAatomFeature(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AatomAttributeContext(AtomContext):
-
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.AtomContext)
-            super(SpecificationGrammarParser.AatomAttributeContext, self).__init__(parser)
-            self.copyFrom(ctx)
-
-        def INT(self, i=None):
-            if i is None:
-                return self.getTokens(SpecificationGrammarParser.INT)
-            else:
-                return self.getToken(SpecificationGrammarParser.INT, i)
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitAatomAttribute"):
-                return visitor.visitAatomAttribute(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-    def atom(self):
-
-        localctx = SpecificationGrammarParser.AtomContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_atom)
-        try:
-            self.state = 127
-            token = self._input.LA(1)
-            if token in [SpecificationGrammarParser.T__13]:
-                localctx = SpecificationGrammarParser.AatomContexContext(self, localctx)
+            if token in [SpecificationGrammarParser.TRUE, SpecificationGrammarParser.FALSE]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 116
-                self.match(SpecificationGrammarParser.T__13)
-                self.state = 117
-                self.match(SpecificationGrammarParser.INT)
-                self.state = 118
-                self.match(SpecificationGrammarParser.T__10)
+                self.state = 60
+                self.boolFact()
 
-            elif token in [SpecificationGrammarParser.T__14]:
-                localctx = SpecificationGrammarParser.AatomFeatureContext(self, localctx)
+            elif token in [SpecificationGrammarParser.T__0, SpecificationGrammarParser.T__2, SpecificationGrammarParser.T__4, SpecificationGrammarParser.T__5, SpecificationGrammarParser.ABS, SpecificationGrammarParser.INT]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 119
-                self.match(SpecificationGrammarParser.T__14)
-                self.state = 120
-                self.match(SpecificationGrammarParser.INT)
-                self.state = 121
-                self.match(SpecificationGrammarParser.T__10)
-
-            elif token in [SpecificationGrammarParser.T__15]:
-                localctx = SpecificationGrammarParser.AatomAttributeContext(self, localctx)
-                self.enterOuterAlt(localctx, 3)
-                self.state = 122
-                self.match(SpecificationGrammarParser.T__15)
-                self.state = 123
-                self.match(SpecificationGrammarParser.INT)
-                self.state = 124
-                self.match(SpecificationGrammarParser.T__16)
-                self.state = 125
-                self.match(SpecificationGrammarParser.INT)
-                self.state = 126
-                self.match(SpecificationGrammarParser.T__10)
+                self.state = 61
+                self.relation()
 
             else:
                 raise NoViableAltException(self)
@@ -924,10 +441,355 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class OpContext(ParserRuleContext):
+    class RelationContext(ParserRuleContext):
 
         def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.OpContext, self).__init__(parent, invokingState)
+            super(SpecificationGrammarParser.RelationContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def expr(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SpecificationGrammarParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,i)
+
+
+        def comparison_op(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.Comparison_opContext,0)
+
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_relation
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitRelation"):
+                return visitor.visitRelation(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def relation(self):
+
+        localctx = SpecificationGrammarParser.RelationContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_relation)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 64
+            self.expr()
+            self.state = 68
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.LEQ) | (1 << SpecificationGrammarParser.EQ) | (1 << SpecificationGrammarParser.GEQ) | (1 << SpecificationGrammarParser.LT) | (1 << SpecificationGrammarParser.GT) | (1 << SpecificationGrammarParser.NEQ))) != 0):
+                self.state = 65
+                self.comparison_op()
+                self.state = 66
+                self.expr()
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class ExprContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.ExprContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def term(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SpecificationGrammarParser.TermContext)
+            else:
+                return self.getTypedRuleContext(SpecificationGrammarParser.TermContext,i)
+
+
+        def arith_binary_op(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(SpecificationGrammarParser.Arith_binary_opContext)
+            else:
+                return self.getTypedRuleContext(SpecificationGrammarParser.Arith_binary_opContext,i)
+
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_expr
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitExpr"):
+                return visitor.visitExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def expr(self):
+
+        localctx = SpecificationGrammarParser.ExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_expr)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 70
+            self.term()
+            self.state = 76
+            self._errHandler.sync(self)
+            _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
+                    self.state = 71
+                    self.arith_binary_op()
+                    self.state = 72
+                    self.term() 
+                self.state = 78
+                self._errHandler.sync(self)
+                _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class TermContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.TermContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def INT(self):
+            return self.getToken(SpecificationGrammarParser.INT, 0)
+
+        def context(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.ContextContext,0)
+
+
+        def feature(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.FeatureContext,0)
+
+
+        def attribute(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.AttributeContext,0)
+
+
+        def arith_unary_op(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.Arith_unary_opContext,0)
+
+
+        def expr(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.ExprContext,0)
+
+
+        def b_expr(self):
+            return self.getTypedRuleContext(SpecificationGrammarParser.B_exprContext,0)
+
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_term
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitTerm"):
+                return visitor.visitTerm(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def term(self):
+
+        localctx = SpecificationGrammarParser.TermContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_term)
+        try:
+            self.state = 90
+            token = self._input.LA(1)
+            if token in [SpecificationGrammarParser.INT]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 79
+                self.match(SpecificationGrammarParser.INT)
+
+            elif token in [SpecificationGrammarParser.T__2]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 80
+                self.context()
+
+            elif token in [SpecificationGrammarParser.T__4]:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 81
+                self.feature()
+
+            elif token in [SpecificationGrammarParser.T__5]:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 82
+                self.attribute()
+
+            elif token in [SpecificationGrammarParser.ABS]:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 83
+                self.arith_unary_op()
+                self.state = 84
+                self.expr()
+
+            elif token in [SpecificationGrammarParser.T__0]:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 86
+                self.match(SpecificationGrammarParser.T__0)
+                self.state = 87
+                self.b_expr()
+                self.state = 88
+                self.match(SpecificationGrammarParser.T__1)
+
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class ContextContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.ContextContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def INT(self):
+            return self.getToken(SpecificationGrammarParser.INT, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_context
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitContext"):
+                return visitor.visitContext(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def context(self):
+
+        localctx = SpecificationGrammarParser.ContextContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 16, self.RULE_context)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 92
+            self.match(SpecificationGrammarParser.T__2)
+            self.state = 93
+            self.match(SpecificationGrammarParser.INT)
+            self.state = 94
+            self.match(SpecificationGrammarParser.T__3)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class FeatureContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.FeatureContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def INT(self):
+            return self.getToken(SpecificationGrammarParser.INT, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_feature
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitFeature"):
+                return visitor.visitFeature(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def feature(self):
+
+        localctx = SpecificationGrammarParser.FeatureContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 18, self.RULE_feature)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 96
+            self.match(SpecificationGrammarParser.T__4)
+            self.state = 97
+            self.match(SpecificationGrammarParser.INT)
+            self.state = 98
+            self.match(SpecificationGrammarParser.T__3)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class AttributeContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.AttributeContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def INT(self, i=None):
+            if i is None:
+                return self.getTokens(SpecificationGrammarParser.INT)
+            else:
+                return self.getToken(SpecificationGrammarParser.INT, i)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_attribute
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitAttribute"):
+                return visitor.visitAttribute(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def attribute(self):
+
+        localctx = SpecificationGrammarParser.AttributeContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 20, self.RULE_attribute)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 100
+            self.match(SpecificationGrammarParser.T__5)
+            self.state = 101
+            self.match(SpecificationGrammarParser.INT)
+            self.state = 102
+            self.match(SpecificationGrammarParser.T__6)
+            self.state = 103
+            self.match(SpecificationGrammarParser.INT)
+            self.state = 104
+            self.match(SpecificationGrammarParser.T__3)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Comparison_opContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.Comparison_opContext, self).__init__(parent, invokingState)
             self.parser = parser
 
         def LEQ(self):
@@ -949,169 +811,30 @@ class SpecificationGrammarParser ( Parser ):
             return self.getToken(SpecificationGrammarParser.NEQ, 0)
 
         def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_op
+            return SpecificationGrammarParser.RULE_comparison_op
 
         def accept(self, visitor):
-            if hasattr(visitor, "visitOp"):
-                return visitor.visitOp(self)
+            if hasattr(visitor, "visitComparison_op"):
+                return visitor.visitComparison_op(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
 
-    def op(self):
+    def comparison_op(self):
 
-        localctx = SpecificationGrammarParser.OpContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_op)
+        localctx = SpecificationGrammarParser.Comparison_opContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 22, self.RULE_comparison_op)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 129
+            self.state = 106
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.LEQ) | (1 << SpecificationGrammarParser.EQ) | (1 << SpecificationGrammarParser.GEQ) | (1 << SpecificationGrammarParser.LT) | (1 << SpecificationGrammarParser.GT) | (1 << SpecificationGrammarParser.NEQ))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self.consume()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Arithmetic_opContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.Arithmetic_opContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def PLUS(self):
-            return self.getToken(SpecificationGrammarParser.PLUS, 0)
-
-        def MINUS(self):
-            return self.getToken(SpecificationGrammarParser.MINUS, 0)
-
-        def TIMES(self):
-            return self.getToken(SpecificationGrammarParser.TIMES, 0)
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_arithmetic_op
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitArithmetic_op"):
-                return visitor.visitArithmetic_op(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def arithmetic_op(self):
-
-        localctx = SpecificationGrammarParser.Arithmetic_opContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_arithmetic_op)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 131
-            _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.PLUS) | (1 << SpecificationGrammarParser.MINUS) | (1 << SpecificationGrammarParser.TIMES))) != 0)):
-                self._errHandler.recoverInline(self)
-            else:
-                self.consume()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Bool2OpContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.Bool2OpContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def AND(self):
-            return self.getToken(SpecificationGrammarParser.AND, 0)
-
-        def OR(self):
-            return self.getToken(SpecificationGrammarParser.OR, 0)
-
-        def IMPL(self):
-            return self.getToken(SpecificationGrammarParser.IMPL, 0)
-
-        def IFF(self):
-            return self.getToken(SpecificationGrammarParser.IFF, 0)
-
-        def XOR(self):
-            return self.getToken(SpecificationGrammarParser.XOR, 0)
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_bool2Op
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBool2Op"):
-                return visitor.visitBool2Op(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def bool2Op(self):
-
-        localctx = SpecificationGrammarParser.Bool2OpContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_bool2Op)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 133
-            _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.XOR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0)):
-                self._errHandler.recoverInline(self)
-            else:
-                self.consume()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-    class Bool1OpContext(ParserRuleContext):
-
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.Bool1OpContext, self).__init__(parent, invokingState)
-            self.parser = parser
-
-        def NOT(self):
-            return self.getToken(SpecificationGrammarParser.NOT, 0)
-
-        def getRuleIndex(self):
-            return SpecificationGrammarParser.RULE_bool1Op
-
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBool1Op"):
-                return visitor.visitBool1Op(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def bool1Op(self):
-
-        localctx = SpecificationGrammarParser.Bool1OpContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 18, self.RULE_bool1Op)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 135
-            self.match(SpecificationGrammarParser.NOT)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1147,11 +870,11 @@ class SpecificationGrammarParser ( Parser ):
     def boolFact(self):
 
         localctx = SpecificationGrammarParser.BoolFactContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 20, self.RULE_boolFact)
+        self.enterRule(localctx, 24, self.RULE_boolFact)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 137
+            self.state = 108
             _la = self._input.LA(1)
             if not(_la==SpecificationGrammarParser.TRUE or _la==SpecificationGrammarParser.FALSE):
                 self._errHandler.recoverInline(self)
@@ -1165,28 +888,182 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+    class Bool_binary_opContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.Bool_binary_opContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def AND(self):
+            return self.getToken(SpecificationGrammarParser.AND, 0)
+
+        def OR(self):
+            return self.getToken(SpecificationGrammarParser.OR, 0)
+
+        def IMPL(self):
+            return self.getToken(SpecificationGrammarParser.IMPL, 0)
+
+        def IFF(self):
+            return self.getToken(SpecificationGrammarParser.IFF, 0)
+
+        def XOR(self):
+            return self.getToken(SpecificationGrammarParser.XOR, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_bool_binary_op
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitBool_binary_op"):
+                return visitor.visitBool_binary_op(self)
+            else:
+                return visitor.visitChildren(self)
 
 
-    def sempred(self, localctx, ruleIndex, predIndex):
-        if self._predicates == None:
-            self._predicates = dict()
-        self._predicates[3] = self.constraint_sempred
-        self._predicates[4] = self.expr_sempred
-        pred = self._predicates.get(ruleIndex, None)
-        if pred is None:
-            raise Exception("No predicate with index:" + str(ruleIndex))
-        else:
-            return pred(localctx, predIndex)
 
-    def constraint_sempred(self, localctx, predIndex):
-            if predIndex == 0:
-                return self.precpred(self._ctx, 5)
-         
 
-    def expr_sempred(self, localctx, predIndex):
-            if predIndex == 1:
-                return self.precpred(self._ctx, 4)
-         
+    def bool_binary_op(self):
+
+        localctx = SpecificationGrammarParser.Bool_binary_opContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 26, self.RULE_bool_binary_op)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 110
+            _la = self._input.LA(1)
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.XOR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0)):
+                self._errHandler.recoverInline(self)
+            else:
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Arith_binary_opContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.Arith_binary_opContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def PLUS(self):
+            return self.getToken(SpecificationGrammarParser.PLUS, 0)
+
+        def MINUS(self):
+            return self.getToken(SpecificationGrammarParser.MINUS, 0)
+
+        def TIMES(self):
+            return self.getToken(SpecificationGrammarParser.TIMES, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_arith_binary_op
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitArith_binary_op"):
+                return visitor.visitArith_binary_op(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def arith_binary_op(self):
+
+        localctx = SpecificationGrammarParser.Arith_binary_opContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 28, self.RULE_arith_binary_op)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 112
+            _la = self._input.LA(1)
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.PLUS) | (1 << SpecificationGrammarParser.MINUS) | (1 << SpecificationGrammarParser.TIMES))) != 0)):
+                self._errHandler.recoverInline(self)
+            else:
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class Arith_unary_opContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.Arith_unary_opContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def ABS(self):
+            return self.getToken(SpecificationGrammarParser.ABS, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_arith_unary_op
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitArith_unary_op"):
+                return visitor.visitArith_unary_op(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def arith_unary_op(self):
+
+        localctx = SpecificationGrammarParser.Arith_unary_opContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 30, self.RULE_arith_unary_op)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 114
+            self.match(SpecificationGrammarParser.ABS)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+    class UnaryOpContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(SpecificationGrammarParser.UnaryOpContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def NOT(self):
+            return self.getToken(SpecificationGrammarParser.NOT, 0)
+
+        def getRuleIndex(self):
+            return SpecificationGrammarParser.RULE_unaryOp
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitUnaryOp"):
+                return visitor.visitUnaryOp(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def unaryOp(self):
+
+        localctx = SpecificationGrammarParser.UnaryOpContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 32, self.RULE_unaryOp)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 116
+            self.match(SpecificationGrammarParser.NOT)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
 
 
 

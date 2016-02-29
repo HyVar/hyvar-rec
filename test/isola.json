@@ -1,0 +1,106 @@
+{  
+  "amountOfFeatures":21,
+  "amountOfContexts":3,
+  "attributesPerFeature":[  
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "attributeDomains":[  
+    {  
+      "min":0,
+      "max":300
+    }
+  ],
+  "contextDomains":[  
+    {  
+      "min":0,
+      "max":1
+    },
+    {  
+      "min":0,
+      "max":1
+    },
+    {  
+      "min":0,
+      "max":100
+    }
+  ],
+  "configuration":{  
+    "selectedFeatures":[  
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "attributeValues":[  
+      200
+    ],
+		"contextValues": [0,0,0]
+  },
+  "constraints":[  
+    "feature[0] = 1",
+    "feature[0] = 1 impl (feature[1] = 1 and feature[2] = 1)",
+    "(feature[13] = 1 or feature[14] = 1 or feature[15] = 1) impl feature[1] = 1",
+    "feature[1] = 1 impl (feature[13] = 1 xor feature[14] = 1 xor feature[15] = 1)",
+    "(feature[16] = 1 or feature[17] = 1) impl feature[2] = 1",
+    "feature[2] = 1 impl (feature[16] = 1 xor feature[17] = 1)",
+    "(feature[18] = 1 or feature[19] = 1 or feature[20] = 1) impl feature[12] = 1",
+    "feature[12] = 1 impl (feature[18] = 1 xor feature[19] = 1 xor feature[20] = 1)",
+    "feature[4] = (feature[5] + feature[6])",
+    "feature[8] = (feature[9] + feature[10] + feature[11])",
+    "feature[13] = 1 impl feature[17] = 1",
+    "feature[7] = 1 impl feature[11] = 1",
+    "feature[6] = 1 impl feature[11] = 1",
+    "feature[3] = 1 impl (context[0] =  1  impl attribute[3][0] <=  120 )",
+    "feature[3] = 1 impl (context[1] =  1  impl attribute[3][0] <=  80 )",
+    "feature[14] = 1 impl context[2] <  50 ",
+    "feature[15] = 1 impl context[2] <  50 ",
+    "feature[19] = 1 impl context[2] <  50 ",
+    "feature[20] = 1 impl context[2] <  50 ",
+    "feature[16] = 1 impl context[2] <  50 "
+  ],
+  "preferences":[  
+    "feature[17] = 1",
+    "feature[15] = 1 and feature[20] = 1 and feature[16] = 1",
+    "feature[11] = 1",
+    "feature[3] = 1 impl feature[4] = 1",
+    "feature[4] = 0",
+    "max(attribute[3][0])"
+  ]
+}

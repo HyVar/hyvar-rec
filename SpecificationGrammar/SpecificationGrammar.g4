@@ -2,49 +2,44 @@ grammar SpecificationGrammar;
 
 // To generate files run antlr4 -Dlanguage=Python2 -visitor -no-listener
 
-data: 
-  'FEATURE_NUM' INT ';'
-  'CONTEXT_NUM' INT ';'
-  'ATTRIBUTES_NUM' int_list ';'
-  'DOMAIN_ATTRIBUTES' int_list ';'
-  'DOMAIN_CONTEXT' int_list ';'
-  'INITIAL_FEATURES' int_list ';'
-  'INITIAL_ATTRIBUTES' int_list
-  ( ';' constraint_list )?                       # Adata;
-
-int_list: 
-  '[' ( INT ( ',' INT)* )? ']'           # AintList ;
+preference:
+  constraint                          #constraintPreference |
+  (MIN | MAX) '(' attribute ')' EOF   #minMaxPreference;
  
-constraint_list:  
-  '[' ( constraint ( ',' constraint)* )? ']'           # AconstraintList ;
-
-constraint: 
-  constraint bool2Op constraint     # AconstraintBool2Op |
-  bool1Op constraint                # AconstraintBool1Op |
-  '(' constraint ')'                # AconstraintBrackets |
-  expr op expr                      # AconstraintExpression  |
-  boolFact                          # AboolFact  ;
-
-expr :
-  '('expr ')'                     # AexprBrackets |
-  expr arithmetic_op expr					# AexprArithmetic |
-  MINUS expr                      # AexprMinus |
-  INT                             # AexprInt |
-  atom                              # AexprId ;
-
-atom :
-  'context[' INT ']'               # AatomContex |
-  'feature[' INT ']'              # AatomFeature |
-  'attribute[' INT '][' INT ']'   # AatomAttribute ;
  
+constraint : b_expr EOF;
 
-op : LEQ | EQ | GEQ | LT | GT | NEQ ;
+b_expr : b_term (bool_binary_op b_term )* ;
 
-arithmetic_op : PLUS | MINUS | TIMES ;
+b_term : (unaryOp)? b_factor ;
 
-bool2Op : AND | OR | IMPL | IFF | XOR;
-bool1Op : NOT;
+b_factor : boolFact | relation ; 
+
+relation : expr (comparison_op expr)? ;
+
+expr : term (arith_binary_op term)* ;
+
+term :
+  INT                       |
+  context                   |
+  feature                   |
+  attribute                 | 
+  arith_unary_op expr       |  
+  '(' b_expr ')'            ;
+
+context : 'context[' INT ']';
+
+feature : 'feature[' INT ']';
+
+attribute : 'attribute[' INT '][' INT ']';
+
+comparison_op : LEQ | EQ | GEQ | LT | GT | NEQ ;
 boolFact : TRUE | FALSE;
+bool_binary_op : AND | OR | IMPL | IFF | XOR;
+arith_binary_op : PLUS | MINUS | TIMES ;
+arith_unary_op : ABS ;
+unaryOp : NOT;
+
 
 AND : 'and';
 OR : 'or';
@@ -54,10 +49,9 @@ TRUE : 'true';
 FALSE : 'false';
 IMPL: 'impl';
 IFF: 'iff';
-EXISTS: 'exists';
-FORALL: 'forall';
-SUM: 'sum';
-COST: 'cost';
+MIN: 'min';
+MAX: 'max';
+ABS: 'abs';
 
 LEQ : '<=';
 EQ : '=';
@@ -69,7 +63,6 @@ NEQ : '!=';
 PLUS : '+';
 MINUS : '-';
 TIMES : '*';
-
       
 ID : [a-zA-Z_][a-zA-Z0-9_]* ;    // match letters, numbers, underscore
 INT : [-]?[0-9]+ ;

@@ -1,10 +1,18 @@
 """
-Usage: hyvarRec.py [<options>] <input_file> <context file>
+Usage: hyvarRec.py [<options>] <input_file>
   Options:
     -o, --ofile: file where to save the output
     -v, --verbose
     -k, --keep
 """
+
+__author__ = "Jacopo Mauro"
+__copyright__ = "Copyright 2016, Jacopo Mauro"
+__license__ = "ISC"
+__version__ = "0.1"
+__maintainer__ = "Jacopo Mauro"
+__email__ = "mauro.jacopo@gmail.com"
+__status__ = "Prototype"
 
 import sys, getopt
 import os
@@ -13,6 +21,7 @@ import shutil
 import signal
 import psutil
 import time
+import json
 
 import settings
 from solver import Solver
@@ -83,76 +92,102 @@ def clean():
         os.remove(f)
 
 
-def read_context(context_file):
-  ls = []
-  with open(context_file, 'r') as f:
-    for i in f.readlines():
-      try:
-        ls.append(int(i))
-      except ValueError:
-        pass
-  return ls
+def read_json(json_file): 
+  json_data = open(json_file)
+  data = json.load(json_data)
+  json_data.close()
+  return data
       
 
-def generate_dzn(parameters, constraints, init_context, dzn_file):
- 
+def generate_dzn(data, dzn_file):
+  """
+  This procedure generates the dzn file to be used with the mzn program
+  """
   with open(dzn_file, 'w') as f:
     
     # compute max and min of domains
     max_int = settings.MAX_INT
     min_int = settings.MIN_INT
     
-    for i in parameters['DOMAIN_ATTRIBUTES']:
-      if i > max_int:
-        max_int = i
-      if i < min_int:
-        min_int = i
+    for i in data["attributeDomains"]:
+      if i["max"] > max_int:
+        max_int = i["max"]
+      if i["min"] < min_int:
+        min_int = i["min"]
   
-    for i in parameters['DOMAIN_CONTEXT']:
-      if i > max_int:
-        max_int = i
-      if i < min_int:
-        min_int = i
+    for i in data["contextDomains"]:
+      if i["max"] > max_int:
+        max_int = i["max"]
+      if i["min"] < min_int:
+        min_int = i["min"]
    
     f.write("MAX_INT = " + str(max_int) + ";\n")
     f.write("MIN_INT = " + str(min_int) + ";\n")
     
     # set the number of features, context, and attributes
     
-    f.write("feats = 1.." + str(parameters['FEATURE_NUM']) + ";\n")
-    f.write("contexts = 1.." + str(parameters['CONTEXT_NUM']) + ";\n")
-    f.write("attrs = 1.." + str(sum(parameters['ATTRIBUTES_NUM'])) + ";\n")
+    f.write("feats = 1.." + str(data["amountOfFeatures"]) + ";\n")
+    f.write("contexts = 1.." + str(data["amountOfContexts"]) + ";\n")
+    f.write("attrs = 1.." + str(sum(data["attributesPerFeature"])) + ";\n")
     
     # set the domains arrays
-    ls = map (lambda x: parameters['DOMAIN_CONTEXT'][x],
-              range(0,len(parameters['DOMAIN_CONTEXT']),2))
+    ls = map (lambda x: x["min"], data["contextDomains"])
     f.write("context_min = " + str(ls) + ";\n")
     
-    ls = map (lambda x: parameters['DOMAIN_CONTEXT'][x+1],
-              range(0,len(parameters['DOMAIN_CONTEXT']),2))
+    ls = map (lambda x: x["max"], data["contextDomains"])
     f.write("context_max = " + str(ls) + ";\n")
     
-    ls = map (lambda x: parameters['DOMAIN_ATTRIBUTES'][x],
-              range(0,len(parameters['DOMAIN_ATTRIBUTES']),2))
+    ls = map (lambda x: x["min"], data["attributeDomains"])
     f.write("attr_min = " + str(ls) + ";\n")
 
-    ls = map (lambda x: parameters['DOMAIN_ATTRIBUTES'][x+1],
-              range(0,len(parameters['DOMAIN_ATTRIBUTES']),2))
+    ls = map (lambda x: x["max"], data["attributeDomains"])
     f.write("attr_max = " + str(ls) + ";\n")
     
     # set the initial value arrays
-    f.write("init_feat = " + str(parameters['INITIAL_FEATURES']) + ";\n")
-    f.write("init_attr = " + str(parameters['INITIAL_ATTRIBUTES']) + ";\n")
-    f.write("init_context = " + str(init_context) + ";\n")
+    f.write("init_feat = " + str(data["configuration"]["selectedFeatures"]) + ";\n")
+    f.write("init_attr = " + str(data["configuration"]["attributeValues"]) + ";\n")
+    f.write("init_context = " + str(data["configuration"]["contextValues"]) + ";\n")
 
 
-def print_solution(buf,out):  
-  if buf.startswith("%VALID") or buf.startswith("%RECOMPUTING"):
-    out.write(buf)
-    out.write("----------\n")
-  else:
-    out.write(buf)
+def generata_mzn(constraints, preferences, mzn_file):
+  """
+  This procedure adds the constraints and the preferences at the end of the mzn file
+  """
+  with open(mzn_file, 'a') as outfile:
+    for i in constraints:
+      outfile.write("constraint " + i + ";\n") 
     
+    outfile.write("array [1.." + str(len(preferences) + 2) + "] of var int: obj_array;\n")
+    counter = 1
+    for i in preferences:
+      outfile.write("constraint obj_array[" + str(counter) + "] = " + i + ";\n")
+      counter += 1
+    outfile.write("constraint obj_array[" + str(counter) + "] = sum(f in feats) (diff_feat[f]);\n")
+    counter += 1
+    outfile.write("constraint obj_array[" + str(counter) + "] = sum(a in attrs) (diff_attr[a]);\n")
+
+
+def get_json_solution(buf):
+  sol = ""
+  ls = buf.split("\n")
+  # if there is a solution print it in json format
+  # solution looks like
+  # features = [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]
+  # attributes = [200]
+  # %OBJVAR [0, 0, 0, 1, 1, 200, 0, 0] 
+  if len(ls) > 1:
+    sol = "{"
+    for line in ls:
+      if line.startswith("features ="):
+        sol += line. replace('features =','"selectedFeatures":') + ","
+      if line.startswith("attributes ="):
+        sol += line. replace('attributes =','"attributeValues":')
+    sol += "}"
+  json_sol = json.loads(sol)
+  json_sol["optimality"] = 0
+  return json_sol
+    
+
 def main(argv):
   """Main procedure """   
   output_file = ""
@@ -176,13 +211,12 @@ def main(argv):
       log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
       log.info("Verbose output.")
   
-  if len(args) != 2:
-    print "2 arguments are required"
+  if len(args) != 1:
+    print "one arguments is required"
     usage()
     sys.exit(1)
     
   input_file = args[0]
-  contex_file = args[1]
   out_stream = sys.stdout
   if output_file:
     out_stream = open(output_file, "w") 
@@ -190,7 +224,6 @@ def main(argv):
   script_directory = os.path.dirname(os.path.realpath(__file__))
     
   input_file = os.path.abspath(input_file)
-  contex_file = os.path.abspath(contex_file)
   
   pid = str(os.getpgid(0))
   mzn_file = "/tmp/" + pid + ".mzn"
@@ -199,34 +232,38 @@ def main(argv):
   global TMP_FILES
   TMP_FILES = [ mzn_file , dzn_file ]
  
-  log.info("Processing specification")
-  try:
-    parameters, constraints = SpecTranslator.translate_specification(input_file)
-  except SpecTranslator.SpecificationParsingException as e:
-    log.critical("Parsing of the specification failed: " + e.value)
-    log.critical("Exiting")
-    sys.exit(1)
-  
-  log.debug("****Parameters****")
-  log.debug(str(parameters))
+  constraints = []
+  preferences = []
+  log.info("Reading input file")
+  data = read_json(input_file)
+  log.info("Processing Constraints")
+  for i in data["constraints"]:
+    try:
+      constraints.append(SpecTranslator.translate_constraint(i,data))   
+    except Exception as e:
+      log.critical("Parsing failed while processing " + i + ": " + str(e))
+      log.critical("Exiting")
+      sys.exit(1)
   log.debug("****Constraints****")
   log.debug(str(constraints))
-  
-  log.info("Reading context file")
-  context = read_context(contex_file)
-  log.debug("****Context****")
-  log.debug(str(context))
-
+  log.info("Processing Preferences")
+  for i in data["preferences"]:
+    try:
+      preferences.append(SpecTranslator.translate_preference(i,data))   
+    except Exception as e:
+      log.critical("Parsing failed while processing " + i + ": " + str(e))
+      log.critical("Exiting")
+      sys.exit(1)
+  log.debug("****Preferences****")
+  log.debug(str(preferences))
   
   log.info("Generating dzn file")
-  generate_dzn(parameters, constraints, context, dzn_file)
+  generate_dzn(data, dzn_file)
   
-  log.info("Copy mzn file and add FM constraints")
+  log.info("Copy mzn file and add FM constraints and preferences")
   shutil.copyfile(script_directory + "/minizinc_prog.mzn", mzn_file)
-  with open(mzn_file, 'a') as outfile:
-    for i in constraints:
-      outfile.write("constraint " + i + ";\n") 
-       
+  generata_mzn(constraints, preferences, mzn_file)
+         
   log.info("Running solvers")
   
   global RUNNING_SOLVERS
@@ -237,18 +274,24 @@ def main(argv):
     i.run()
    
   ended = False
+  json_sol = ""
   while not ended and RUNNING_SOLVERS:
     time.sleep(settings.SLEEP_TIME) 
     for i in RUNNING_SOLVERS:
       sol = i.get_solution()
       if sol != "":
-        # TODO print solution only if it is better
-        print_solution(sol, out_stream)
+        json_sol = get_json_solution(sol)
+        json.dump(json_sol,out_stream)
+        out_stream.write("\n")
+        out_stream.flush()
       if i.is_ended():
+        json_sol["optimality"] = 1
+        json.dump(json_sol,out_stream)
+        out_stream.write("\n")
         log.info("Search completed by " + i.get_id())
         ended = True
-        out_stream.write("==========\n")
         continue
+    # TODO print solution only if it is better       
       if i.process.poll() is not None:
         log.info("Solver " + i.get_id() + " terminated with code " + 
                  str(i.process.returncode))
