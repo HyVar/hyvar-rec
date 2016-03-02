@@ -1,7 +1,11 @@
-/** For more information related to the use of jolie for receiving post and get
-operation please have a look at Jolie online documentation:
-http://docs.jolie-lang.org/#!documentation/web_applications/web_get_post.html
-**/
+/**
+ * Copyright (c) 2016, Jacopo Mauro. All rights reserved. 
+ * This file is licensed under the terms of the ISC License.
+ *
+ * For more information related to the use of jolie for receiving post and get
+ * operation please have a look at Jolie online documentation:
+ * http://docs.jolie-lang.org/#!documentation/web_applications/web_get_post.html
+ */
 
 
 include "console.iol"

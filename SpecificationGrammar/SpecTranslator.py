@@ -1,3 +1,15 @@
+"""
+SpecTranslator.py: program that defines the function to parse the constraints
+and preferences and translate them into a minizinc formalism
+"""
+__author__ = "Jacopo Mauro"
+__copyright__ = "Copyright 2016, Jacopo Mauro"
+__license__ = "ISC"
+__version__ = "0.1"
+__maintainer__ = "Jacopo Mauro"
+__email__ = "mauro.jacopo@gmail.com"
+__status__ = "Prototype"
+
 from antlr4 import *
 from SpecificationGrammarLexer import SpecificationGrammarLexer
 from SpecificationGrammarParser import SpecificationGrammarParser

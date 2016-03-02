@@ -1,3 +1,12 @@
+""" Module for better handling the execution of a solver """
+__author__ = "Jacopo Mauro"
+__copyright__ = "Copyright 2016, Jacopo Mauro"
+__license__ = "ISC"
+__version__ = "0.1"
+__maintainer__ = "Jacopo Mauro"
+__email__ = "mauro.jacopo@gmail.com"
+__status__ = "Prototype"
+
 from subprocess import Popen,PIPE
 import fcntl
 import settings

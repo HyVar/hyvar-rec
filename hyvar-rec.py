@@ -6,8 +6,6 @@ Usage: hyvarRec.py [<options>] <input_file>
     -k, --keep
 """
 
-# TODO: add license info 
-
 __author__ = "Jacopo Mauro"
 __copyright__ = "Copyright 2016, Jacopo Mauro"
 __license__ = "ISC"

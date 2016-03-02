@@ -1,3 +1,6 @@
+% Copyright (c) 2016, Jacopo Mauro. All rights reserved. 
+% This file is licensed under the terms of the ISC License.
+
 include "minisearch.mzn";
 
 % Please note that you will need to set the MiniZinc standard library 
