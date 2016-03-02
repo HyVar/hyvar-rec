@@ -21,9 +21,9 @@ RUN cd / && \
   wget http://www.gecode.org/download/gecode-4.4.0.tar.gz && \
   tar -zxvf gecode-4.4.0.tar.gz && \
   cd gecode-4.4.0 && \
-  ./configure --disable-examples --prefix=/solvers_exec/gecode-4.4.0 && \
+  ./configure --disable-examples --prefix=/gecode-4.4.0 && \
   make && make install && \
-  rm -rf /solvers_exec/gecode-4.4.0.tar.gz && \
+  rm -rf /gecode-4.4.0.tar.gz && \
   ###############
 	# download MiniZincIDE-2.0.11-bundle-linux-x86_64.tgz
 	###############
@@ -39,7 +39,7 @@ RUN cd / && \
 	###############
   # compile minisearch
   ###############
-	###cd /solvers_exec && \
+	###cd / && \
 	###git clone -b feature/minisearch https://github.com/MiniZinc/libminizinc.git && \
 	###cd libminizinc && \
 	###mkdir build && \
@@ -57,6 +57,10 @@ RUN cd / && \
 ENV JOLIE_HOME /usr/lib/jolie
 ENV PATH /minisearch-0.1.0b1-Linux/bin:$PATH
 ENV PATH /hyvar-rec:$PATH
+# update variables for gecode
+ENV PATH /gecode-4.4.0/bin:$PATH
+ENV LD_LIBRARY_PATH=/gecode-4.4.0/lib:$LD_LIBRARY_PATH
+
 
 EXPOSE 9001
 WORKDIR /hyvar-rec

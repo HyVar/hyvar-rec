@@ -71,11 +71,15 @@
     "attributeValues":[  
       200
     ],
-		"contextValues": [0,0,0]
+    "contextValues":[  
+      0,
+      0,
+      0
+    ]
   },
   "constraints":[  
     "feature[0] = 1",
-		"feature[0] = 1 impl (feature[1] = 1 and feature[2] = 1)",
+    "feature[0] = 1 impl (feature[1] = 1 and feature[2] = 1)",
     "(feature[13] = 1 or feature[14] = 1 or feature[15] = 1) impl feature[1] = 1",
     "feature[1] = 1 impl (feature[13] = 1 xor feature[14] = 1 xor feature[15] = 1)",
     "(feature[16] = 1 or feature[17] = 1) impl feature[2] = 1",
