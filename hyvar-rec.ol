@@ -60,6 +60,9 @@ main {
   	command_request.args[0] = "hyvar-rec.py";
 		command_request.args[1] = json_input_file;
 		exec@Exec( command_request )( output );
+		// Delete input json file
+		delete@File(json_input_file)();
+		// Print some info
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
