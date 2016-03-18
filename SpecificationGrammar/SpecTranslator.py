@@ -54,7 +54,7 @@ class MyVisitor(SpecificationGrammarVisitor):
 
 
   def visitConstraintPreference(self, ctx):
-    return "bool2int(" +ctx.getChild(0).accept(self) + ")"
+    return "(" +ctx.getChild(0).accept(self) + ")"
 
 
   def visitMinMaxPreference(self, ctx):

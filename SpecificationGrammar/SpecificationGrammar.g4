@@ -3,8 +3,8 @@ grammar SpecificationGrammar;
 // To generate files run antlr4 -Dlanguage=Python2 -visitor -no-listener
 
 preference:
-  constraint                          #constraintPreference |
-  (MIN | MAX) '(' attribute ')' EOF   #minMaxPreference;
+  constraint                                 #constraintPreference |
+  (MIN | MAX) '(' attribute ')' EOF          #minMaxPreference;
  
  
 constraint : b_expr EOF;
