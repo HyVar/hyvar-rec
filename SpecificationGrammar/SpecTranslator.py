@@ -69,7 +69,7 @@ class MyVisitor(SpecificationGrammarVisitor):
     return ctx.getChild(0).accept(self)
 
         
-  def visitContex(self, ctx):
+  def visitContext(self, ctx):
     return "context[" + str(int(ctx.getChild(1).accept(self)) + 1) + "]"
 
 

@@ -162,9 +162,9 @@ def generata_mzn(constraints, preferences, mzn_file):
     for i in preferences:
       outfile.write("constraint obj_array[" + str(counter) + "] = " + i + ";\n")
       counter += 1
-    outfile.write("constraint obj_array[" + str(counter) + "] = sum(f in feats) (diff_feat[f]);\n")
+    outfile.write("constraint obj_array[" + str(counter) + "] =  - sum(f in feats) (diff_feat[f]);\n")
     counter += 1
-    outfile.write("constraint obj_array[" + str(counter) + "] = sum(a in attrs) (diff_attr[a]);\n")
+    outfile.write("constraint obj_array[" + str(counter) + "] = - sum(a in attrs) (diff_attr[a]);\n")
 
 
 def get_json_solution(buf):
