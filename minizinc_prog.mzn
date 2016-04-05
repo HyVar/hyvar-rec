@@ -123,7 +123,14 @@ function ann: my_search(array[int] of var int: objs) = (
   endif  
 );
 
-solve search my_search(obj_array);
+solve
+	:: int_search(
+            feat ++ attr ++ context ++ diff_feat ++ diff_attr,
+            first_fail,
+            indomain_max,
+            complete
+        )
+ search my_search(obj_array);
 
 output ["features = " ++ show(feat) ++ "\n",
    "attributes = " ++ show(attr) ++ "\n",
