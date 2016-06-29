@@ -4,15 +4,18 @@ MAINTAINER Jacopo Mauro
 RUN cd / && \
 	###############
 	# install needed packages
-	###############  
+	###############
+	echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install -y cmake bison flex openjdk-7-jdk ant && \
+	apt-get install -y cmake bison flex openjdk-8-jdk ant && \
 	rm -rf /var/lib/apt/lists/* && \
+	/usr/sbin/update-java-alternatives -s java-1.8.0-openjdk-amd64 
+RUN cd / && \
 	###############
 	# install jolie
 	###############
-  git clone https://github.com/jolie/jolie.git && \
-  cd jolie && \
+	git clone https://github.com/jolie/jolie.git && \
+	cd jolie && \
   ant && ant install && \
 	###############
 	# compile gecode
