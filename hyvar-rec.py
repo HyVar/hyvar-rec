@@ -6,6 +6,7 @@ Usage: hyvarRec.py [<options>] <input_file>
     -v, --verbose: activate verbose mode
     -k, --keep: keep auxiliary files generated during the computation
     --validate: activate the validation mode to check if for all context the FM is not void
+    --explain: try to explain why a FM is void
 """
 
 __author__ = "Jacopo Mauro"
@@ -96,7 +97,7 @@ def reconfigure(
     log.info("Printing output")
     if result == z3.sat:
         model = solver.model()
-        out = {"features": [], "attributes": []}
+        out = {"result": "sat", "features": [], "attributes": []}
         for i in features:
             if model[z3.Int(i)] == z3.IntVal(1):
                 out["features"].append(i)
@@ -106,7 +107,7 @@ def reconfigure(
         json.dump(out, out_stream)
         out_stream.write("\n")
     else:
-        out_stream.write("{}\n")
+        out_stream.write('{"result": "unsat"}\n')
 
 
 def validate(
@@ -164,13 +165,73 @@ def validate(
     else:
         out_stream.write('{"result":"valid"}\n')
 
+
+def explain(
+        features,
+        initial_features,
+        contexts,
+        attributes,
+        constraints,
+        preferences,
+        data,
+        out_stream):
+    """Get the explanation of the unsat of the FM model
+    """
+    solver = z3.Solver()
+    solver.set(unsat_core=True)
+
+    log.info("Add variables")
+    for i in features:
+        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    for i in attributes.keys():
+        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
+    for i in contexts.keys():
+        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
+
+    log.info("Enforce context to be equal to initial values")
+    for i in contexts.keys():
+        solver.add(contexts[i]["initial"] == z3.Int(i))
+
+    log.info("Add constraints")
+    counter = 0
+    for i in constraints:
+        solver.assert_and_track(i, 'aux' + str(counter))
+        counter += 1
+
+    log.info("Computing reconfiguration")
+    result = solver.check()
+
+    log.info("Printing output")
+    if result == z3.sat:
+        model = solver.model()
+        out = {"result": "sat", "features": [], "attributes": []}
+        for i in features:
+            if model[z3.Int(i)] == z3.IntVal(1):
+                out["features"].append(i)
+        for i in attributes.keys():
+            if attributes[i]["feature"] in out["features"]:
+                out["attributes"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        json.dump(out, out_stream)
+        out_stream.write("\n")
+    else:
+        core = solver.unsat_core()
+        log.debug("Core: " + unicode(core))
+        out = {"result": "unsat", "constraints": []}
+        for i in range(len(constraints)):
+            if z3.Bool('aux' + str(i)) in core:
+                out["constraints"].append(data["constraints"][i])
+        json.dump(out, out_stream)
+        out_stream.write("\n")
+
+
+
 def main(argv):
     """Main procedure """
     output_file = ""
     modality = "" # default modality is to proceed with the reconfiguration
 
     try:
-        opts, args = getopt.getopt(argv, "ho:vk", ["help", "ofile=", "verbose", "keep", "validate"])
+        opts, args = getopt.getopt(argv, "ho:vk", ["help", "ofile=", "verbose", "keep", "validate", "explain"])
     except getopt.GetoptError as err:
         print str(err)
         usage()
@@ -186,6 +247,8 @@ def main(argv):
             KEEP = True
         elif opt == "--validate":
             modality = "validate"
+        elif opt == "--explain":
+            modality = "explain"
         elif opt in ("-v", "--verbose"):
             log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
             log.info("Verbose output.")
@@ -278,6 +341,9 @@ def main(argv):
     if modality == "validate":
         validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, out_stream)
+    elif modality == "explain":
+        explain(features, initial_features, contexts, attributes, constraints,
+                 preferences, data, out_stream)
     else:
         reconfigure(features, initial_features, contexts, attributes, constraints, preferences, out_stream)
 
