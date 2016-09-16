@@ -7,7 +7,7 @@ Given an existing configuration C with its features and attributes, hyvar-rec
 returns the best configuration that maximises the user preferences and is
 the most similar to the initial configuration C.
 
-hyvar-rec uses MiniZinc Search and in particular the Gecode solver to solve the 
+hyvar-rec uses the SMT solver Z3 to solve the
 optimization problems involved in the reconfiguration.
 
 ----
@@ -15,8 +15,7 @@ optimization problems involved in the reconfiguration.
 Requirement to install hyvar-rec from sources:
  - Python 2.7
  - antlr4-python2-runtime module for python
- - MiniZinc Search (http://www.minizinc.org/minisearch/)
- - psutil module
+ - Z3 (https://github.com/Z3Prover/z3)
 
 Docker Installation & Use as a Service
 ----------------------
@@ -71,20 +70,7 @@ Input Specification
 hyvar-rec requires a unique JSON file in input that formalizes the FM, the
 initial configuration, the contextual information, and the user preferences.
 All these information are encoded into a JSON object following the JSON
-schema defined in spec/hyvar_input_schema.json .
+schema defined in spec/hyvar_input_schema.json.
 
-Since hyvar-rec is an anytime solver it produces valid configurations during
-the search. In particular, after printing a valid configuration, if it
-finds another one that satisfy more user preferences this configuration is
-printed too.  Every configuration is outputted in a JSON object following
-the schema defined in spec/hyvar_output_schema.json .  After printing the
-configuration that maximize the user preferences and is
-closer to the initial configuration the tool exits.
-
-Please note that when the tool is deployed using docker and used via POST 
-requests, the output obtained is only the final optimal configuration, if any.
-If no valid solution exists for the considered problem the output of the POST
-request will be the following JSON object.
-```
-{"no_solution": 1}
-```
+The output is a JSON object following
+the schema defined in spec/hyvar_output_schema.json.
