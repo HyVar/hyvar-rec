@@ -8,14 +8,14 @@
       "type":"string"
     },
     "features":{
-      "description":"list representing which features are selected",
+      "description":"list representing which features are selected if result = sat",
       "type":"array",
       "items":{
         "type":"string"
       }
     },
     "attributes":{
-      "description":"list representing the values of the attributes",
+      "description":"list representing the values of the attributes if result = sat",
       "type":"array",
       "items":{
         "type":"object",
@@ -31,6 +31,13 @@
           "id",
           "value"
         ]
+      }
+    },
+    "constraints": {
+      "description":"list representing the constraints that causes the FM to be void",
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     }
   },

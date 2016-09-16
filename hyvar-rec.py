@@ -29,10 +29,6 @@ import SpecificationGrammar.SpecTranslator as SpecTranslator
 
 DEVNULL = open(os.devnull, 'wb')
 
-
-# log.basicConfig(filename='example.log',level=log.DEBUG)
-# log.basicConfig(level=log.DEBUG)
-
 def usage():
     """Print usage"""
     print(__doc__)
