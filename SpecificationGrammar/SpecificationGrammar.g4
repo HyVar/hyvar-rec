@@ -4,41 +4,30 @@ grammar SpecificationGrammar;
 
 preference:
   constraint                                 #constraintPreference |
-  (MIN | MAX) '(' attribute ')' EOF          #minMaxPreference;
+  (MIN | MAX) '(' 'attribute[' ID ']' ')' EOF          #minMaxPreference;
  
  
 constraint : b_expr EOF;
 
-b_expr : b_term (bool_binary_op b_term )* ;
+b_expr : b_term ( (AND | OR | IMPL | IFF | XOR) b_term )* ;
 
-b_term : (unaryOp)? b_factor ;
+b_term : (NOT)? b_factor ;
 
-b_factor : boolFact | relation ; 
+b_factor : boolFact | relation ;
 
-relation : expr (comparison_op expr)? ;
+relation : expr ((LEQ | EQ | GEQ | LT | GT | NEQ) expr)? ;
 
-expr : term (arith_binary_op term)* ;
+expr : term ((PLUS | MINUS | TIMES) term)* ;
 
 term :
-  INT                       |
-  context                   |
-  feature                   |
-  attribute                 | 
-  arith_unary_op expr       |  
-  '(' b_expr ')'            ;
+  INT                       #termInt |
+  'context[' ID ']'                 #termContext |
+  'feature[' ID ']'                  #termFeature |
+  'attribute[' ID ']'                 #termAttribute |
+  '(' b_expr ')'            #termBrackets;
 
-context : 'context[' INT ']';
 
-feature : 'feature[' INT ']';
-
-attribute : 'attribute[' INT '][' INT ']';
-
-comparison_op : LEQ | EQ | GEQ | LT | GT | NEQ ;
 boolFact : TRUE | FALSE;
-bool_binary_op : AND | OR | IMPL | IFF | XOR;
-arith_binary_op : PLUS | MINUS | TIMES ;
-arith_unary_op : ABS ;
-unaryOp : NOT;
 
 
 AND : 'and';

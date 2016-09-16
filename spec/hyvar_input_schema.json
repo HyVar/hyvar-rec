@@ -1,108 +1,129 @@
-{  
-  "$schema":"http://json-schema.org/draft-04/schema#",
-  "type":"object",
-  "properties":{  
-    "amountOfFeatures":{  
-      "description":"amount of features",
-      "type":"integer"
-    },
-    "amountOfContexts":{  
-      "description":"amount of contexts",
-      "type":"integer"
-    },
-    "attributesPerFeature":{  
-      "description":"list stating the number of attributes for array. The order of the features matter.",
-      "type":"array",
-      "items":{  
-        "type":"integer"
-      }
-    },
-    "attributeDomains":{  
-      "description":"list stating the domains of the attributes. Attributes are listed accodring to the feature order and then their attribute number.",
-      "type":"array",
-      "items":{  
-        "type":"object",
-        "properties":{  
-          "min":{  
-            "description":"minimal value that the attribute can take",
-            "type":"integer"
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
           },
-          "max":{  
-            "description":"maximal value that the attribute can take",
-            "type":"integer"
-          }
-        },
-        "additionalProperties":false
-      }
-    },
-    "contextDomains":{  
-      "description":"list stating the domains of the context. The order matters.",
-      "type":"array",
-      "items":{  
-        "type":"object",
-        "properties":{  
-          "min":{  
-            "description":"minimal value that the context can take",
-            "type":"integer"
+          "min": {
+            "type": "integer"
           },
-          "max":{  
-            "description":"maximal value that the context can take",
-            "type":"integer"
+          "max": {
+            "type": "integer"
+          },
+          "featureId": {
+            "type": "string"
           }
         },
-        "additionalProperties":false
+        "required": [
+          "id",
+          "min",
+          "max",
+          "featureId"
+        ]
       }
     },
-    "configuration":{  
-      "description":"Inital configuration and context infomration",
-      "type":"object",
-      "properties":{  
-        "selectedFeatures":{  
-          "description":"list representing wich features are selected",
-          "type":"array",
-          "items":{  
-            "type":"integer"
+    "contexts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "min": {
+            "type": "integer"
+          },
+          "max": {
+            "type": "integer"
           }
         },
-        "attributeValues":{  
-          "description":"list representing the intial values of the attributes. The values of the attributes of non selected features are set to the maximum.",
-          "type":"array",
-          "items":{  
-            "type":"integer"
+        "required": [
+          "id",
+          "min",
+          "max"
+        ]
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "selectedFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
-        "contextValues":{  
-          "description":"list representing the contextual values",
-          "type":"array",
-          "items":{  
-            "type":"integer"
+        "attribute_values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "value"
+            ]
+          }
+        },
+        "context_values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "value"
+            ]
           }
         }
       },
-      "additionalProperties":false
+      "required": [
+        "selectedFeatures",
+        "attribute_values",
+        "context_values"
+      ]
     },
-    "constraints":{  
-      "description":"constraint derived from the FM. Their grammar is defined in SpecificationGrammar.g4",
-      "type":"array",
-      "items":{  
-        "type":"string"
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "preferences":{  
-      "description":"preferences derived from the user. Their grammar is defined in SpecificationGrammar.g4",
-      "type":"array",
-      "items":{  
-        "type":"string"
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "context_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     }
   },
-  "additionalProperties":false,
-  "required":[  
-    "amountOfFeatures",
-    "amountOfContexts",
-    "attributesPerFeature",
-    "attributeDomains",
-    "contextDomains",
+  "required": [
+    "attributes",
+    "contexts",
     "configuration",
     "constraints",
     "preferences"

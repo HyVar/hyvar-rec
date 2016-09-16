@@ -45,53 +45,33 @@ class SpecificationGrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#term.
-    def visitTerm(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#termInt.
+    def visitTermInt(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#context.
-    def visitContext(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#termContext.
+    def visitTermContext(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#feature.
-    def visitFeature(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#termFeature.
+    def visitTermFeature(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#attribute.
-    def visitAttribute(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#termAttribute.
+    def visitTermAttribute(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#comparison_op.
-    def visitComparison_op(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#termBrackets.
+    def visitTermBrackets(self, ctx):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SpecificationGrammarParser#boolFact.
     def visitBoolFact(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SpecificationGrammarParser#bool_binary_op.
-    def visitBool_binary_op(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SpecificationGrammarParser#arith_binary_op.
-    def visitArith_binary_op(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SpecificationGrammarParser#arith_unary_op.
-    def visitArith_unary_op(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SpecificationGrammarParser#unaryOp.
-    def visitUnaryOp(self, ctx):
         return self.visitChildren(ctx)
 
 
