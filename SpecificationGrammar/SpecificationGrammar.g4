@@ -53,6 +53,6 @@ PLUS : '+';
 MINUS : '-';
 TIMES : '*';
 
-ID : [a-zA-Z_][a-zA-Z0-9_]* ;    // match letters, numbers, underscore
+ID : [a-zA-Z_][-a-zA-Z0-9_]* ;    // match letters, numbers, underscore
 INT : [-]?[0-9]+ ;
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
