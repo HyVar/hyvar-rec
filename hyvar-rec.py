@@ -7,6 +7,7 @@ Usage: hyvarRec.py [<options>] <input_file>
     -k, --keep: keep auxiliary files generated during the computation
     --validate: activate the validation mode to check if for all context the FM is not void
     --explain: try to explain why a FM is void
+    --check-interface: checks if the interface given as additional file is a proper interface
 """
 
 __author__ = "Jacopo Mauro"
@@ -220,14 +221,159 @@ def explain(
         out_stream.write("\n")
 
 
+def check_interface(features, contexts, attributes, constraints, contexts_constraints,
+                interface, out_stream):
+    """Check if the interface given is a proper interface
+    """
+    # handle FM contexts_constraints
+    i_features = set()
+    i_contexts = {}
+    i_attributes = {}
+    i_constraints = []
+    i_contexts_constraints = []
+
+    log.info("Processing interface attributes")
+    for i in interface["attributes"]:
+        id = re.match("attribute\[(.*)\]", i["id"]).group(1)
+        i_attributes[id] = {}
+        i_attributes[id]["min"] = i["min"]
+        i_attributes[id]["max"] = i["max"]
+        i_attributes[id]["feature"] = re.match("feature\[(.*)\]", i["featureId"]).group(1)
+        if (id not in attributes) or \
+            (attributes[id]["min"] < i_attributes[id]["min"]) or \
+            (attributes[id]["max"] > i_attributes[id]["max"]) :
+            json.dump({"result": "not_valid: attribute " + id + "does not match"}, out_stream)
+            out_stream.write("\n")
+            return None
+    log.debug(unicode(attributes))
+
+    log.info("Processing contexts")
+    for i in interface["contexts"]:
+        id = re.match("context\[(.*)\]", i["id"]).group(1)
+        i_contexts[id] = {}
+        i_contexts[id]["min"] = i["min"]
+        i_contexts[id]["max"] = i["max"]
+        if (id not in contexts) or \
+                (contexts[id]["min"] == i_contexts[id]["min"]) or \
+                (contexts[id]["max"] == i_contexts[id]["max"]):
+            json.dump({"result": "not_valid: context " + id + "does not match"}, out_stream)
+            out_stream.write("\n")
+            return None
+    log.debug(unicode(contexts))
+
+    log.info("Processing Constraints")
+    for i in interface["constraints"]:
+        try:
+            d = SpecTranslator.translate_constraint(i, interface)
+            log.debug("Find constrataint " + unicode(d))
+            i_constraints.append(d["formula"])
+            i_features.update(d["features"])
+        except Exception as e:
+            log.critical("Parsing failed while processing " + i + ": " + str(e))
+            log.critical("Exiting")
+            sys.exit(1)
+
+    log.info("Processing Context Constraints")
+    if "context_constraints" in interface:
+        for i in interface["context_constraints"]:
+            try:
+                d = SpecTranslator.translate_constraint(i, interface)
+                log.debug("Find context constraint " + unicode(d))
+                i_contexts_constraints.append(d["formula"])
+            except Exception as e:
+                log.critical("Parsing failed while processing " + i + ": " + str(e))
+                log.critical("Exiting")
+                sys.exit(1)
+
+    log.info("Checking Context Constraints Extensibility")
+    solver = z3.Solver()
+    for i in contexts.keys():
+        solver.add(contexts[i]["min"] <= z3.Int(i))
+        solver.add(z3.Int(i) <= contexts[i]["max"])
+    solver.add(z3.And(i_contexts_constraints))
+    solver.add(z3.Not(z3.And(contexts_constraints)))
+    result = solver.check()
+
+    if result == z3.sat:
+        model = solver.model()
+        out = {"result": "not_valid: context extensibility problem", "contexts": []}
+        for i in contexts.keys():
+            out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        json.dump(out, out_stream)
+        out_stream.write("\n")
+
+    solver = z3.Solver()
+
+    log.info("Add interface variables")
+    for i in i_features:
+        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    for i in i_attributes.keys():
+        solver.add(i_attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= i_attributes[i]["max"])
+    for i in i_contexts.keys():
+        solver.add(i_contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= i_contexts[i]["max"])
+
+    log.info("Add interface contexts constraints")
+    solver.add(z3.And(i_contexts_constraints))
+    solver.add(z3.And(contexts_constraints))
+
+    log.info("Add interface constraints")
+    for i in i_constraints:
+        solver.add(i)
+
+    log.info("Add FM context variables")
+    for i in contexts.keys():
+        if i not in i_contexts:
+            solver.add(contexts[i]["min"] <= z3.Int(i))
+            solver.add(z3.Int(i) <= contexts[i]["max"])
+
+    log.info("Building the FM formula")
+    formulas = []
+    for i in features:
+        if i not in i_features:
+            formulas.append(0 <= z3.Int(i))
+            formulas.append(z3.Int(i) <= 1)
+    for i in attributes.keys():
+        if i not in i_attributes:
+            formulas.append(attributes[i]["min"] <= z3.Int(i))
+            formulas.append(z3.Int(i) <= attributes[i]["max"])
+    for i in constraints:
+        formulas.append(i)
+
+    log.info("Add forall fatures and attributes not formula")
+    solver.add(z3.ForAll(
+        [z3.Int(i) for i in features if i not in i_features] +
+        [z3.Int(i) for i in attributes.keys() if i not in i_attributes.keys()],
+        z3.Not(z3.And(formulas))
+    ))
+    log.debug(solver)
+
+    log.info("Computing")
+    result = solver.check()
+    log.info("Printing output")
+
+    if result == z3.sat:
+        model = solver.model()
+        out = {"result": "not_valid", "contexts": [], "attributes": [], "features" : []}
+        for i in contexts.keys():
+            out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        for i in i_features:
+            out["features"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        for i in i_attributes.keys():
+            out["attributes"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        json.dump(out, out_stream)
+        out_stream.write("\n")
+    else:
+        out_stream.write('{"result":"valid"}\n')
+
 
 def main(argv):
     """Main procedure """
     output_file = ""
     modality = "" # default modality is to proceed with the reconfiguration
+    interface_file = ""
 
     try:
-        opts, args = getopt.getopt(argv, "ho:vk", ["help", "ofile=", "verbose", "keep", "validate", "explain"])
+        opts, args = getopt.getopt(argv, "ho:vk", ["help", "ofile=", "verbose", "keep", "validate", "explain", "check-interface="])
     except getopt.GetoptError as err:
         print str(err)
         usage()
@@ -245,6 +391,9 @@ def main(argv):
             modality = "validate"
         elif opt == "--explain":
             modality = "explain"
+        elif opt == "--check-interface":
+            modality = "check-interface"
+            interface_file = os.path.abspath(arg)
         elif opt in ("-v", "--verbose"):
             log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
             log.info("Verbose output.")
@@ -254,12 +403,10 @@ def main(argv):
         usage()
         sys.exit(1)
 
-    input_file = args[0]
+    input_file = os.path.abspath(args[0])
     out_stream = sys.stdout
     if output_file:
         out_stream = open(output_file, "w")
-
-    input_file = os.path.abspath(input_file)
 
     features = set()
     initial_features = set()
@@ -340,6 +487,9 @@ def main(argv):
     elif modality == "explain":
         explain(features, initial_features, contexts, attributes, constraints,
                  preferences, data, out_stream)
+    elif modality == "check-interface":
+        check_interface(features, contexts, attributes, constraints, contexts_constraints,
+                        read_json(interface_file), out_stream)
     else:
         reconfigure(features, initial_features, contexts, attributes, constraints, preferences, out_stream)
 
