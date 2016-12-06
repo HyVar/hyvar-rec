@@ -79,6 +79,7 @@ main {
 			output_string = "{\"no_solution\": 1}"
 		};
 		// Convert response into json
+		output_string.strictEncoding = true;
 		getJsonValue@JsonUtils(output_string)(response)
 	} ] {nullProcess}
 
@@ -117,6 +118,7 @@ main {
 			output_string = "{\"no_solution\": 1}"
 		};
 		// Convert response into json
+		output_string.strictEncoding = true;
 		getJsonValue@JsonUtils(output_string)(response)
 	} ] {nullProcess}
 
@@ -155,6 +157,7 @@ main {
 			output_string = "{\"no_solution\": 1}"
 		};
 		// Convert response into json
+		output_string.strictEncoding = true;
 		getJsonValue@JsonUtils(output_string)(response)
 	} ] {nullProcess}
 
