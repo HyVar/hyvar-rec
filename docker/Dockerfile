@@ -15,7 +15,7 @@ RUN cd / && \
 	###############
 	# install z3
 	###############
-	wget https://github.com/Z3Prover/z3/releases/download/z3-4.4.1/z3-4.5.0-x64-debian-8.5.zip && \
+	wget https://github.com/Z3Prover/z3/releases/download/z3-4.5.0/z3-4.5.0-x64-debian-8.5.zip && \
 	unzip z3-4.5.0-x64-debian-8.5.zip && \
 	rm z3-4.5.0-x64-debian-8.5.zip
 ENV LD_LIBRARY_PATH /z3-4.5.0-x64-debian-8.5/bin:$LD_LIBRARY_PATH
