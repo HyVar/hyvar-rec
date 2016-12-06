@@ -19,7 +19,7 @@ RUN cd / && \
 	unzip z3-4.5.0-x64-debian-8.5.zip && \
 	rm z3-4.5.0-x64-debian-8.5.zip
 ENV LD_LIBRARY_PATH /z3-4.5.0-x64-debian-8.5/bin:$LD_LIBRARY_PATH
-ENV PYTHONPATH /z3-4.4.1-x64-debian-8.2/bin/python:$PYTHONPATH
+ENV PYTHONPATH /z3-4.5.0-x64-debian-8.5/bin/python:$PYTHONPATH
 
 RUN cd / && \
 	###############
