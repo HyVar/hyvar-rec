@@ -25,7 +25,7 @@ RUN cd / && \
 	# install hyvarrec
 	###############
 	cd / && \
-	git clone --recursive -b smt https://github.com/HyVar/hyvar-rec.git
+	git clone --recursive https://github.com/HyVar/hyvar-rec.git
 ENV PATH /hyvar-rec:$PATH
 
 RUN cd / && \
