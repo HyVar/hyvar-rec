@@ -15,11 +15,12 @@ RUN cd / && \
 	###############
 	# install z3
 	###############
-	wget https://github.com/Z3Prover/z3/releases/download/z3-4.5.0/z3-4.5.0-x64-debian-8.5.zip && \
-	unzip z3-4.5.0-x64-debian-8.5.zip && \
-	rm z3-4.5.0-x64-debian-8.5.zip
-ENV LD_LIBRARY_PATH /z3-4.5.0-x64-debian-8.5/bin:$LD_LIBRARY_PATH
-ENV PYTHONPATH /z3-4.5.0-x64-debian-8.5/bin/python:$PYTHONPATH
+	git clone --depth 1 https://github.com/Z3Prover/z3.git && \
+	cd z3 && \
+	python scripts/mk_make.py --python && \
+	cd build && \
+	make && \
+	make install	
 
 RUN cd / && \
 	###############
