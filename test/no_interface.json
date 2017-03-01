@@ -1,0 +1,26 @@
+{  
+  "attributes":[  
+
+  ],
+  "contexts":[  
+
+  ],
+  "configuration":{  
+    "selectedFeatures":[  
+
+    ],
+    "attribute_values":[  
+
+    ],
+    "context_values":[  
+
+    ]
+  },
+  "constraints":[  
+    "feature[_id0] = 1",
+		"feature[_id15] = 1"
+  ],
+  "preferences":[  
+
+  ]
+}

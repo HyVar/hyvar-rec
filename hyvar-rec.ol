@@ -25,6 +25,7 @@ RequestResponse:
   process( undefined )( undefined ),
   validate( undefined )( undefined ),
   explain( undefined )( undefined ),
+  check_interface( undefined )( undefined ),
 	// operation to check if the service is still alive and responding
   health( void )( void )
 }
@@ -142,6 +143,53 @@ main {
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(json_input_file)();
+		// Print some info
+		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
+		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
+		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
+		// Extracting last line of response to get last printed solution
+		split_request = string(output);
+		split_request.regex = "\n";
+		split@StringUtils( split_request ) ( lines );
+		// The response is the last line
+		if (string(output) != "") {
+			output_string = lines.result[#lines.result -1]
+		} else {
+			output_string = "{\"no_solution\": 1}"
+		};
+		// Convert response into json
+		output_string.strictEncoding = true;
+		getJsonValue@JsonUtils(output_string)(response)
+	} ] {nullProcess}
+
+	[ check_interface( request )( response ) {
+		println@Console( "Received request." )();
+		// Save JSON string into a file stored in /tmp
+		getJsonString@JsonUtils(request.interface)(json_string);
+		random@Math()(num);
+		interface_input_file = "/tmp/" + string(num) + "_in.json";
+		write_file_request.content = json_string;
+		write_file_request.filename = interface_input_file;
+		writeFile@File(write_file_request)();
+
+		getJsonString@JsonUtils(request.spl)(json_string);
+		random@Math()(num);
+		spl_input_file = "/tmp/" + string(num) + "_in.json";
+		write_file_request.content = json_string;
+		write_file_request.filename = spl_input_file;
+		writeFile@File(write_file_request)();
+
+		// Run HyVarRec
+		println@Console( "Running HyVarRec." )();
+		command_request = "python";
+  	    command_request.args[0] = "hyvar-rec.py";
+  	    command_request.args[1] = "--check-interface";
+  	    command_request.args[2] = interface_input_file;
+		command_request.args[3] = spl_input_file;
+		exec@Exec( command_request )( output );
+		// Delete input json file
+		delete@File(interface_input_file)();
+		delete@File(spl_input_file)();
 		// Print some info
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();

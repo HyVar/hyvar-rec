@@ -91,13 +91,13 @@ In this case, the information related to the initial configuration are discarded
 The answer is a JSON object having the schema defined in spec/hyvar_output_validate.json.
 Basically, in the field "result" it will report the result of the analysis (either "valid" or "not_valid").
 If the FM is void for certain context then the output will also provide the list of one context
-assignement that makes the model void.
+assignment that makes the model void.
 
 When a model is void hyvar-rec can be used to check the set of constraints that makes the model void.
 This can be done by running the following POST request.
 
 ```
-curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/validate
+curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/explain
 ```
 
 where \<JSON\> is the json input file as specified in the input format. In this case it is
@@ -108,3 +108,27 @@ The answer is a JSON object having the schema defined in spec/hyvar_output_expla
 Basically, in the field "result" it will report if the FM is void or not (either "sat" or "unsat").
 If the FM is void with the keyword "constraints" the list of the constraint responsible for the
 voidness of the FM is returned.
+
+MSPL: Interface Check
+----------------------
+hyvar-rec allows to validate if a given I SPL is an interface of another SPL S. Being an interface
+means that every configuration of I can be extended to form a valid configuration of S.
+  
+This can be done by running the following POST request.
+
+```
+curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/check_interface
+```
+
+where \<JSON\> is a JSON file defining both the software product lines.
+In particular, assuming { I } is the JSON object defining the FM of I and { S } the feature model
+defining the FM of S according to the json schema in spec/hyvar_input_schema.json, the JSON input
+to submit to hyvar-rec is the following one.
+ 
+```
+{ "interface" : { I }, "spl" : { S } }
+```
+
+The output obtained is a JSON object having the JSON schema spec/hyvar_output_validate.json.
+In particular, when the interface is not a valid interface hyvar-rec returns the context, features,
+and attributes that can not be extended in the SPL S.
