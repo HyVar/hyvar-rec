@@ -7,7 +7,7 @@ RUN cd / && \
 	###############
 	echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install -y unzip openjdk-8-jdk ant && \
+	apt-get install -y -t jessie-backports unzip openjdk-8-jdk ant ca-certificates-java && \
 	rm -rf /var/lib/apt/lists/* && \
 	/usr/sbin/update-java-alternatives -s java-1.8.0-openjdk-amd64
 
