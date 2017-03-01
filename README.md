@@ -74,3 +74,37 @@ schema defined in spec/hyvar_input_schema.json.
 
 The output is a JSON object following
 the schema defined in spec/hyvar_output_schema.json.
+
+Validate and Explain Modalities
+----------------------
+
+hyvar-rec can also be used to check if a given FM is non void for all the possible context.
+This can be done by running the following POST request.
+
+```
+curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/validate
+```
+
+where \<JSON\> is the json input file as specified in the input format.
+In this case, the information related to the initial configuration are discarded.
+
+The answer is a JSON object having the schema defined in spec/hyvar_output_validate.json.
+Basically, in the field "result" it will report the result of the analysis (either "valid" or "not_valid").
+If the FM is void for certain context then the output will also provide the list of one context
+assignement that makes the model void.
+
+When a model is void hyvar-rec can be used to check the set of constraints that makes the model void.
+This can be done by running the following POST request.
+
+```
+curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/validate
+```
+
+where \<JSON\> is the json input file as specified in the input format. In this case it is
+important to define into the initial configuration the values of the context
+that makes the FM void.
+
+The answer is a JSON object having the schema defined in spec/hyvar_output_explain.json.
+Basically, in the field "result" it will report if the FM is void or not (either "sat" or "unsat").
+If the FM is void with the keyword "constraints" the list of the constraint responsible for the
+voidness of the FM is returned.

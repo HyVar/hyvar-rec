@@ -1,4 +1,4 @@
-# Generated from SpecificationGrammar.g4 by ANTLR 4.5.1
+# Generated from SpecificationGrammar.g4 by ANTLR 4.6
 # encoding: utf-8
 from __future__ import print_function
 from antlr4 import *
@@ -106,7 +106,7 @@ class SpecificationGrammarParser ( Parser ):
 
     def __init__(self, input):
         super(SpecificationGrammarParser, self).__init__(input)
-        self.checkVersion("4.5.1")
+        self.checkVersion("4.6")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
@@ -175,13 +175,14 @@ class SpecificationGrammarParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.state = 26
+            self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SpecificationGrammarParser.T__0, SpecificationGrammarParser.T__1, SpecificationGrammarParser.T__4, SpecificationGrammarParser.T__5, SpecificationGrammarParser.NOT, SpecificationGrammarParser.TRUE, SpecificationGrammarParser.FALSE, SpecificationGrammarParser.INT]:
                 localctx = SpecificationGrammarParser.ConstraintPreferenceContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 18
                 self.constraint()
-
+                pass
             elif token in [SpecificationGrammarParser.MIN, SpecificationGrammarParser.MAX]:
                 localctx = SpecificationGrammarParser.MinMaxPreferenceContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
@@ -190,6 +191,7 @@ class SpecificationGrammarParser ( Parser ):
                 if not(_la==SpecificationGrammarParser.MIN or _la==SpecificationGrammarParser.MAX):
                     self._errHandler.recoverInline(self)
                 else:
+                    self._errHandler.reportMatch(self)
                     self.consume()
                 self.state = 20
                 self.match(SpecificationGrammarParser.T__0)
@@ -203,7 +205,7 @@ class SpecificationGrammarParser ( Parser ):
                 self.match(SpecificationGrammarParser.T__3)
                 self.state = 25
                 self.match(SpecificationGrammarParser.EOF)
-
+                pass
             else:
                 raise NoViableAltException(self)
 
@@ -331,6 +333,7 @@ class SpecificationGrammarParser ( Parser ):
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.AND) | (1 << SpecificationGrammarParser.OR) | (1 << SpecificationGrammarParser.XOR) | (1 << SpecificationGrammarParser.IMPL) | (1 << SpecificationGrammarParser.IFF))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
+                    self._errHandler.reportMatch(self)
                     self.consume()
                 self.state = 33
                 self.b_term()
@@ -379,6 +382,7 @@ class SpecificationGrammarParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 40
+            self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==SpecificationGrammarParser.NOT:
                 self.state = 39
@@ -427,17 +431,18 @@ class SpecificationGrammarParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_b_factor)
         try:
             self.state = 46
+            self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SpecificationGrammarParser.TRUE, SpecificationGrammarParser.FALSE]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 44
                 self.boolFact()
-
+                pass
             elif token in [SpecificationGrammarParser.T__0, SpecificationGrammarParser.T__1, SpecificationGrammarParser.T__4, SpecificationGrammarParser.T__5, SpecificationGrammarParser.INT]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 45
                 self.relation()
-
+                pass
             else:
                 raise NoViableAltException(self)
 
@@ -502,6 +507,7 @@ class SpecificationGrammarParser ( Parser ):
             self.state = 48
             self.expr()
             self.state = 51
+            self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.LEQ) | (1 << SpecificationGrammarParser.EQ) | (1 << SpecificationGrammarParser.GEQ) | (1 << SpecificationGrammarParser.LT) | (1 << SpecificationGrammarParser.GT) | (1 << SpecificationGrammarParser.NEQ))) != 0):
                 self.state = 49
@@ -509,6 +515,7 @@ class SpecificationGrammarParser ( Parser ):
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.LEQ) | (1 << SpecificationGrammarParser.EQ) | (1 << SpecificationGrammarParser.GEQ) | (1 << SpecificationGrammarParser.LT) | (1 << SpecificationGrammarParser.GT) | (1 << SpecificationGrammarParser.NEQ))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
+                    self._errHandler.reportMatch(self)
                     self.consume()
                 self.state = 50
                 self.expr()
@@ -583,6 +590,7 @@ class SpecificationGrammarParser ( Parser ):
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SpecificationGrammarParser.PLUS) | (1 << SpecificationGrammarParser.MINUS) | (1 << SpecificationGrammarParser.TIMES))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
+                    self._errHandler.reportMatch(self)
                     self.consume()
                 self.state = 55
                 self.term()
@@ -702,13 +710,14 @@ class SpecificationGrammarParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_term)
         try:
             self.state = 75
+            self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SpecificationGrammarParser.INT]:
                 localctx = SpecificationGrammarParser.TermIntContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 61
                 self.match(SpecificationGrammarParser.INT)
-
+                pass
             elif token in [SpecificationGrammarParser.T__4]:
                 localctx = SpecificationGrammarParser.TermContextContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
@@ -718,7 +727,7 @@ class SpecificationGrammarParser ( Parser ):
                 self.match(SpecificationGrammarParser.ID)
                 self.state = 64
                 self.match(SpecificationGrammarParser.T__2)
-
+                pass
             elif token in [SpecificationGrammarParser.T__5]:
                 localctx = SpecificationGrammarParser.TermFeatureContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
@@ -728,7 +737,7 @@ class SpecificationGrammarParser ( Parser ):
                 self.match(SpecificationGrammarParser.ID)
                 self.state = 67
                 self.match(SpecificationGrammarParser.T__2)
-
+                pass
             elif token in [SpecificationGrammarParser.T__1]:
                 localctx = SpecificationGrammarParser.TermAttributeContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
@@ -738,7 +747,7 @@ class SpecificationGrammarParser ( Parser ):
                 self.match(SpecificationGrammarParser.ID)
                 self.state = 70
                 self.match(SpecificationGrammarParser.T__2)
-
+                pass
             elif token in [SpecificationGrammarParser.T__0]:
                 localctx = SpecificationGrammarParser.TermBracketsContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
@@ -748,7 +757,7 @@ class SpecificationGrammarParser ( Parser ):
                 self.b_expr()
                 self.state = 73
                 self.match(SpecificationGrammarParser.T__3)
-
+                pass
             else:
                 raise NoViableAltException(self)
 
@@ -796,6 +805,7 @@ class SpecificationGrammarParser ( Parser ):
             if not(_la==SpecificationGrammarParser.TRUE or _la==SpecificationGrammarParser.FALSE):
                 self._errHandler.recoverInline(self)
             else:
+                self._errHandler.reportMatch(self)
                 self.consume()
         except RecognitionException as re:
             localctx.exception = re
