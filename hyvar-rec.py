@@ -265,7 +265,7 @@ def check_interface(features, contexts, attributes, constraints, contexts_constr
     for i in interface["constraints"]:
         try:
             d = SpecTranslator.translate_constraint(i, interface)
-            log.debug("Find constrataint " + unicode(d))
+            log.debug("Find constraint " + unicode(d))
             i_constraints.append(d["formula"])
             i_features.update(d["features"])
         except Exception as e:
