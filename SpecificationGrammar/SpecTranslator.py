@@ -145,8 +145,8 @@ class MyVisitor(SpecificationGrammarVisitor):
     def visitBoolFact(self, ctx):
         fact = ctx.getChild(0).accept(self)
         if fact == "true":
-            return z3.simplify(z3.And(True))
-        return z3.simplify(z3.And(False))
+            return z3.simplify(z3.BoolVal(True))
+        return z3.simplify(z3.BoolVal(False))
 
 
 def translate_constraint(in_string, data):

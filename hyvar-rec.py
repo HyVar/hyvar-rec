@@ -25,6 +25,7 @@ import json
 import re
 
 import z3
+import z3_expression_decoder
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
 
@@ -457,6 +458,18 @@ def main(argv):
             log.critical("Parsing failed while processing " + i + ": " + str(e))
             log.critical("Exiting")
             sys.exit(1)
+
+    # possibility for reconfigure and explain modality to add directly SMT formulas
+    if "smt_constraints" in data:
+        log.info("Processing special input constraint modality")
+        features.update(data["smt_constraints"]["features"])
+        for i in data["smt_constraints"]["formulas"]:
+            log.debug("Processing " + i)
+            f = z3_expression_decoder.get_z3_expression(
+                i,data["smt_constraints"]["features"] + data["smt_constraints"]["other_int_symbols"])
+            constraints.append(f)
+            data["constraints"].append(i)
+
 
     log.info("Processing Preferences")
     for i in data["preferences"]:

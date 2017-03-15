@@ -1,0 +1,105 @@
+{
+  "attributes": [
+    {
+      "id": "attribute[_idatt3]",
+      "min": 0,
+      "max": 300,
+      "featureId": "feature[_id0]"
+    },
+    {
+      "id": "attribute[_idatt8]",
+      "min": 0,
+      "max": 1,
+      "featureId": "feature[_id0]"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "context[_idc0]",
+      "min": 0,
+      "max": 1
+    },
+    {
+      "id": "context[_idc1]",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "id": "context[_idc2]",
+      "min": 0,
+      "max": 10
+    },
+    {
+      "id": "context[_idc3]",
+      "min": 0,
+      "max": 23
+    }
+  ],
+  "configuration": {
+    "selectedFeatures": [
+      "feature[_id0]"
+    ],
+    "attribute_values": [
+      {
+        "id": "attribute[_idatt3]",
+        "value": 0
+      },
+      {
+        "id": "attribute[_idatt8]",
+        "value": 0
+      }
+    ],
+    "context_values": [
+      {
+      "id": "context[_idc0]",
+      "value": 1
+      },
+      {
+        "id": "context[_idc1]",
+        "value": 60
+      },
+      {
+        "id": "context[_idc2]",
+        "value": 2
+      },
+      {
+        "id": "context[_idc3]",
+        "value": 17
+      }
+    ]
+  },
+  "constraints":[
+    "feature[_id1] = 1 impl (feature[_id13] + feature[_id14] + feature[_id15] = 1)",
+    "(feature[_id16] = 1 or feature[_id17] = 1) impl feature[_id2] = 1",
+    "feature[_id2] = 1 impl (feature[_id16] + feature[_id17] = 1)",
+    "(feature[_id18] = 1 or feature[_id19] = 1 or feature[_id20] = 1) impl feature[_id12] = 1",
+    "feature[_id12] = 1 impl (feature[_id18] + feature[_id19] + feature[_id20] = 1)",
+    "feature[_id4] = (feature[_id5] + feature[_id6])",
+    "feature[_id8] = (feature[_id9] + feature[_id10] + feature[_id11])",
+    "(feature[_id13] = 1 impl feature[_id17] = 1)",
+    "(feature[_id7] = 1 impl feature[_id11] = 1)",
+    "(feature[_id6] = 1 impl feature[_id11] = 1)",
+    "(feature[_id3] = 1 impl (((context[_idc0] =  1 ) impl (attribute[_idatt3] <=  80 ))))",
+    "(feature[_id14] = 1 impl (context[_idc1] <  50 ))",
+    "(feature[_id15] = 1 impl (context[_idc1] <  50 ))",
+    "(feature[_id19] = 1 impl (context[_idc1] <  50 ))",
+    "(feature[_id20] = 1 impl (context[_idc1] <  50 ))",
+    "(feature[_id16] = 1 impl (context[_idc1] <  50 ))",
+    "(feature[_id8] = 1 impl (((context[_idc3] >=  18 ) impl (attribute[_idatt8] =  1 ))))"
+  ],
+	"smt_constraints" : {
+		"formulas": ["_id0 == 1", "Implies(_id0 == 1, And(_id1 == 1, _id2 == 1))", "Implies(Or(Or(_id13 == 1, _id14 == 1), _id15 == 1), _id1 == 1)"],
+    "features": ["_id0","_id1","_id2","_id13","_id14","_id15"],
+		"other_int_symbols" : []
+		},
+  "preferences":[
+    "(feature[_id8] = 1 impl (((context[_idc3] >=  16 ) impl (attribute[_idatt8] =  1 ))))",
+    "(feature[_id13] = 1) + (feature[_id17] = 1) + (feature[_id18] = 1)",
+    "feature[_id7] = 1",
+    "feature[_id11] = 1",
+    "feature[_id3] = 1",
+    "feature[_id6] = 1",
+    "feature[_id4] = 1",
+    "max(attribute[_idatt3])"
+  ]
+}
