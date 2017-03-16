@@ -25,7 +25,6 @@ import json
 import re
 
 import z3
-import z3_expression_decoder
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
 
@@ -464,12 +463,7 @@ def main(argv):
         log.info("Processing special input constraint modality")
         features.update(data["smt_constraints"]["features"])
         for i in data["smt_constraints"]["formulas"]:
-            # log.debug("Processing " + i)
-            f = z3_expression_decoder.get_z3_expression(
-                i,data["smt_constraints"]["features"] + data["smt_constraints"]["other_int_symbols"])
-            constraints.append(f)
-            data["constraints"].append(i)
-
+            constraints.append(z3.parse_smt2_string(i))
 
     log.info("Processing Preferences")
     for i in data["preferences"]:
