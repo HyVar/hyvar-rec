@@ -7,4 +7,10 @@ def get_z3_expression(string,symbols):
     scope = locals()
     for i in symbols:
         scope[i] = Int(i)
-    return eval(string,globals(),scope)
+    v = eval(string,globals(),scope)
+    if v == True:
+        return BoolVal(True)
+    elif v == False:
+        return BoolVal(False)
+    else:
+        return v

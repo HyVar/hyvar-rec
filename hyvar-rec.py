@@ -464,7 +464,7 @@ def main(argv):
         log.info("Processing special input constraint modality")
         features.update(data["smt_constraints"]["features"])
         for i in data["smt_constraints"]["formulas"]:
-            log.debug("Processing " + i)
+            # log.debug("Processing " + i)
             f = z3_expression_decoder.get_z3_expression(
                 i,data["smt_constraints"]["features"] + data["smt_constraints"]["other_int_symbols"])
             constraints.append(f)
