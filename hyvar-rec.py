@@ -24,6 +24,7 @@ import os
 import logging as log
 import json
 import re
+# use multiprocessing because antlr is not thread safe
 import multiprocessing
 
 import z3
@@ -42,6 +43,13 @@ def read_json(json_file):
     data = json.load(json_data)
     json_data.close()
     return data
+
+
+# function to encode SMT expression into SMTLIB
+def toSMT2(f, status="unknown", name="benchmark", logic=""):
+  v = (z3.Ast * 0)()
+  return z3.Z3_benchmark_to_smtlib_string(f.ctx_ref(), name, logic, status, "", 0, v, f.as_ast()).replace(
+      "\n"," ").replace("(check-sat)","").replace("; benchmark (set-info :status unknown)","").strip()
 
 
 def reconfigure(
@@ -376,8 +384,7 @@ def translate_constraints(pair):
         log.critical("Parsing failed while processing " + c + ": " + str(e))
         log.critical("Exiting")
         sys.exit(1)
-    return d["formula"],d["features"]
-
+    return toSMT2(d["formula"]),d["features"]
 
 
 def main(argv):
@@ -466,11 +473,16 @@ def main(argv):
 
     log.info("Processing Constraints")
     if num_of_process > 1:
+        # convert in parallel formulas into smt and then parse it here
+        # threads can not be used here because antlr parser seems not thread safe
+        # the z3 expression can not be serialized
+        log.debug("Starting to convert the constraints into smt representation")
+        log.debug("Constraint to convert: " + unicode(len(data["constraints"])))
         pool = multiprocessing.Pool(num_of_process)
-        pool.map(translate_constraints, [(x, data) for x in data["constraints"]])
-        result = pool.get()
-        for c,fs in result:
-            constraints.append(c)
+        results = pool.map(translate_constraints, [ (x,data) for x in data["constraints"]])
+        log.debug("Converting smt into z3 expressions")
+        for smt_f,fs in results:
+            constraints.append(z3.parse_smt2_string(smt_f))
             features.update(fs)
     else:
         for i in data["constraints"]:
