@@ -2,9 +2,10 @@
 Usage: hyvarRec.py [<options>] <input_file>
   Options:
     -h, --help: to print the usage message
-    -o, --ofile: file where to save the output
+    -o, --ofile: STRING file where to save the output
     -v, --verbose: activate verbose mode
     -k, --keep: keep auxiliary files generated during the computation
+    -p, --par_parse: INT processes generated to parse the constraints
     --validate: activate the validation mode to check if for all context the FM is not void
     --explain: try to explain why a FM is void
     --check-interface: checks if the interface given as additional file is a proper interface
@@ -23,6 +24,7 @@ import os
 import logging as log
 import json
 import re
+import multiprocessing
 
 import z3
 
@@ -366,14 +368,27 @@ def check_interface(features, contexts, attributes, constraints, contexts_constr
         out_stream.write('{"result":"valid"}\n')
 
 
+def translate_constraints(pair):
+    c,data = pair
+    try:
+        d = SpecTranslator.translate_constraint(c, data)
+    except Exception as e:
+        log.critical("Parsing failed while processing " + c + ": " + str(e))
+        log.critical("Exiting")
+        sys.exit(1)
+    return d["formula"],d["features"]
+
+
+
 def main(argv):
     """Main procedure """
     output_file = ""
     modality = "" # default modality is to proceed with the reconfiguration
     interface_file = ""
+    num_of_process = 1
 
     try:
-        opts, args = getopt.getopt(argv, "ho:vk", ["help", "ofile=", "verbose", "keep", "validate", "explain", "check-interface="])
+        opts, args = getopt.getopt(argv, "ho:vkp:", ["help", "ofile=", "verbose", "keep", "validate", "explain", "check-interface=","par_parse="])
     except getopt.GetoptError as err:
         print str(err)
         usage()
@@ -394,6 +409,9 @@ def main(argv):
         elif opt == "--check-interface":
             modality = "check-interface"
             interface_file = os.path.abspath(arg)
+            assert arg > 0
+        elif opt in ("-p", "--par_parse"):
+            num_of_process = int(arg)
         elif opt in ("-v", "--verbose"):
             log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
             log.info("Verbose output.")
@@ -447,16 +465,24 @@ def main(argv):
     log.debug(unicode(initial_features))
 
     log.info("Processing Constraints")
-    for i in data["constraints"]:
-        try:
-            d = SpecTranslator.translate_constraint(i, data)
-            log.debug("Find constrataint " + unicode(d))
-            constraints.append(d["formula"])
-            features.update(d["features"])
-        except Exception as e:
-            log.critical("Parsing failed while processing " + i + ": " + str(e))
-            log.critical("Exiting")
-            sys.exit(1)
+    if num_of_process > 1:
+        pool = multiprocessing.Pool(num_of_process)
+        pool.map(translate_constraints, [(x, data) for x in data["constraints"]])
+        result = pool.get()
+        for c,fs in result:
+            constraints.append(c)
+            features.update(fs)
+    else:
+        for i in data["constraints"]:
+            try:
+                d = SpecTranslator.translate_constraint(i, data)
+                log.debug("Find constrataint " + unicode(d))
+                constraints.append(d["formula"])
+                features.update(d["features"])
+            except Exception as e:
+                log.critical("Parsing failed while processing " + i + ": " + str(e))
+                log.critical("Exiting")
+                sys.exit(1)
 
     # possibility for reconfigure and explain modality to add directly SMT formulas
     if "smt_constraints" in data:
@@ -464,6 +490,8 @@ def main(argv):
         features.update(data["smt_constraints"]["features"])
         for i in data["smt_constraints"]["formulas"]:
             constraints.append(z3.parse_smt2_string(i))
+            # for explain purposes add smt_constraint to constraints
+            data["constraints"].append(i)
 
     log.info("Processing Preferences")
     for i in data["preferences"]:
