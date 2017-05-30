@@ -10,6 +10,16 @@ class SpecificationGrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by SpecificationGrammarParser#exprPreference.
+    def visitExprPreference(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecificationGrammarParser#bracketExprPreference.
+    def visitBracketExprPreference(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by SpecificationGrammarParser#minMaxPreference.
     def visitMinMaxPreference(self, ctx):
         return self.visitChildren(ctx)

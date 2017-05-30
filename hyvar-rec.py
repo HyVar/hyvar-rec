@@ -81,7 +81,7 @@ def reconfigure(
 
     log.info("Add preferences")
     for i in preferences:
-        solver.minimize(i)
+        solver.maximize(i)
 
     log.info("Add preference: minimize the number of initial features removed")
     if initial_features:

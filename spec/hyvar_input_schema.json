@@ -109,6 +109,7 @@
       }
     },
     "preferences": {
+      "description": "list of expression to minimize",
       "type": "array",
       "items": {
         "type": "string"
