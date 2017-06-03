@@ -46,14 +46,6 @@ class MyVisitor(SpecificationGrammarVisitor):
             return z3.If(z3.simplify(ctx.getChild(0).accept(self)),1,0)
         return z3.simplify(ctx.getChild(0).accept(self))
 
-    def visitexprPreference(self, ctx):
-        formula = ctx.getChild(0).accept(self)
-        return formula
-
-    def visitbracketExprPreference(self, ctx):
-        formula = ctx.getChild(1).accept(self)
-        return formula
-
     def visitMinMaxPreference(self, ctx):
         op = ctx.getChild(0).accept(self)
         attribute = ctx.getChild(3).accept(self)

@@ -4,8 +4,6 @@ grammar SpecificationGrammar;
 
 preference:
   constraint                                 #constraintPreference |
-  expr                                       #exprPreference |
-  '(' expr ')'                                       #bracketExprPreference |
   (MIN | MAX) '(' 'attribute[' ID ']' ')' EOF          #minMaxPreference;
  
  
