@@ -6,7 +6,7 @@ __maintainer__ = "Jacopo Mauro"
 __email__ = "mauro.jacopo@gmail.com"
 __status__ = "Prototype"
 
-import sys, getopt
+import sys
 import os
 import logging as log
 import json
@@ -46,13 +46,15 @@ def run_reconfigure(
         attributes,
         constraints,
         preferences,
+        features_as_boolean,
         out_stream):
     """Perform the reconfiguration task
     """
     solver = z3.Optimize()
     log.info("Add variables")
-    for i in features:
-        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in features:
+            solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
     for i in attributes.keys():
         solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
     for i in contexts.keys():
@@ -72,7 +74,10 @@ def run_reconfigure(
 
     log.info("Add preference: minimize the number of initial features removed")
     if initial_features:
-        solver.maximize(z3.Sum([z3.Int(i) for i in initial_features]))
+        if features_as_boolean:
+            solver.maximize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in initial_features]))
+        else:
+            solver.maximize(z3.Sum([z3.Int(i) for i in initial_features]))
 
     log.info("Add preference: minimize the number of attributes changed")
     initial_attributes = [k for k in attributes.keys() if "initial" in attributes[k]]
@@ -82,7 +87,10 @@ def run_reconfigure(
 
     log.info("Add preference: minimize the number of non initial features added")
     if features.difference(initial_features):
-        solver.minimize(z3.Sum([z3.Int(i) for i in features.difference(initial_features)]))
+        if features_as_boolean:
+            solver.minimize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in features.difference(initial_features)]))
+        else:
+            solver.minimize(z3.Sum([z3.Int(i) for i in features.difference(initial_features)]))
     log.debug(unicode(solver))
 
     log.info("Computing reconfiguration")
@@ -92,9 +100,14 @@ def run_reconfigure(
     if result == z3.sat:
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
-        for i in features:
-            if model[z3.Int(i)] == z3.IntVal(1):
-                out["features"].append(i)
+        if features_as_boolean:
+            for i in features:
+                if model[z3.Bool(i)] == z3.BoolVal(True):
+                    out["features"].append(i)
+        else:
+            for i in features:
+                if model[z3.Int(i)] == z3.IntVal(1):
+                    out["features"].append(i)
         for i in attributes.keys():
             if attributes[i]["feature"] in out["features"]:
                 out["attributes"].append({"id": i, "value": unicode(model[z3.Int(i)])})
@@ -112,6 +125,7 @@ def run_validate(
         constraints,
         preferences,
         context_constraints,
+        features_as_boolean,
         out_stream):
     """Perform the validation task
     """
@@ -127,9 +141,10 @@ def run_validate(
 
     log.info("Building the FM formula")
     formulas = []
-    for i in features:
-        formulas.append(0 <= z3.Int(i))
-        formulas.append(z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in features:
+            formulas.append(0 <= z3.Int(i))
+            formulas.append(z3.Int(i) <= 1)
 
     for i in attributes.keys():
         formulas.append(attributes[i]["min"] <= z3.Int(i))
@@ -139,10 +154,16 @@ def run_validate(
         formulas.append(i)
 
     log.info("Add forall not FM formula")
-    solver.add(z3.ForAll(
-        [z3.Int(i) for i in features ] + [z3.Int(i) for i in attributes.keys()],
-        z3.Not(z3.And(formulas))
-    ))
+    if features_as_boolean:
+        solver.add(z3.ForAll(
+            [z3.Bool(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
+            z3.Not(z3.And(formulas))
+        ))
+    else:
+        solver.add(z3.ForAll(
+            [z3.Int(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
+            z3.Not(z3.And(formulas))
+        ))
     log.debug(solver)
 
     log.info("Computing")
@@ -168,6 +189,7 @@ def run_explain(
         constraints,
         preferences,
         data,
+        features_as_boolean,
         out_stream):
     """Get the explanation of the unsat of the FM model
     """
@@ -175,8 +197,9 @@ def run_explain(
     solver.set(unsat_core=True)
 
     log.info("Add variables")
-    for i in features:
-        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in features:
+            solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
     for i in attributes.keys():
         solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
     for i in contexts.keys():
@@ -199,9 +222,14 @@ def run_explain(
     if result == z3.sat:
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
-        for i in features:
-            if model[z3.Int(i)] == z3.IntVal(1):
-                out["features"].append(i)
+        if features_as_boolean:
+            for i in features:
+                if model[z3.Bool(i)] == z3.BoolVal(True):
+                    out["features"].append(i)
+        else:
+            for i in features:
+                if model[z3.Int(i)] == z3.IntVal(1):
+                    out["features"].append(i)
         for i in attributes.keys():
             if attributes[i]["feature"] in out["features"]:
                 out["attributes"].append({"id": i, "value": unicode(model[z3.Int(i)])})
@@ -218,8 +246,14 @@ def run_explain(
         out_stream.write("\n")
 
 
-def run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
-                interface, out_stream):
+def run_check_interface(features,
+                        contexts,
+                        attributes,
+                        constraints,
+                        contexts_constraints,
+                        interface,
+                        features_as_boolean,
+                        out_stream):
     """Check if the interface given is a proper interface
     """
     # handle FM contexts_constraints
@@ -261,7 +295,7 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
     log.info("Processing Constraints")
     for i in interface["constraints"]:
         try:
-            d = SpecTranslator.translate_constraint(i, interface)
+            d = SpecTranslator.translate_constraint(i, interface, features_as_boolean)
             log.debug("Find constraint " + unicode(d))
             i_constraints.append(d["formula"])
             i_features.update(d["features"])
@@ -274,7 +308,7 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
     if "context_constraints" in interface:
         for i in interface["context_constraints"]:
             try:
-                d = SpecTranslator.translate_constraint(i, interface)
+                d = SpecTranslator.translate_constraint(i, interface, features_as_boolean)
                 log.debug("Find context constraint " + unicode(d))
                 i_contexts_constraints.append(d["formula"])
             except Exception as e:
@@ -302,8 +336,9 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
     solver = z3.Solver()
 
     log.info("Add interface variables")
-    for i in i_features:
-        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in i_features:
+            solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
     for i in i_attributes.keys():
         solver.add(i_attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= i_attributes[i]["max"])
     for i in i_contexts.keys():
@@ -325,10 +360,11 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
 
     log.info("Building the FM formula")
     formulas = []
-    for i in features:
-        if i not in i_features:
-            formulas.append(0 <= z3.Int(i))
-            formulas.append(z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in features:
+            if i not in i_features:
+                formulas.append(0 <= z3.Int(i))
+                formulas.append(z3.Int(i) <= 1)
     for i in attributes.keys():
         if i not in i_attributes:
             formulas.append(attributes[i]["min"] <= z3.Int(i))
@@ -337,11 +373,19 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
         formulas.append(i)
 
     log.info("Add forall fatures and attributes not formula")
-    solver.add(z3.ForAll(
-        [z3.Int(i) for i in features if i not in i_features] +
-        [z3.Int(i) for i in attributes.keys() if i not in i_attributes.keys()],
-        z3.Not(z3.And(formulas))
-    ))
+    if features_as_boolean:
+        solver.add(z3.ForAll(
+            [z3.Bool(i) for i in features if i not in i_features] +
+            [z3.Int(i) for i in attributes.keys() if i not in i_attributes.keys()],
+            z3.Not(z3.And(formulas))
+        ))
+    else:
+        solver.add(z3.ForAll(
+            [z3.Int(i) for i in features if i not in i_features] +
+            [z3.Int(i) for i in attributes.keys() if i not in i_attributes.keys()],
+            z3.Not(z3.And(formulas))
+        ))
+
     log.debug(solver)
 
     log.info("Computing")
@@ -353,8 +397,12 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
         out = {"result": "not_valid", "contexts": [], "attributes": [], "features" : []}
         for i in contexts.keys():
             out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
-        for i in i_features:
-            out["features"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        if features_as_boolean:
+            for i in i_features:
+                out["features"].append({"id": i, "value": unicode(model[z3.Bool(i)])})
+        else:
+            for i in i_features:
+                out["features"].append({"id": i, "value": unicode(model[z3.Int(i)])})
         for i in i_attributes.keys():
             out["attributes"].append({"id": i, "value": unicode(model[z3.Int(i)])})
         json.dump(out, out_stream)
@@ -363,10 +411,10 @@ def run_check_interface(features, contexts, attributes, constraints, contexts_co
         out_stream.write('{"result":"valid"}\n')
 
 
-def translate_constraints(pair):
-    c,data = pair
+def translate_constraints(triple):
+    c,data,features_as_boolean = triple
     try:
-        d = SpecTranslator.translate_constraint(c, data)
+        d = SpecTranslator.translate_constraint(c, data, features_as_boolean)
     except Exception as e:
         log.critical("Parsing failed while processing " + c + ": " + str(e))
         log.critical("Exiting")
@@ -395,6 +443,8 @@ def translate_constraints(pair):
 @click.option('--check-interface',
               default="",
               help="Checks if the interface given as additional file is a proper interface.")
+@click.option('--features-as-boolean', is_flag=True,
+              help="Require features in constraints defined as booleans.")
 def main(input_file,
          num_of_process,
          output_file,
@@ -402,7 +452,8 @@ def main(input_file,
          verbose,
          validate,
          explain,
-         check_interface):
+         check_interface,
+         features_as_boolean):
     """
     INPUT_FILE Json input file
     """
@@ -474,7 +525,7 @@ def main(input_file,
         log.debug("Starting to convert the constraints into smt representation")
         log.debug("Constraint to convert: " + unicode(len(data["constraints"])))
         pool = multiprocessing.Pool(num_of_process)
-        results = pool.map(translate_constraints, [ (x,data) for x in data["constraints"]])
+        results = pool.map(translate_constraints, [(x,data,features_as_boolean) for x in data["constraints"]])
         log.debug("Converting smt into z3 expressions")
         for smt_f,fs in results:
             constraints.append(z3.parse_smt2_string(smt_f))
@@ -482,7 +533,7 @@ def main(input_file,
     else:
         for i in data["constraints"]:
             try:
-                d = SpecTranslator.translate_constraint(i, data)
+                d = SpecTranslator.translate_constraint(i, data, features_as_boolean)
                 log.debug("Find constrataint " + unicode(d))
                 constraints.append(d["formula"])
                 features.update(d["features"])
@@ -503,7 +554,7 @@ def main(input_file,
     log.info("Processing Preferences")
     for i in data["preferences"]:
         try:
-            d = SpecTranslator.translate_preference(i, data)
+            d = SpecTranslator.translate_preference(i, data, features_as_boolean)
             log.debug("Find preference " + unicode(d))
             preferences.append(d["formula"])
         except Exception as e:
@@ -515,7 +566,7 @@ def main(input_file,
     if "context_constraints" in data:
         for i in data["context_constraints"]:
             try:
-                d = SpecTranslator.translate_constraint(i, data)
+                d = SpecTranslator.translate_constraint(i, data, features_as_boolean)
                 log.debug("Find context constraint " + unicode(d))
                 contexts_constraints.append(d["formula"])
             except Exception as e:
@@ -525,15 +576,16 @@ def main(input_file,
 
     if modality == "validate":
         run_validate(features, initial_features, contexts, attributes, constraints,
-                 preferences, contexts_constraints, out_stream)
+                 preferences, contexts_constraints, features_as_boolean, out_stream)
     elif modality == "explain":
         run_explain(features, initial_features, contexts, attributes, constraints,
-                preferences, data, out_stream)
+                preferences, data, features_as_boolean, out_stream)
     elif modality == "check-interface":
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
-                        read_json(interface_file), out_stream)
+                        read_json(interface_file), features_as_boolean, out_stream)
     else:
-        run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences, out_stream)
+        run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
+                        features_as_boolean, out_stream)
 
     log.info("Program Succesfully Ended")
 

@@ -18,12 +18,13 @@ import z3
 
 
 class MyVisitor(SpecificationGrammarVisitor):
-    def __init__(self, json_data):
+    def __init__(self, json_data, feature_as_boolean=False):
         """the input parameter for the visitor is the json data"""
         self.json_data = json_data
         self.features = set()
         self.attributes = set()
         self.contexts = set()
+        self.feature_as_boolean = feature_as_boolean
 
     def defaultResult(self):
         return ""
@@ -104,7 +105,10 @@ class MyVisitor(SpecificationGrammarVisitor):
 
     def visitExpr(self, ctx):
         formula = ctx.getChild(0).accept(self)
-        for i in range(1, ctx.getChildCount(), 2):
+        num = ctx.getChildCount()
+        if num == 1 and self.feature_as_boolean:
+            return formula
+        for i in range(1, num, 2):
             op = ctx.getChild(i).accept(self)
             f = ctx.getChild(i + 1).accept(self)
             if isinstance(formula, z3.BoolRef):
@@ -132,6 +136,8 @@ class MyVisitor(SpecificationGrammarVisitor):
     def visitTermFeature(self, ctx):
         id = ctx.getChild(1).accept(self)
         self.features.add(id)
+        if self.feature_as_boolean:
+            return z3.Bool(id)
         return z3.Int(id)
 
     def visitTermAttribute(self, ctx):
@@ -149,12 +155,12 @@ class MyVisitor(SpecificationGrammarVisitor):
         return z3.simplify(z3.BoolVal(False))
 
 
-def translate_constraint(in_string, data):
+def translate_constraint(in_string, data,feature_as_boolean=False):
     lexer = SpecificationGrammarLexer(InputStream(in_string))
     stream = CommonTokenStream(lexer)
     parser = SpecificationGrammarParser(stream)
     tree = parser.constraint()
-    visitor = MyVisitor(data)
+    visitor = MyVisitor(data,feature_as_boolean)
     formula = visitor.visit(tree)
     return {
         "formula": formula,
@@ -163,12 +169,12 @@ def translate_constraint(in_string, data):
         "attributes": visitor.attributes}
 
 
-def translate_preference(in_string, data):
+def translate_preference(in_string, data, feature_as_boolean=False):
     lexer = SpecificationGrammarLexer(InputStream(in_string))
     stream = CommonTokenStream(lexer)
     parser = SpecificationGrammarParser(stream)
     tree = parser.preference()
-    visitor = MyVisitor(data)
+    visitor = MyVisitor(data,feature_as_boolean)
     formula = visitor.visit(tree)
     return {
         "formula": formula,

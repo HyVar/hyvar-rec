@@ -132,3 +132,9 @@ to submit to hyvar-rec is the following one.
 The output obtained is a JSON object having the JSON schema spec/hyvar_output_validate.json.
 In particular, when the interface is not a valid interface hyvar-rec returns the context, features,
 and attributes that can not be extended in the SPL S.
+
+Limitations
+------------
+The interface can not define SMT constraints when used in --check-interface mode
+
+Operator have left associativity x + x * y is interpreted as (x + x) * y
