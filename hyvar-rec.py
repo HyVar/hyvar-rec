@@ -1,16 +1,3 @@
-"""
-Usage: hyvarRec.py [<options>] <input_file>
-  Options:
-    -h, --help: to print the usage message
-    -o, --ofile: STRING file where to save the output
-    -v, --verbose: activate verbose mode
-    -k, --keep: keep auxiliary files generated during the computation
-    -p, --par_parse: INT processes generated to parse the constraints
-    --validate: activate the validation mode to check if for all context the FM is not void
-    --explain: try to explain why a FM is void
-    --check-interface: checks if the interface given as additional file is a proper interface
-"""
-
 __author__ = "Jacopo Mauro"
 __copyright__ = "Copyright 2016, Jacopo Mauro"
 __license__ = "ISC"
@@ -26,7 +13,7 @@ import json
 import re
 # use multiprocessing because antlr is not thread safe
 import multiprocessing
-
+import click
 import z3
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
@@ -52,7 +39,7 @@ def toSMT2(f, status="unknown", name="benchmark", logic=""):
       "\n"," ").replace("(check-sat)","").replace("; benchmark (set-info :status unknown)","").strip()
 
 
-def reconfigure(
+def run_reconfigure(
         features,
         initial_features,
         contexts,
@@ -117,7 +104,7 @@ def reconfigure(
         out_stream.write('{"result": "unsat"}\n')
 
 
-def validate(
+def run_validate(
         features,
         initial_features,
         contexts,
@@ -173,7 +160,7 @@ def validate(
         out_stream.write('{"result":"valid"}\n')
 
 
-def explain(
+def run_explain(
         features,
         initial_features,
         contexts,
@@ -231,7 +218,7 @@ def explain(
         out_stream.write("\n")
 
 
-def check_interface(features, contexts, attributes, constraints, contexts_constraints,
+def run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                 interface, out_stream):
     """Check if the interface given is a proper interface
     """
@@ -387,48 +374,56 @@ def translate_constraints(pair):
     return toSMT2(d["formula"]),d["features"]
 
 
-def main(argv):
-    """Main procedure """
-    output_file = ""
+
+
+@click.command()
+@click.argument('input_file',
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, writable=False, readable=True, resolve_path=True))
+@click.option('--num-of-process', '-p', type=click.INT, default=1,
+              help='Number of process to use for translating the dependencies.')
+@click.option('--output-file', '-o',
+              type=click.Path(exists=False, file_okay=True, dir_okay=False, writable=True, readable=True, resolve_path=True),
+              help='Output file - Otherwise the output is printed on stdout.')
+@click.option('--keep', '-k', is_flag=True,
+              help="Do not convert dependencies into SMT formulas.")
+@click.option('--verbose', '-v', is_flag=True,
+              help="Print debug messages.")
+@click.option('--validate', is_flag=True,
+              help="Activate the validation mode to check if for all context the FM is not void.")
+@click.option('--explain', is_flag=True,
+              help="Tries to explain why a FM is void.")
+@click.option('--check-interface',
+              default="",
+              help="Checks if the interface given as additional file is a proper interface.")
+def main(input_file,
+         num_of_process,
+         output_file,
+         keep,
+         verbose,
+         validate,
+         explain,
+         check_interface):
+    """
+    INPUT_FILE Json input file
+    """
+
     modality = "" # default modality is to proceed with the reconfiguration
     interface_file = ""
-    num_of_process = 1
 
-    try:
-        opts, args = getopt.getopt(argv, "ho:vkp:", ["help", "ofile=", "verbose", "keep", "validate", "explain", "check-interface=","par_parse="])
-    except getopt.GetoptError as err:
-        print str(err)
-        usage()
-        sys.exit(1)
-    for opt, arg in opts:
-        if opt in ('-h', "--help"):
-            usage()
-            sys.exit()
-        elif opt in ("-o", "--ofile"):
-            output_file = arg
-        elif opt in ("-k", "--keep"):
-            global KEEP
-            KEEP = True
-        elif opt == "--validate":
-            modality = "validate"
-        elif opt == "--explain":
-            modality = "explain"
-        elif opt == "--check-interface":
-            modality = "check-interface"
-            interface_file = os.path.abspath(arg)
-            assert arg > 0
-        elif opt in ("-p", "--par_parse"):
-            num_of_process = int(arg)
-        elif opt in ("-v", "--verbose"):
-            log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
-            log.info("Verbose output.")
+    if keep:
+        global KEEP
+        KEEP = True
+    if validate:
+        modality = "validate"
+    if explain:
+        modality = "explain"
+    if check_interface:
+        modality = "check-interface"
+        interface_file = check_interface
+    if verbose:
+        log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
+        log.info("Verbose output.")
 
-    if len(args) != 1:
-        print "one arguments is required"
-        usage()
-        sys.exit(1)
-
-    input_file = os.path.abspath(args[0])
     out_stream = sys.stdout
     if output_file:
         out_stream = open(output_file, "w")
@@ -529,19 +524,19 @@ def main(argv):
                 sys.exit(1)
 
     if modality == "validate":
-        validate(features, initial_features, contexts, attributes, constraints,
+        run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, out_stream)
     elif modality == "explain":
-        explain(features, initial_features, contexts, attributes, constraints,
-                 preferences, data, out_stream)
+        run_explain(features, initial_features, contexts, attributes, constraints,
+                preferences, data, out_stream)
     elif modality == "check-interface":
-        check_interface(features, contexts, attributes, constraints, contexts_constraints,
+        run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), out_stream)
     else:
-        reconfigure(features, initial_features, contexts, attributes, constraints, preferences, out_stream)
+        run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences, out_stream)
 
     log.info("Program Succesfully Ended")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
