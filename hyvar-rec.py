@@ -91,6 +91,11 @@ def run_reconfigure(
             solver.minimize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in features.difference(initial_features)]))
         else:
             solver.minimize(z3.Sum([z3.Int(i) for i in features.difference(initial_features)]))
+
+    log.info("Add preference: minimize the values of the attributes")
+    for i in attributes.keys():
+        solver.minimize(z3.Int(i))
+
     log.debug(unicode(solver))
 
     log.info("Computing reconfiguration")
