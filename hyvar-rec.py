@@ -38,6 +38,14 @@ def toSMT2(f, status="unknown", name="benchmark", logic=""):
   return z3.Z3_benchmark_to_smtlib_string(f.ctx_ref(), name, logic, status, "", 0, v, f.as_ast()).replace(
       "\n"," ").replace("(check-sat)","").replace("; benchmark (set-info :status unknown)","").strip()
 
+def get_true_boolean_features_from_model(model):
+    ls = []
+    for decl in model.decls():
+        if z3.is_true(model[decl]):
+            m = re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$', decl.sexpr())
+            if m:
+                ls.append(m.group(1))
+    return ls
 
 def run_reconfigure(
         features,
@@ -106,9 +114,7 @@ def run_reconfigure(
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
         if features_as_boolean:
-            for decl in model.decls():
-                if z3.is_true(model[decl]):
-                    out["features"].append(re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$',decl.sexpr()).group(1))
+            out["features"].extend(get_true_boolean_features_from_model(model))
         else:
             for i in features:
                 if model[z3.Int(i)] == z3.IntVal(1):
@@ -228,9 +234,7 @@ def run_explain(
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
         if features_as_boolean:
-            for decl in model.decls():
-                if z3.is_true(model[decl]):
-                    out["features"].append(re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$',decl.sexpr()).group(1))
+            out["features"].extend(get_true_boolean_features_from_model(model))
         else:
             for i in features:
                 if model[z3.Int(i)] == z3.IntVal(1):
