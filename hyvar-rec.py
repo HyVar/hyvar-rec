@@ -106,9 +106,9 @@ def run_reconfigure(
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
         if features_as_boolean:
-            for i in features:
-                if model[z3.Bool(i)] == z3.BoolVal(True):
-                    out["features"].append(i)
+            for decl in model.decls():
+                if z3.is_true(model[decl]):
+                    out["features"].append(re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$',decl.sexpr()).group(1))
         else:
             for i in features:
                 if model[z3.Int(i)] == z3.IntVal(1):
@@ -228,9 +228,9 @@ def run_explain(
         model = solver.model()
         out = {"result": "sat", "features": [], "attributes": []}
         if features_as_boolean:
-            for i in features:
-                if model[z3.Bool(i)] == z3.BoolVal(True):
-                    out["features"].append(i)
+            for decl in model.decls():
+                if z3.is_true(model[decl]):
+                    out["features"].append(re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$',decl.sexpr()).group(1))
         else:
             for i in features:
                 if model[z3.Int(i)] == z3.IntVal(1):
@@ -261,6 +261,7 @@ def run_check_interface(features,
                         out_stream):
     """Check if the interface given is a proper interface
     """
+    # todo possibility of using interface where features are given as boolean and not int
     # handle FM contexts_constraints
     i_features = set()
     i_contexts = {}
@@ -379,6 +380,7 @@ def run_check_interface(features,
 
     log.info("Add forall fatures and attributes not formula")
     if features_as_boolean:
+        #todo fix print when features are given as booleans
         solver.add(z3.ForAll(
             [z3.Bool(i) for i in features if i not in i_features] +
             [z3.Int(i) for i in attributes.keys() if i not in i_attributes.keys()],
