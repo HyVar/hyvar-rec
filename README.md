@@ -133,6 +133,41 @@ The output obtained is a JSON object having the JSON schema spec/hyvar_output_va
 In particular, when the interface is not a valid interface hyvar-rec returns the context, features,
 and attributes that can not be extended in the SPL S.
 
+Features as Booleans
+--------------------
+It is possible to use HyVarRec in explain and reconfiguring modality by giving features directly
+as booleans by using the option --features-as-boolean. In this case the feature name needs to
+match the regular expression ".[0-9]+".
+
+For example: the constraint 'feature[f111] = 1' can be encoded as 'f111'
+
+Direct encoding into SMT formulas
+---------------------------------
+
+For performances reason it is possible to enter the formulas directly into SMT format.
+
+For example the constraint 'feature[f111] = 1' can be encoded as follows.
+
+```
+"smt_constraints" : {
+		"formulas": ["(declare-fun f111 () Int) (assert  (= f111 1))"],
+    "features": ["_id0"]
+		}
+```
+
+The keyword "features" is used to add all the feature introduced by the constraints.
+
+If the --features-as-boolean option is activated then the constraint can be enter as follows.
+
+```
+"smt_constraints" : {
+		"formulas": ["(declare-fun f111 () Bool) (assert  (= f111))"],
+    "features": []
+		}
+```
+
+Note that in this case it is not needed to specify the list of the features introduced.
+
 Limitations
 ------------
 The interface can not define SMT constraints when used in --check-interface mode
