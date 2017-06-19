@@ -1,0 +1,29 @@
+{  
+  "attributes":[  
+
+  ],
+  "contexts":[  
+
+  ],
+  "configuration":{  
+    "selectedFeatures":[  
+      "feature[_a]"
+    ],
+    "attribute_values":[  
+
+    ],
+    "context_values":[  
+
+    ]
+  },
+  "constraints":[  
+    "feature[_a] = 1",
+    "feature[_b] = 1 impl (feature[_a] = 1)"
+  ],
+  "preferences":[  
+    "( feature[_b] + feature[_a] )"
+  ],
+  "context_constraints":[  
+
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "attributes": [
+    {
+      "id": "attribute[att3]",
+      "min": 0,
+      "max": 300,
+      "featureId": "feature[f0]"
+    },
+    {
+      "id": "attribute[att8]",
+      "min": 0,
+      "max": 1,
+      "featureId": "feature[f0]"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "context[c0]",
+      "min": 0,
+      "max": 1
+    },
+    {
+      "id": "context[c1]",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "id": "context[c2]",
+      "min": 0,
+      "max": 10
+    },
+    {
+      "id": "context[c3]",
+      "min": 0,
+      "max": 23
+    }
+  ],
+  "configuration": {
+    "selectedFeatures": [
+      "feature[f0]"
+    ],
+    "attribute_values": [
+      {
+        "id": "attribute[att3]",
+        "value": 0
+      },
+      {
+        "id": "attribute[att8]",
+        "value": 0
+      }
+    ],
+    "context_values": [
+      {
+      "id": "context[c0]",
+      "value": 1
+      },
+      {
+        "id": "context[c1]",
+        "value": 60
+      },
+      {
+        "id": "context[c2]",
+        "value": 2
+      },
+      {
+        "id": "context[c3]",
+        "value": 17
+      }
+    ]
+  },
+  "constraints":[
+    "feature[f0]",
+    "feature[f0] impl (feature[f1] and feature[f2])",
+    "(feature[f13] or feature[f14]  or feature[f15] ) impl feature[f1] ",
+    "feature[f1]  impl (feature[f13] or feature[f14] or feature[f15] )",
+    "(feature[f16]  or feature[f17] ) impl feature[f2] ",
+    "feature[f2]  impl (feature[f16] or feature[f17] )",
+    "(feature[f18]  or feature[f19]  or feature[f20] ) impl feature[f12] ",
+    "feature[f12]  impl (feature[f18] or feature[f19] or feature[f20] )",
+    "feature[f4] iff (feature[f5] or feature[f6])",
+    "feature[f8] iff (feature[f9] or feature[f10] or feature[f11])",
+    "(feature[f13]  impl feature[f17] )",
+    "(feature[f7]  impl feature[f11] )",
+    "(feature[f6]  impl feature[f11] )",
+    "(feature[f3]  impl (((context[c0] =  1 ) impl (attribute[att3] <=  80 ))))",
+    "(feature[f14]  impl (context[c1] <  50 ))",
+    "(feature[f15]  impl (context[c1] <  50 ))",
+    "(feature[f19]  impl (context[c1] <  50 ))",
+    "(feature[f20]  impl (context[c1] <  50 ))",
+    "(feature[f16]  impl (context[c1] <  50 ))",
+    "(feature[f8]  impl (((context[c3] >=  18 ) impl (attribute[att8] =  1 ))))"
+  ],
+  "preferences":[
+    "(feature[f8]  impl (((context[c3] >=  16 ) impl (attribute[att8] =  1 ))))",
+    "(feature[f13] ) or (feature[f17] ) or (feature[f18] )",
+    "feature[f7] ",
+    "feature[f11] ",
+    "feature[f3] ",
+    "feature[f6] ",
+    "feature[f4] ",
+    "max(attribute[att3])"
+  ]
+}
