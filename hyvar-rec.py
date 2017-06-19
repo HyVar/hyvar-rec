@@ -55,10 +55,12 @@ def run_reconfigure(
         constraints,
         preferences,
         features_as_boolean,
+        timeout,
         out_stream):
     """Perform the reconfiguration task
     """
     solver = z3.Optimize()
+
     log.info("Add variables")
     if not features_as_boolean:
         for i in features:
@@ -105,6 +107,9 @@ def run_reconfigure(
         solver.minimize(z3.Int(i))
 
     log.debug(unicode(solver))
+
+    if timeout > 0:
+        solver.set("timeout", timeout)
 
     log.info("Computing reconfiguration")
     result = solver.check()
@@ -258,6 +263,9 @@ def run_explain(
     """
     solver = z3.Solver()
     solver.set(unsat_core=True)
+
+    # minimize the explanations
+    solver.set("smt.core.minimize",True)
 
     log.info("Add variables")
     if not features_as_boolean:
@@ -510,6 +518,8 @@ def translate_constraints(triple):
               help="Require features in constraints defined as booleans.")
 @click.option('--check-features', is_flag=True,
               help="Starts the check to list all the mandatory and dead features.")
+@click.option('--timeout', type=click.INT, default=0,
+              help="Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in reconfiguration mode.")
 def main(input_file,
          num_of_process,
          output_file,
@@ -519,7 +529,8 @@ def main(input_file,
          explain,
          check_interface,
          features_as_boolean,
-         check_features):
+         check_features,
+         timeout):
     """
     INPUT_FILE Json input file
     """
@@ -670,7 +681,7 @@ def main(input_file,
                 out_stream)
     else:
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
-                        features_as_boolean, out_stream)
+                        features_as_boolean, timeout, out_stream)
 
     log.info("Program Succesfully Ended")
 
