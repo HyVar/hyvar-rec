@@ -15,7 +15,7 @@ optimization problems involved in the reconfiguration.
 Requirement to install HyVarRec from sources:
  - Python 2.7
  - antlr4-python2-runtime and click modules for python
- - Z3 (https://github.com/Z3Prover/z3)
+ - Z3 Version 4.5.0 or above (https://github.com/Z3Prover/z3)
 
 Docker Installation & Use as a Service
 ----------------------
@@ -107,7 +107,9 @@ that makes the FM void.
 The answer is a JSON object having the schema defined in spec/hyvar_output_explain.json.
 Basically, in the field "result" it will report if the FM is void or not (either "sat" or "unsat").
 If the FM is void with the keyword "constraints" the list of the constraint responsible for the
-voidness of the FM is returned.
+voidness of the FM is returned. Note that the list of constraints in minimal but not minimum (i.e.,
+all the constraints are needed to prove the FV voidness but there may be other smaller subset of
+constraints that could explain the voidness).
 
 Check Features Modality
 ----------------------
