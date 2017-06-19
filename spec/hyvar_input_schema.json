@@ -1,26 +1,26 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "properties": {
-    "attributes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "properties":{
+    "attributes":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "properties":{
+          "id":{
+            "type":"string"
           },
-          "min": {
-            "type": "integer"
+          "min":{
+            "type":"integer"
           },
-          "max": {
-            "type": "integer"
+          "max":{
+            "type":"integer"
           },
-          "featureId": {
-            "type": "string"
+          "featureId":{
+            "type":"string"
           }
         },
-        "required": [
+        "required":[
           "id",
           "min",
           "max",
@@ -28,101 +28,121 @@
         ]
       }
     },
-    "contexts": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
+    "contexts":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "properties":{
+          "id":{
+            "type":"string"
           },
-          "min": {
-            "type": "integer"
+          "min":{
+            "type":"integer"
           },
-          "max": {
-            "type": "integer"
+          "max":{
+            "type":"integer"
           }
         },
-        "required": [
+        "required":[
           "id",
           "min",
           "max"
         ]
       }
     },
-    "configuration": {
-      "type": "object",
-      "properties": {
-        "selectedFeatures": {
-          "type": "array",
-          "items": {
-            "type": "string"
+    "configuration":{
+      "type":"object",
+      "properties":{
+        "selectedFeatures":{
+          "type":"array",
+          "items":{
+            "type":"string"
           }
         },
-        "attribute_values": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
+        "attribute_values":{
+          "type":"array",
+          "items":{
+            "type":"object",
+            "properties":{
+              "id":{
+                "type":"string"
               },
-              "value": {
-                "type": "integer"
+              "value":{
+                "type":"integer"
               }
             },
-            "required": [
+            "required":[
               "id",
               "value"
             ]
           }
         },
-        "context_values": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
+        "context_values":{
+          "type":"array",
+          "items":{
+            "type":"object",
+            "properties":{
+              "id":{
+                "type":"string"
               },
-              "value": {
-                "type": "integer"
+              "value":{
+                "type":"integer"
               }
             },
-            "required": [
+            "required":[
               "id",
               "value"
             ]
           }
         }
       },
-      "required": [
+      "required":[
         "selectedFeatures",
         "attribute_values",
         "context_values"
       ]
     },
-    "constraints": {
-      "type": "array",
-      "items": {
-        "type": "string"
+    "constraints":{
+      "type":"array",
+      "items":{
+        "type":"string"
       }
     },
-    "preferences": {
-      "description": "list of expression to minimize",
-      "type": "array",
-      "items": {
-        "type": "string"
+    "preferences":{
+      "description":"list of expression to minimize",
+      "type":"array",
+      "items":{
+        "type":"string"
       }
     },
-    "context_constraints": {
-      "type": "array",
-      "items": {
-        "type": "string"
+    "smt_constraints":{
+      "description":"constraints given in smt format (faster to parse)",
+      "properties":{
+        "features":{
+          "description":"declared features. Not needed in case the option --features-as-boolean is selected",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "formulas":{
+          "description":"list of constraints in SMTLib 2 format",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object"
+    },
+    "context_constraints":{
+      "type":"array",
+      "items":{
+        "type":"string"
       }
     }
   },
-  "required": [
+  "required":[
     "attributes",
     "contexts",
     "configuration",

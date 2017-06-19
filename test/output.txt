@@ -7,3 +7,6 @@
 {"contexts": [{"id": "_idc0", "value": "1"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "0"}], "attributes": [], "result": "not_valid", "features": [{"id": "_id15", "value": "1"}, {"id": "_id0", "value": "1"}]}
 {"attributes": [], "result": "sat", "features": ["_b", "_a"]}
 {"attributes": [{"id": "att3", "value": "80"}, {"id": "att8", "value": "0"}], "result": "sat", "features": ["f11", "f6", "f7", "f3", "f2", "f8", "f4", "f17", "f13", "f1", "f0"]}
+{"dead_features": [], "mandatory_features": ["_id0", "_id1", "_id2"]}
+{"dead_features": ["_id8", "_id9", "_id4", "_id5", "_id6", "_id7", "_id0", "_id1", "_id2", "_id3", "_id15", "_id18", "_id19", "_id16", "_id17", "_id14", "_id20", "_id12", "_id13", "_id10", "_id11"], "mandatory_features": []}
+{"attributes": [{"id": "_idatt8", "value": "1"}, {"id": "_idatt3", "value": "80"}], "result": "sat", "features": ["_id8", "_id4", "_id6", "_id7", "_id0", "_id1", "_id2", "_id3", "_id18", "_id17", "_id12", "_id13", "_id11"]}

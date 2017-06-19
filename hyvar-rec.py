@@ -128,6 +128,58 @@ def run_reconfigure(
         out_stream.write('{"result": "unsat"}\n')
 
 
+def run_feature_analysis(
+        features,
+        contexts,
+        attributes,
+        constraints,
+        out_stream):
+    """
+    Performs the feature analysis task.
+    Assumes the interface with non boolean features
+    """
+    solver = z3.Solver()
+    log.info("Add variables")
+    for i in features:
+        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    for i in attributes.keys():
+        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
+    for i in contexts.keys():
+        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
+
+    log.info("Add constraints")
+    for i in constraints:
+        solver.add(i)
+
+    log.debug(unicode(solver))
+
+    log.info("Computing dead or mandatory features")
+    data = { "dead_features" : [], "mandatory_features" : []}
+    dead_features = []
+    mandatory_feature = []
+    for i in features:
+        solver.push()
+        solver.add(z3.Int(i).__eq__(z3.IntVal(1)))
+        result = solver.check()
+        if result == z3.unsat:
+            data["dead_features"].append(i)
+        else:
+            solver.pop()
+            solver.push()
+            solver.add(z3.Int(i).__eq__(z3.IntVal(0)))
+            result = solver.check()
+            if result == z3.unsat:
+                data["mandatory_features"].append(i)
+        solver.pop()
+
+
+
+
+    log.info("Printing output")
+    json.dump(data, out_stream)
+    out_stream.write("\n")
+
+
 def run_validate(
         features,
         initial_features,
@@ -456,6 +508,8 @@ def translate_constraints(triple):
               help="Checks if the interface given as additional file is a proper interface.")
 @click.option('--features-as-boolean', is_flag=True,
               help="Require features in constraints defined as booleans.")
+@click.option('--check-features', is_flag=True,
+              help="Starts the check to list all the mandatory and dead features.")
 def main(input_file,
          num_of_process,
          output_file,
@@ -464,7 +518,8 @@ def main(input_file,
          validate,
          explain,
          check_interface,
-         features_as_boolean):
+         features_as_boolean,
+         check_features):
     """
     INPUT_FILE Json input file
     """
@@ -472,9 +527,15 @@ def main(input_file,
     modality = "" # default modality is to proceed with the reconfiguration
     interface_file = ""
 
-    if keep:
-        global KEEP
-        KEEP = True
+    # only one modality can be active
+    if sum([validate,explain,check_features,(len(check_interface) > 0)]) > 1:
+        log.critical("Only one flag among validate, explain, check-interface, and check-feature can be selected.")
+        sys.exit(1)
+
+    if check_interface and features_as_boolean:
+        log.critical("Features check-interface and features-as-boolean are incompatible, only one can be selected.")
+        sys.exit(-1)
+
     if validate:
         modality = "validate"
     if explain:
@@ -482,9 +543,15 @@ def main(input_file,
     if check_interface:
         modality = "check-interface"
         interface_file = check_interface
+    if check_features:
+        modality = "check-features"
     if verbose:
         log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
         log.info("Verbose output.")
+
+    if keep:
+        global KEEP
+        KEEP = True
 
     out_stream = sys.stdout
     if output_file:
@@ -594,6 +661,13 @@ def main(input_file,
     elif modality == "check-interface":
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), features_as_boolean, out_stream)
+    elif modality == "check-features":
+        run_feature_analysis(
+                features,
+                contexts,
+                attributes,
+                constraints,
+                out_stream)
     else:
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
                         features_as_boolean, out_stream)

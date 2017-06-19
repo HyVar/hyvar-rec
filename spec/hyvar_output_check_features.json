@@ -1,0 +1,24 @@
+{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "properties":{
+    "dead_features":{
+      "description":"list of dead features",
+      "items":{
+        "type":"string"
+      },
+      "type":"array"
+    },
+    "mandatory_features":{
+      "description":"list of mandatory features",
+      "items":{
+        "type":"string"
+      },
+      "type":"array"
+    }
+  },
+  "type":"object",
+  "required":[
+    "dead_features",
+    "mandatory_features"
+  ]
+}

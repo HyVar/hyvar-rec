@@ -109,6 +109,23 @@ Basically, in the field "result" it will report if the FM is void or not (either
 If the FM is void with the keyword "constraints" the list of the constraint responsible for the
 voidness of the FM is returned.
 
+Check Featues Modality
+----------------------
+
+hyvar-rec can be used to provide the list of the dead and mandatory features.
+Dead features are those that can not be selected. Mandatory features instead are those that are not dead and must
+be always selected to have a valid configuration.
+The check can be done by running the following POST request.
+
+```
+curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PORT>/check_features
+```
+
+where \<JSON\> is the json input file as specified in the input format.
+In this case, the information related to the initial configuration are discarded.
+
+The answer is a JSON object having the schema defined in spec/hyvar_output_check_features.json.
+
 MSPL: Interface Check
 ----------------------
 hyvar-rec allows to validate if a given I SPL is an interface of another SPL S. Being an interface
