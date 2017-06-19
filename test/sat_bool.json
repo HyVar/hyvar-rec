@@ -99,5 +99,6 @@
     "feature[f6] ",
     "feature[f4] ",
     "max(attribute[att3])"
-  ]
+  ],
+	"hyvar_options" : ["--features-as-boolean"]
 }

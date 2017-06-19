@@ -62,7 +62,13 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
-		command_request.args[1] = json_input_file;
+  	    if (is_defined(request.hyvar_options)) {
+  	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
+	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
+	            command_request.args[#command_request.args] = request.hyvar_options._[i]
+            }
+        };
+		command_request.args[#command_request.args] = json_input_file;
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(json_input_file)();

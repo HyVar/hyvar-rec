@@ -1,38 +1,38 @@
-# hyvar-rec
+# HyVarRec
 
-hyvar-rec is a tool that allows to reconfigure an existing configuration 
+HyVarRec is a tool that allows to reconfigure an existing configuration 
 for a given SPL when it is subject to contextual changes.
 
-Given an existing configuration C with its features and attributes, hyvar-rec
+Given an existing configuration C with its features and attributes, HyVarRec
 returns the best configuration that maximises the user preferences and is
 the most similar to the initial configuration C.
 
-hyvar-rec uses the SMT solver Z3 to solve the
+HyVarRec uses the SMT solver Z3 to solve the
 optimization problems involved in the reconfiguration.
 
 ----
 
-Requirement to install hyvar-rec from sources:
+Requirement to install HyVarRec from sources:
  - Python 2.7
- - antlr4-python2-runtime module for python
+ - antlr4-python2-runtime and click modules for python
  - Z3 (https://github.com/Z3Prover/z3)
 
 Docker Installation & Use as a Service
 ----------------------
-hyvar-rec could be installed using docker container technology
+HyVarRec could be installed using docker container technology
 (https://www.docker.com/) available for the majority of the operating systems.
 It can therefore be used simply sending a post request to the server deployed
 by using docker.
 
 The file to build the docker images is contained in the docker folder. In the
-following we will give the instructions to deploy hyvar-rec locally via docker
+following we will give the instructions to deploy HyVarRec locally via docker
 assuming the use of a Linux machine.  Similar task can be performed on other
 operating systems and we invite the interested user to consult the docker
 manual to find out how to perform the same task on his/her operating system.
 
 The Dockerfile needed to generate the container image is stored in the
 docker subfolder. Assuming Docker is installed and \<PATH\> is the path to
-the hyvar-rec folder, it is possible to deploy hyvar-rec with:
+the HyVarRec folder, it is possible to deploy HyVarRec with:
 
 ```
 sudo docker build -t hyvarrec <PATH>/docker
@@ -67,7 +67,7 @@ For more information, please see the Docker documentation at docs.docker.com
 
 Input Specification
 ----------------------
-hyvar-rec requires a unique JSON file in input that formalizes the FM, the
+HyVarRec requires a unique JSON file in input that formalizes the FM, the
 initial configuration, the contextual information, and the user preferences.
 All these information are encoded into a JSON object following the JSON
 schema defined in spec/hyvar_input_schema.json.
@@ -78,7 +78,7 @@ the schema defined in spec/hyvar_output_schema.json.
 Validate and Explain Modalities
 ----------------------
 
-hyvar-rec can also be used to check if a given FM is non void for all the possible context.
+HyVarRec can also be used to check if a given FM is non void for all the possible context.
 This can be done by running the following POST request.
 
 ```
@@ -93,7 +93,7 @@ Basically, in the field "result" it will report the result of the analysis (eith
 If the FM is void for certain context then the output will also provide the list of one context
 assignment that makes the model void.
 
-When a model is void hyvar-rec can be used to check the set of constraints that makes the model void.
+When a model is void HyVarRec can be used to check the set of constraints that makes the model void.
 This can be done by running the following POST request.
 
 ```
@@ -109,11 +109,12 @@ Basically, in the field "result" it will report if the FM is void or not (either
 If the FM is void with the keyword "constraints" the list of the constraint responsible for the
 voidness of the FM is returned.
 
-Check Featues Modality
+Check Features Modality
 ----------------------
 
-hyvar-rec can be used to provide the list of the dead and mandatory features.
-Dead features are those that can not be selected. Mandatory features instead are those that are not dead and must
+HyVarRec can be used to provide the list of the dead and mandatory features.
+Dead features are those for which in any context they can not be selected.
+Mandatory features instead are those that are not dead and for any context they must
 be always selected to have a valid configuration.
 The check can be done by running the following POST request.
 
@@ -128,7 +129,7 @@ The answer is a JSON object having the schema defined in spec/hyvar_output_check
 
 MSPL: Interface Check
 ----------------------
-hyvar-rec allows to validate if a given I SPL is an interface of another SPL S. Being an interface
+HyVarRec allows to validate if a given I SPL is an interface of another SPL S. Being an interface
 means that every configuration of I can be extended to form a valid configuration of S.
   
 This can be done by running the following POST request.
@@ -140,23 +141,31 @@ curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PO
 where \<JSON\> is a JSON file defining both the software product lines.
 In particular, assuming { I } is the JSON object defining the FM of I and { S } the feature model
 defining the FM of S according to the json schema in spec/hyvar_input_schema.json, the JSON input
-to submit to hyvar-rec is the following one.
+to submit to HyVarRec is the following one.
  
 ```
 { "interface" : { I }, "spl" : { S } }
 ```
 
 The output obtained is a JSON object having the JSON schema spec/hyvar_output_validate.json.
-In particular, when the interface is not a valid interface hyvar-rec returns the context, features,
+In particular, when the interface is not a valid interface HyVarRec returns the context, features,
 and attributes that can not be extended in the SPL S.
 
 Features as Booleans
 --------------------
-It is possible to use HyVarRec in explain and reconfiguring modality by giving features directly
+It is possible to use HyVarRec in explain and reconfiguring modality by entering features directly
 as booleans by using the option --features-as-boolean. In this case the feature name needs to
 match the regular expression ".[0-9]+".
 
 For example: the constraint 'feature[f111] = 1' can be encoded as 'f111'
+
+To activate the --features-as-boolean option using the HTTP interface the JSON input should be
+extended with the following property when used in reconfiguration modality.
+
+```
+"hyvar_options" : ["--features-as-boolean"]
+```
+
 
 Direct encoding into SMT formulas
 ---------------------------------
@@ -185,8 +194,6 @@ If the --features-as-boolean option is activated then the constraint can be ente
 
 Note that in this case it is not needed to specify the list of the features introduced.
 
-Limitations
+Limitations & Notes
 ------------
-The interface can not define SMT constraints when used in --check-interface mode
-
-Operator have left associativity x + x * y is interpreted as (x + x) * y
+Operator have left associativity: e.g., x + x * y is interpreted as (x + x) * y
