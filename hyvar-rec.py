@@ -251,13 +251,12 @@ def run_validate(
 
 def run_explain(
         features,
-        initial_features,
         contexts,
         attributes,
         constraints,
-        preferences,
         data,
         features_as_boolean,
+        constraints_minimization,
         out_stream):
     """Get the explanation of the unsat of the FM model
     """
@@ -265,7 +264,8 @@ def run_explain(
     solver.set(unsat_core=True)
 
     # minimize the explanations
-    solver.set("smt.core.minimize",True)
+    if constraints_minimization:
+        solver.set("smt.core.minimize",True)
 
     log.info("Add variables")
     if not features_as_boolean:
@@ -520,6 +520,10 @@ def translate_constraints(triple):
               help="Starts the check to list all the mandatory and dead features.")
 @click.option('--timeout', type=click.INT, default=0,
               help="Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in reconfiguration mode.")
+@click.option('--constraints-minimization', is_flag=True,
+              help="Try to produce a minimal explanation. Option valid only in explanation mode.")
+
+
 def main(input_file,
          num_of_process,
          output_file,
@@ -530,7 +534,8 @@ def main(input_file,
          check_interface,
          features_as_boolean,
          check_features,
-         timeout):
+         timeout,
+         constraints_minimization):
     """
     INPUT_FILE Json input file
     """
@@ -667,8 +672,8 @@ def main(input_file,
         run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
     elif modality == "explain":
-        run_explain(features, initial_features, contexts, attributes, constraints,
-                preferences, data, features_as_boolean, out_stream)
+        run_explain(features, contexts, attributes, constraints,
+                data, features_as_boolean, constraints_minimization, out_stream)
     elif modality == "check-interface":
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), features_as_boolean, out_stream)

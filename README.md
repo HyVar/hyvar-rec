@@ -107,9 +107,8 @@ that makes the FM void.
 The answer is a JSON object having the schema defined in spec/hyvar_output_explain.json.
 Basically, in the field "result" it will report if the FM is void or not (either "sat" or "unsat").
 If the FM is void with the keyword "constraints" the list of the constraint responsible for the
-voidness of the FM is returned. Note that the list of constraints in minimal but not minimum (i.e.,
-all the constraints are needed to prove the FV voidness but there may be other smaller subset of
-constraints that could explain the voidness).
+voidness of the FM is returned. Note that it is possible to select the option --constraints-minimization
+to get the minimal (not minimum) explanation.
 
 Check Features Modality
 ----------------------
