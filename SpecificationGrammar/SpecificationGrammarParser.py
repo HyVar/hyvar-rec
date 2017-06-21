@@ -1,12 +1,13 @@
-# Generated from SpecificationGrammar.g4 by ANTLR 4.6
+# Generated from SpecificationGrammar.g4 by ANTLR 4.7
 # encoding: utf-8
 from __future__ import print_function
 from antlr4 import *
 from io import StringIO
+import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write(u"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3")
+        buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
         buf.write(u"\37R\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write(u"\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\2\3\2\3\2")
         buf.write(u"\3\2\5\2\35\n\2\3\3\3\3\3\3\3\4\3\4\3\4\7\4%\n\4\f\4")
@@ -15,9 +16,9 @@ def serializedATN():
         buf.write(u"\13\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t")
         buf.write(u"\3\t\3\t\5\tN\n\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20")
         buf.write(u"\22\2\7\3\2\21\22\4\2\t\13\17\20\3\2\24\31\3\2\32\34")
-        buf.write(u"\3\2\r\16R\2\34\3\2\2\2\4\36\3\2\2\2\6!\3\2\2\2\b*\3")
-        buf.write(u"\2\2\2\n\60\3\2\2\2\f\62\3\2\2\2\16\67\3\2\2\2\20M\3")
-        buf.write(u"\2\2\2\22O\3\2\2\2\24\35\5\4\3\2\25\26\t\2\2\2\26\27")
+        buf.write(u"\3\2\r\16\2R\2\34\3\2\2\2\4\36\3\2\2\2\6!\3\2\2\2\b*")
+        buf.write(u"\3\2\2\2\n\60\3\2\2\2\f\62\3\2\2\2\16\67\3\2\2\2\20M")
+        buf.write(u"\3\2\2\2\22O\3\2\2\2\24\35\5\4\3\2\25\26\t\2\2\2\26\27")
         buf.write(u"\7\3\2\2\27\30\7\4\2\2\30\31\7\35\2\2\31\32\7\5\2\2\32")
         buf.write(u"\33\7\6\2\2\33\35\7\2\2\3\34\24\3\2\2\2\34\25\3\2\2\2")
         buf.write(u"\35\3\3\2\2\2\36\37\5\6\4\2\37 \7\2\2\3 \5\3\2\2\2!&")
@@ -104,9 +105,9 @@ class SpecificationGrammarParser ( Parser ):
     INT=28
     WS=29
 
-    def __init__(self, input):
-        super(SpecificationGrammarParser, self).__init__(input)
-        self.checkVersion("4.6")
+    def __init__(self, input, output=sys.stdout):
+        super(SpecificationGrammarParser, self).__init__(input, output=output)
+        self.checkVersion("4.7")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
