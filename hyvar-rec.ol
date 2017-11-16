@@ -107,7 +107,13 @@ main {
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
   	    command_request.args[1] = "--validate";
-		command_request.args[2] = json_input_file;
+  	    if (is_defined(request.hyvar_options)) {
+  	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
+	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
+	            command_request.args[#command_request.args] = request.hyvar_options._[i]
+            }
+        };
+		command_request.args[#command_request.args] = json_input_file;
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(json_input_file)();
@@ -146,7 +152,13 @@ main {
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
   	    command_request.args[1] = "--explain";
-		command_request.args[2] = json_input_file;
+  	    if (is_defined(request.hyvar_options)) {
+  	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
+	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
+	            command_request.args[#command_request.args] = request.hyvar_options._[i]
+            }
+        };
+		command_request.args[#command_request.args] = json_input_file;
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(json_input_file)();
@@ -191,8 +203,14 @@ main {
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
   	    command_request.args[1] = "--check-interface";
-  	    command_request.args[2] = interface_input_file;
-		command_request.args[3] = spl_input_file;
+  	    if (is_defined(request.hyvar_options)) {
+  	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
+	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
+	            command_request.args[#command_request.args] = request.hyvar_options._[i]
+            }
+        };
+  	    command_request.args[#command_request.args] = interface_input_file;
+		command_request.args[#command_request.args] = spl_input_file;
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(interface_input_file)();
@@ -232,7 +250,13 @@ main {
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
   	    command_request.args[1] = "--check-features";
-		command_request.args[2] = json_input_file;
+  	    if (is_defined(request.hyvar_options)) {
+  	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
+	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
+	            command_request.args[#command_request.args] = request.hyvar_options._[i]
+            }
+        };
+		command_request.args[#command_request.args] = json_input_file;
 		exec@Exec( command_request )( output );
 		// Delete input json file
 		delete@File(json_input_file)();
