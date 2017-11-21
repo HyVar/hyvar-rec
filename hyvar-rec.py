@@ -645,6 +645,14 @@ def main(input_file,
             # for explain purposes add smt_constraint to constraints
             data["constraints"].append(i)
 
+    # SMT formulas direct encoding also for preferences
+    # these preferences have the highest priority
+    # here we assume that the features are already declared
+    if "smt_preferences" in data:
+        log.info("Processing special input preferences modality. Pref added as higher priority.")
+        for i in data["smt_preferences"]:
+            preferences.append(z3.parse_smt2_string(i))
+
     log.info("Processing Preferences")
     for i in data["preferences"]:
         try:
