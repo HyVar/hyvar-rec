@@ -1,0 +1,37 @@
+{
+	"optional_features" : {
+		"_f1": [[1,4]],
+		"_f2": [[2,4]]
+	},
+	"time_context" : "_c0",
+  "attributes": [],
+  "contexts": [
+    {
+      "id": "context[_c0]",
+      "min": 0,
+      "max": 5
+    }
+  ],
+  "configuration": {
+    "selectedFeatures": [
+      "feature[_f0]"
+    ],
+    "attribute_values": [],
+    "context_values": [
+      {
+      "id": "context[_c0]",
+      "value": 0
+      }
+    ]
+  },
+  "constraints":[
+    "feature[_f0] = 1",
+		"feature[_f1] = 1 impl feature[_f0] = 1",
+		"feature[_f2] = 1 impl feature[_f0] = 1",
+		"feature[_f1] = 1 impl context[_c0] >= 1",
+		"feature[_f2] = 1 impl context[_c0] >= 2",
+		"context[_c0] = 2 impl feature[_f1] = 0",
+		"context[_c0] >= 3 impl feature[_f2] = 1"
+  ],
+  "preferences":[]
+}

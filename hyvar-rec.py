@@ -138,7 +138,9 @@ def run_feature_analysis(
         contexts,
         attributes,
         constraints,
-        out_stream):
+        optional_features,
+        out_stream,
+        time_context=""):
     """
     Performs the feature analysis task.
     Assumes the interface with non boolean features
@@ -158,27 +160,55 @@ def run_feature_analysis(
 
     log.debug(unicode(solver))
 
-    log.info("Computing dead or mandatory features")
-    data = { "dead_features" : [], "mandatory_features" : []}
-    dead_features = []
-    mandatory_feature = []
-    for i in features:
+    log.info("Computing dead or false optional features")
+    data = {"dead_features": {}, "false_optionals": {}}
+    for i in optional_features:
+        log.debug("Processing feature " + i)
         solver.push()
         solver.add(z3.Int(i).__eq__(z3.IntVal(1)))
-        result = solver.check()
-        if result == z3.unsat:
-            data["dead_features"].append(i)
-        else:
+        if time_context:
+            # compute context to consider
+            context_to_try = set([])
+            for j in optional_features[i]:
+                context_to_try.update(range(j[0],j[1]+1))
+            context_to_try = sorted(list(context_to_try))
+            log.debug("Values of time to consider: " + unicode(context_to_try))
+            for j in context_to_try:
+                solver.push()
+                solver.add(z3.Int(time_context).__eq__(z3.IntVal(j)))
+                result = solver.check()
+                if result == z3.unsat:
+                    if i in data["dead_features"]:
+                        data["dead_features"][i].append(j)
+                    else:
+                        data["dead_features"][i] = [j]
+                solver.pop()
             solver.pop()
+            # check for false optionals
             solver.push()
             solver.add(z3.Int(i).__eq__(z3.IntVal(0)))
+            for j in context_to_try:
+                solver.push()
+                solver.add(z3.Int(time_context).__eq__(z3.IntVal(j)))
+                result = solver.check()
+                if result == z3.unsat:
+                    if i in data["false_optionals"]:
+                        data["false_optionals"][i].append(j)
+                    else:
+                        data["false_optionals"][i] = [j]
+                solver.pop()
+        else: # no time context is given
             result = solver.check()
             if result == z3.unsat:
-                data["mandatory_features"].append(i)
+                data["dead_features"][i] = []
+            else:
+                solver.pop()
+                solver.push()
+                solver.add(z3.Int(i).__eq__(z3.IntVal(0)))
+                result = solver.check()
+                if result == z3.unsat:
+                    data["false_optionals"][i] = []
         solver.pop()
-
-
-
 
     log.info("Printing output")
     json.dump(data, out_stream)
@@ -583,6 +613,10 @@ def main(input_file,
     log.info("Reading input file")
     data = read_json(input_file)
 
+    # if no optional feature are given the default is that there are none specified
+    if not "optional_features" in data:
+        data["optional_features"] = {}
+
     log.info("Processing attributes")
     for i in data["attributes"]:
         id = re.match("attribute\[(.*)\]", i["id"]).group(1)
@@ -691,7 +725,9 @@ def main(input_file,
                 contexts,
                 attributes,
                 constraints,
-                out_stream)
+                data["optional_features"],
+                out_stream,
+                "" if "time_context" not in data else data["time_context"])
     else:
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
                         features_as_boolean, timeout, out_stream)
