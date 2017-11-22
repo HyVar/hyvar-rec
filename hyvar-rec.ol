@@ -40,7 +40,6 @@ inputPort ReconfiguratorService {
     Interfaces: HyVarRecInterface
 }
 
-
 /* The program waits for a request and process it.
 The operation can be process or healt
 */
@@ -55,6 +54,7 @@ main {
 		// Save JSON string into a file stored in /tmp
 		random@Math()(num);
 		json_input_file = "/tmp/" + string(num) + "_in.json";
+		json_output_file = "/tmp/" + string(num) + "_out.json";
 		write_file_request.content = json_string;
 		write_file_request.filename = json_input_file;
 		writeFile@File(write_file_request)();
@@ -62,6 +62,8 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
+  	    command_request.args[#command_request.args] = "--output-file";
+  	    command_request.args[#command_request.args] = json_output_file;
   	    if (is_defined(request.hyvar_options)) {
   	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
 	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
@@ -76,19 +78,14 @@ main {
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
-		// Extracting last line of response to get last printed solution
-		split_request = string(output);
-		split_request.regex = "\n";
-		split@StringUtils( split_request ) ( lines );
-		// The response is the last line
-		if (string(output) != "") {
-			output_string = lines.result[#lines.result -1]
-		} else {
-			output_string = "{\"no_solution\": 1}"
-		};
+		// Read file and convert into JSON value
+		read_request.filename = json_output_file;
+		//read_request.format= "json";
+        readFile@File( read_request )( output_string );
 		// Convert response into json
 		output_string.strictEncoding = true;
-		getJsonValue@JsonUtils(output_string)(response)
+		getJsonValue@JsonUtils(output_string)(response);
+		delete@File(json_output_file)()
 	} ] {nullProcess}
 
 	[ validate( request )( response ) {
@@ -99,6 +96,7 @@ main {
 		// Save JSON string into a file stored in /tmp
 		random@Math()(num);
 		json_input_file = "/tmp/" + string(num) + "_in.json";
+		json_output_file = "/tmp/" + string(num) + "_out.json";
 		write_file_request.content = json_string;
 		write_file_request.filename = json_input_file;
 		writeFile@File(write_file_request)();
@@ -106,7 +104,9 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
-  	    command_request.args[1] = "--validate";
+  	    command_request.args[#command_request.args] = "--validate";
+  	    command_request.args[#command_request.args] = "--output-file";
+  	    command_request.args[#command_request.args] = json_output_file;
   	    if (is_defined(request.hyvar_options)) {
   	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
 	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
@@ -121,19 +121,14 @@ main {
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
-		// Extracting last line of response to get last printed solution
-		split_request = string(output);
-		split_request.regex = "\n";
-		split@StringUtils( split_request ) ( lines );
-		// The response is the last line
-		if (string(output) != "") {
-			output_string = lines.result[#lines.result -1]
-		} else {
-			output_string = "{\"no_solution\": 1}"
-		};
+		// Read file and convert into JSON value
+		read_request.filename = json_output_file;
+		//read_request.format= "json";
+        readFile@File( read_request )( output_string );
 		// Convert response into json
 		output_string.strictEncoding = true;
-		getJsonValue@JsonUtils(output_string)(response)
+		getJsonValue@JsonUtils(output_string)(response);
+		delete@File(json_output_file)()
 	} ] {nullProcess}
 
 	[ explain( request )( response ) {
@@ -144,6 +139,7 @@ main {
 		// Save JSON string into a file stored in /tmp
 		random@Math()(num);
 		json_input_file = "/tmp/" + string(num) + "_in.json";
+		json_output_file = "/tmp/" + string(num) + "_out.json";
 		write_file_request.content = json_string;
 		write_file_request.filename = json_input_file;
 		writeFile@File(write_file_request)();
@@ -151,7 +147,9 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
-  	    command_request.args[1] = "--explain";
+  	    command_request.args[#command_request.args] = "--explain";
+  	    command_request.args[#command_request.args] = "--output-file";
+  	    command_request.args[#command_request.args] = json_output_file;
   	    if (is_defined(request.hyvar_options)) {
   	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
 	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
@@ -166,19 +164,14 @@ main {
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
-		// Extracting last line of response to get last printed solution
-		split_request = string(output);
-		split_request.regex = "\n";
-		split@StringUtils( split_request ) ( lines );
-		// The response is the last line
-		if (string(output) != "") {
-			output_string = lines.result[#lines.result -1]
-		} else {
-			output_string = "{\"no_solution\": 1}"
-		};
+		// Read file and convert into JSON value
+		read_request.filename = json_output_file;
+		//read_request.format= "json";
+        readFile@File( read_request )( output_string );
 		// Convert response into json
 		output_string.strictEncoding = true;
-		getJsonValue@JsonUtils(output_string)(response)
+		getJsonValue@JsonUtils(output_string)(response);
+		delete@File(json_output_file)()
 	} ] {nullProcess}
 
 	[ check_interface( request )( response ) {
@@ -187,10 +180,10 @@ main {
 		getJsonString@JsonUtils(request.interface)(json_string);
 		random@Math()(num);
 		interface_input_file = "/tmp/" + string(num) + "_in.json";
+		json_output_file = "/tmp/" + string(num) + "_out.json";
 		write_file_request.content = json_string;
 		write_file_request.filename = interface_input_file;
 		writeFile@File(write_file_request)();
-
 		getJsonString@JsonUtils(request.spl)(json_string);
 		random@Math()(num);
 		spl_input_file = "/tmp/" + string(num) + "_in.json";
@@ -202,7 +195,9 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
-  	    command_request.args[1] = "--check-interface";
+  	    command_request.args[#command_request.args] = "--check-interface";
+  	    command_request.args[#command_request.args] = "--output-file";
+  	    command_request.args[#command_request.args] = json_output_file;
   	    if (is_defined(request.hyvar_options)) {
   	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
 	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
@@ -219,19 +214,14 @@ main {
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
-		// Extracting last line of response to get last printed solution
-		split_request = string(output);
-		split_request.regex = "\n";
-		split@StringUtils( split_request ) ( lines );
-		// The response is the last line
-		if (string(output) != "") {
-			output_string = lines.result[#lines.result -1]
-		} else {
-			output_string = "{\"no_solution\": 1}"
-		};
+		// Read file and convert into JSON value
+		read_request.filename = json_output_file;
+		//read_request.format= "json";
+        readFile@File( read_request )( output_string );
 		// Convert response into json
 		output_string.strictEncoding = true;
-		getJsonValue@JsonUtils(output_string)(response)
+		getJsonValue@JsonUtils(output_string)(response);
+		delete@File(json_output_file)()
 	} ] {nullProcess}
 
 	[ check_features( request )( response ) {
@@ -242,6 +232,7 @@ main {
 		// Save JSON string into a file stored in /tmp
 		random@Math()(num);
 		json_input_file = "/tmp/" + string(num) + "_in.json";
+		json_output_file = "/tmp/" + string(num) + "_out.json";
 		write_file_request.content = json_string;
 		write_file_request.filename = json_input_file;
 		writeFile@File(write_file_request)();
@@ -249,7 +240,9 @@ main {
 		println@Console( "Running HyVarRec." )();
 		command_request = "python";
   	    command_request.args[0] = "hyvar-rec.py";
-  	    command_request.args[1] = "--check-features";
+  	    command_request.args[#command_request.args] = "--check-features";
+  	    command_request.args[#command_request.args] = "--output-file";
+  	    command_request.args[#command_request.args] = json_output_file;
   	    if (is_defined(request.hyvar_options)) {
   	         for ( i = 0, i < #request.hyvar_options._, i++ ) {
 	            println@Console( "Found parameter " + request.hyvar_options._[i] )();
@@ -264,19 +257,14 @@ main {
 		println@Console( "exit code of HyVarRec: " + string(output.exitCode) )();
 		println@Console( "stderr of HyVarRec: <<" + string(output.stderr) + ">>" )();
 		println@Console( "output of HyVarRec: <<" + string(output) + ">>" )();
-		// Extracting last line of response to get last printed solution
-		split_request = string(output);
-		split_request.regex = "\n";
-		split@StringUtils( split_request ) ( lines );
-		// The response is the last line
-		if (string(output) != "") {
-			output_string = lines.result[#lines.result -1]
-		} else {
-			output_string = "{\"no_solution\": 1}"
-		};
+		// Read file and convert into JSON value
+		read_request.filename = json_output_file;
+		//read_request.format= "json";
+        readFile@File( read_request )( output_string );
 		// Convert response into json
 		output_string.strictEncoding = true;
-		getJsonValue@JsonUtils(output_string)(response)
+		getJsonValue@JsonUtils(output_string)(response);
+		delete@File(json_output_file)()
 	} ] {nullProcess}
 
 	// the healt process does not do anything except an
