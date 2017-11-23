@@ -1,19 +1,25 @@
-{ # to update with also the input schema
-  "$schema":"http://json-schema.org/draft-04/schema#",
+{
+  "$schema":"http://json-schema.org/draft-06/schema#",
   "properties":{
     "dead_features":{
-      "description":"list of dead features",
-      "items":{
-        "type":"string"
-      },
-      "type":"array"
+      "description":"map of declared optional features that are dead with the time points in which are dead in case of evolution, empty list otherwise.",
+      "additionalProperties": {
+        "type": "array",
+        "description": "List of time points in which optional feature are dead (i.e., can not be selected). Empty in case of no evolution.",
+        "items": {
+          "type": "integer"
+        }
+      }
     },
-    "optional_features":{
-      "description":"list of false optional features",
-      "items":{
-        "type":"string"
-      },
-      "type":"array"
+    "false_optionals":{
+      "description":"map of declared optional features that are false optionals with the time points in which are false optionals in case of evolution, empty list otherwise.",
+      "additionalProperties": {
+        "type": "array",
+        "description": "List of time points in which optional feature are false optionals (i.e., must be selected). Empty in case of no evolution.",
+        "items": {
+          "type": "integer"
+        }
+      }
     }
   },
   "type":"object",
