@@ -113,10 +113,9 @@ to get the minimal (not minimum) explanation.
 Check Features Modality
 ----------------------
 
-HyVarRec can be used to provide the list of the dead and mandatory features.
-Dead features are those for which in any context they can not be selected.
-Mandatory features instead are those that are not dead and for any context they must
-be always selected to have a valid configuration.
+HyVarRec can be used to provide the list of the dead and false optional features.
+Dead features are optional features that can not be selected.
+Mandatory features instead are optional features that must be selected.
 The check can be done by running the following POST request.
 
 ```
@@ -125,6 +124,11 @@ curl -H "Content-Type: application/json" -X POST -d @<JSON> http://localhost:<PO
 
 where \<JSON\> is the json input file as specified in the input format.
 In this case, the information related to the initial configuration are discarded.
+
+Note that that the only features that are checked are those declared as optional. This can be done by
+using the optional field "optional_features" in the input specification. In case evolution is considered
+(i.e., a context is used to express the time) then it is possible to define the exact time points where the
+feature are optional. In this case, the check is performed for these time point only.
 
 The answer is a JSON object having the schema defined in spec/hyvar_output_check_features.json.
 
@@ -166,7 +170,6 @@ extended with the following property when used in reconfiguration modality.
 ```
 "hyvar_options" : ["--features-as-boolean"]
 ```
-
 
 Direct encoding into SMT formulas
 ---------------------------------

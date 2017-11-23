@@ -267,6 +267,6 @@ main {
 		delete@File(json_output_file)()
 	} ] {nullProcess}
 
-	// the healt process does not do anything except an
+	// the health process does not do anything except an
 	[ health( request )( response ) ] { nullProcess }
 }
