@@ -30,13 +30,12 @@ assuming the use of a Linux machine.  Similar task can be performed on other
 operating systems and we invite the interested user to consult the docker
 manual to find out how to perform the same task on his/her operating system.
 
-The Dockerfile needed to generate the container image is stored in the
-docker subfolder. Assuming Docker is installed and \<PATH\> is the path to
-the HyVarRec folder, it is possible to deploy HyVarRec with:
+The image of HyVarRec is available on Docker Hub. To run it please execute the
+following commands.
 
 ```
-sudo docker build -t hyvarrec <PATH>/docker
-sudo docker run -d -p <PORT>:9001 --name hyvarrec_container hyvarrec
+sudo docker pull jacopomauro/hyvarrec
+sudo docker run -d -p <PORT>:9001 --name hyvarrec_container jacopomauro/hyvarrec
 ```
 
 where \<PORT\> is the port used to use the functionalities of the service.
@@ -60,10 +59,11 @@ To clean up please lunch the following commands:
 ```
 sudo docker stop hyvarrec_container
 sudo docker rm hyvarrec_container
-sudo docker rmi hyvarrec
+sudo docker rmi jacopomauro/hyvarrec
 ```
 
 For more information, please see the Docker documentation at docs.docker.com
+Examples of input files for HyVarRec are available in the test directory.
 
 Input Specification
 ----------------------
