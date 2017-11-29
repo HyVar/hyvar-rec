@@ -56,6 +56,7 @@ def run_reconfigure(
         preferences,
         features_as_boolean,
         timeout,
+        no_default_preferences,
         out_stream):
     """Perform the reconfiguration task
     """
@@ -82,29 +83,32 @@ def run_reconfigure(
     for i in preferences:
         solver.maximize(i)
 
-    log.info("Add preference: minimize the number of initial features removed")
-    if initial_features:
-        if features_as_boolean:
-            solver.maximize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in initial_features]))
-        else:
-            solver.maximize(z3.Sum([z3.Int(i) for i in initial_features]))
+    if no_default_preferences:
+        log.info("Default preferences will be ignored.")
+    else:
+        log.info("Add preference: minimize the number of initial features removed")
+        if initial_features:
+            if features_as_boolean:
+                solver.maximize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in initial_features]))
+            else:
+                solver.maximize(z3.Sum([z3.Int(i) for i in initial_features]))
 
-    log.info("Add preference: minimize the number of attributes changed")
-    initial_attributes = [k for k in attributes.keys() if "initial" in attributes[k]]
-    if initial_attributes:
-        solver.maximize(
-            z3.Sum([z3.If(z3.Int(i) == z3.IntVal(attributes[i]["initial"]), 1, 0) for i in initial_attributes]))
+        log.info("Add preference: minimize the number of attributes changed")
+        initial_attributes = [k for k in attributes.keys() if "initial" in attributes[k]]
+        if initial_attributes:
+            solver.maximize(
+                z3.Sum([z3.If(z3.Int(i) == z3.IntVal(attributes[i]["initial"]), 1, 0) for i in initial_attributes]))
 
-    log.info("Add preference: minimize the number of non initial features added")
-    if features.difference(initial_features):
-        if features_as_boolean:
-            solver.minimize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in features.difference(initial_features)]))
-        else:
-            solver.minimize(z3.Sum([z3.Int(i) for i in features.difference(initial_features)]))
+        log.info("Add preference: minimize the number of non initial features added")
+        if features.difference(initial_features):
+            if features_as_boolean:
+                solver.minimize(z3.Sum([z3.If(z3.Bool(i),1,0) for i in features.difference(initial_features)]))
+            else:
+                solver.minimize(z3.Sum([z3.Int(i) for i in features.difference(initial_features)]))
 
-    log.info("Add preference: minimize the values of the attributes")
-    for i in attributes.keys():
-        solver.minimize(z3.Int(i))
+        log.info("Add preference: minimize the values of the attributes")
+        for i in attributes.keys():
+            solver.minimize(z3.Int(i))
 
     log.debug(unicode(solver))
 
@@ -552,8 +556,8 @@ def translate_constraints(triple):
               help="Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in reconfiguration mode.")
 @click.option('--constraints-minimization', is_flag=True,
               help="Try to produce a minimal explanation. Option valid only in explanation mode.")
-
-
+@click.option('--no-default-preferences', is_flag=True,
+              help="Do not consider default preferences to minimize the difference w.r.t. the initial configuration. Option significant only in reconfiguration mode.")
 def main(input_file,
          num_of_process,
          output_file,
@@ -565,7 +569,8 @@ def main(input_file,
          features_as_boolean,
          check_features,
          timeout,
-         constraints_minimization):
+         constraints_minimization,
+         no_default_preferences):
     """
     INPUT_FILE Json input file
     """
@@ -730,7 +735,7 @@ def main(input_file,
                 "" if "time_context" not in data else data["time_context"])
     else:
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
-                        features_as_boolean, timeout, out_stream)
+                        features_as_boolean, timeout, no_default_preferences, out_stream)
 
     log.info("Program Succesfully Ended")
 
