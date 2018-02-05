@@ -629,10 +629,11 @@ def main(input_file,
         attributes[id]["min"] = i["min"]
         attributes[id]["max"] = i["max"]
         attributes[id]["feature"] = re.match("feature\[(.*)\]", i["featureId"]).group(1)
-    for i in data["configuration"]["attribute_values"]:
-        id = re.match("attribute\[(.*)\]", i["id"]).group(1)
-        attributes[id]["initial"] = i["value"]
-    log.debug(unicode(attributes))
+    if data["attributes"]:
+        for i in data["configuration"]["attribute_values"]:
+            id = re.match("attribute\[(.*)\]", i["id"]).group(1)
+            attributes[id]["initial"] = i["value"]
+        log.debug(unicode(attributes))
 
     log.info("Processing contexts")
     for i in data["contexts"]:
@@ -640,14 +641,16 @@ def main(input_file,
         contexts[id] = {}
         contexts[id]["min"] = i["min"]
         contexts[id]["max"] = i["max"]
-    for i in data["configuration"]["context_values"]:
-        id = re.match("context\[(.*)\]", i["id"]).group(1)
-        contexts[id]["initial"] = i["value"]
+    if data["contexts"]:
+        for i in data["configuration"]["context_values"]:
+            id = re.match("context\[(.*)\]", i["id"]).group(1)
+            contexts[id]["initial"] = i["value"]
     log.debug(unicode(contexts))
 
-    log.info("Processing initial features")
-    for i in data["configuration"]["selectedFeatures"]:
-        initial_features.add(re.match("feature\[(.*)\]", i).group(1))
+    log.info("Processing initial features, if any")
+    if "selectedFeatures" in data["configuration"]:
+        for i in data["configuration"]["selectedFeatures"]:
+            initial_features.add(re.match("feature\[(.*)\]", i).group(1))
     log.debug(unicode(initial_features))
 
     log.info("Processing Constraints")
@@ -674,6 +677,7 @@ def main(input_file,
                 log.critical("Parsing failed while processing " + i + ": " + str(e))
                 log.critical("Exiting")
                 sys.exit(1)
+    log.info("Constraint processed so far: {}".format(len(constraints)))
 
     # possibility for reconfigure and explain modality to add directly SMT formulas
     if "smt_constraints" in data:
@@ -683,6 +687,7 @@ def main(input_file,
             constraints.append(z3.parse_smt2_string(i))
             # for explain purposes add smt_constraint to constraints
             data["constraints"].append(i)
+    log.info("Constraint processed so far: {}".format(len("constraints")))
 
     # SMT formulas direct encoding also for preferences
     # these preferences have the highest priority

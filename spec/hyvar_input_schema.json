@@ -54,12 +54,14 @@
       "type":"object",
       "properties":{
         "selectedFeatures":{
+          "description": "initial selected features. If no features are selected this key is optional",
           "type":"array",
           "items":{
             "type":"string"
           }
         },
         "attribute_values":{
+          "description": "initial values of the attributes if any. If no attributes are present this key is optional",
           "type":"array",
           "items":{
             "type":"object",
@@ -78,6 +80,7 @@
           }
         },
         "context_values":{
+          "description": "initial values of the context if any. If no context are present this key is optional",
           "type":"array",
           "items":{
             "type":"object",
@@ -96,10 +99,7 @@
           }
         }
       },
-      "required":[
-        "selectedFeatures",
-        "attribute_values",
-        "context_values"
+      "required": [
       ]
     },
     "constraints":{
@@ -109,7 +109,7 @@
       }
     },
     "preferences":{
-      "description":"list of expression to minimize",
+      "description":"list of expression to maximize. If boolean expressions the goal is to satisfy them",
       "type":"array",
       "items":{
         "type":"string"
