@@ -15,6 +15,7 @@ import re
 import multiprocessing
 import click
 import z3
+import datetime
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
 
@@ -539,7 +540,7 @@ def translate_constraints(triple):
               help='Output file - Otherwise the output is printed on stdout.')
 @click.option('--keep', '-k', is_flag=True,
               help="Do not convert dependencies into SMT formulas.")
-@click.option('--verbose', '-v', is_flag=True,
+@click.option('--verbose', '-v', count=True,
               help="Print debug messages.")
 @click.option('--validate', is_flag=True,
               help="Activate the validation mode to check if for all context the FM is not void.")
@@ -575,6 +576,7 @@ def main(input_file,
     INPUT_FILE Json input file
     """
 
+    start_time = datetime.datetime.now()
     modality = "" # default modality is to proceed with the reconfiguration
     interface_file = ""
 
@@ -596,6 +598,17 @@ def main(input_file,
         interface_file = check_interface
     if check_features:
         modality = "check-features"
+
+    log_level = log.ERROR
+    if verbose == 1:
+        log_level = log.WARNING
+    elif verbose == 2:
+        log_level = log.INFO
+    elif verbose >= 3:
+        log_level = log.DEBUG
+    log.basicConfig(format="%(levelname)s: %(message)s", level=log_level)
+    log.info("Verbose Level: " + unicode(verbose))
+
     if verbose:
         log.basicConfig(format="%(levelname)s: %(message)s", level=log.DEBUG)
         log.info("Verbose output.")
@@ -720,6 +733,7 @@ def main(input_file,
                 log.critical("Exiting")
                 sys.exit(1)
 
+    start_running_time = datetime.datetime.now()
     if modality == "validate":
         run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
@@ -742,6 +756,10 @@ def main(input_file,
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
                         features_as_boolean, timeout, no_default_preferences, out_stream)
 
+    delta = datetime.datetime.now() - start_running_time
+    log.info("Seconds taken to run the backend {}".format(delta.total_seconds()))
+    delta = datetime.datetime.now() - start_time
+    log.info("Seconds taken to run hyvarrec {}".format(delta.total_seconds()))
     log.info("Program Succesfully Ended")
 
 
