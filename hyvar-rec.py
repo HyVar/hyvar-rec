@@ -163,14 +163,21 @@ def run_feature_analysis(
     for i in constraints:
         solver.add(i)
 
+    log.debug("Preliminary check")
+    solver.check()
+
     log.debug(unicode(solver))
 
-    log.info("Computing dead or false optional features")
+    log.info("Computing dead or false optional features, found {} of them".format(len(optional_features)))
     data = {"dead_features": {}, "false_optionals": {}}
     for i in optional_features:
         log.debug("Processing feature " + i)
         solver.push()
         solver.add(z3.Int(i).__eq__(z3.IntVal(1)))
+
+        log.debug("Preliminary check for {} = 1".format(i))
+        solver.check()
+
         if time_context:
             # compute context to consider
             context_to_try = set([])
@@ -183,6 +190,7 @@ def run_feature_analysis(
                 solver.add(z3.Int(time_context).__eq__(z3.IntVal(j)))
                 result = solver.check()
                 if result == z3.unsat:
+                    log.debug("Feature is dead feature for time {}".format(j))
                     if i in data["dead_features"]:
                         data["dead_features"][i].append(j)
                     else:
@@ -192,11 +200,16 @@ def run_feature_analysis(
             # check for false optionals
             solver.push()
             solver.add(z3.Int(i).__eq__(z3.IntVal(0)))
+
+            log.debug("Preliminary check for {} = 0".format(i))
+            solver.check()
+
             for j in context_to_try:
                 solver.push()
                 solver.add(z3.Int(time_context).__eq__(z3.IntVal(j)))
                 result = solver.check()
                 if result == z3.unsat:
+                    log.debug("Feature is false optional for time {}".format(j))
                     if i in data["false_optionals"]:
                         data["false_optionals"][i].append(j)
                     else:
@@ -205,6 +218,7 @@ def run_feature_analysis(
         else: # no time context is given
             result = solver.check()
             if result == z3.unsat:
+                log.debug("Feature is dead")
                 data["dead_features"][i] = []
             else:
                 solver.pop()
@@ -212,6 +226,7 @@ def run_feature_analysis(
                 solver.add(z3.Int(i).__eq__(z3.IntVal(0)))
                 result = solver.check()
                 if result == z3.unsat:
+                    log.debug("Feature is false optional")
                     data["false_optionals"][i] = []
         solver.pop()
 
@@ -282,6 +297,69 @@ def run_validate(
         out_stream.write("\n")
     else:
         out_stream.write('{"result":"valid"}\n')
+
+
+def run_validate_no_explanation(
+        features,
+        initial_features,
+        contexts,
+        attributes,
+        constraints,
+        preferences,
+        context_constraints,
+        features_as_boolean,
+        out_stream):
+    """
+    Perform the validation task
+    Futures as boolean not supported
+    """
+    solver = z3.Solver()
+
+    log.info("Building the FM formula")
+    formulas = []
+    exist_vars = []
+    universal_vars = []
+    pre_formulas = []
+
+    for i in contexts.keys():
+        pre_formulas.append(contexts[i]["min"] <= z3.Int(i))
+        pre_formulas.append(z3.Int(i) <= contexts[i]["max"])
+        universal_vars.append(z3.Int(i))
+
+    if not features_as_boolean:
+        for i in features:
+            formulas.append(0 <= z3.Int(i))
+            formulas.append(z3.Int(i) <= 1)
+            exist_vars.append(z3.Int(i))
+    else:
+        exist_vars += [z3.Bool(i) for i in features]
+
+    for i in attributes.keys():
+        formulas.append(attributes[i]["min"] <= z3.Int(i))
+        formulas.append(z3.Int(i) <= attributes[i]["max"])
+        exist_vars.append(z3.Int(i))
+
+    for i in constraints:
+        formulas.append(i)
+
+    if universal_vars:
+        log.info("Add forall formula")
+        solver.add(z3.ForAll(universal_vars,
+            z3.Implies(z3.And(pre_formulas + context_constraints),
+                z3.Exists(exist_vars,z3.And(formulas)))))
+    else:
+        log.info("Add normal formula. Quantifiers are not needed")
+        solver.add(z3.And(formulas))
+    log.debug(solver)
+
+    log.info("Computing")
+    result = solver.check()
+    log.info("Printing output")
+
+    if result == z3.sat:
+        out_stream.write('{"result":"valid"}\n')
+    else:
+        out_stream.write('{"result":"not_valid"}\n')
 
 
 def run_explain(
@@ -737,6 +815,8 @@ def main(input_file,
     if modality == "validate":
         run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
+        # run_validate_no_explanation(features, initial_features, contexts, attributes, constraints,
+        #              preferences, contexts_constraints, features_as_boolean, out_stream)
     elif modality == "explain":
         run_explain(features, contexts, attributes, constraints,
                 data, features_as_boolean, constraints_minimization, out_stream)
