@@ -16,6 +16,7 @@ import multiprocessing
 import click
 import z3
 import datetime
+import itertools
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
 
@@ -299,7 +300,7 @@ def run_validate(
         out_stream.write('{"result":"valid"}\n')
 
 
-def run_validate_no_explanation(
+def run_validate_grid_search(
         features,
         initial_features,
         contexts,
@@ -311,55 +312,55 @@ def run_validate_no_explanation(
         out_stream):
     """
     Perform the validation task
-    Futures as boolean not supported
+    Grid search
     """
     solver = z3.Solver()
 
-    log.info("Building the FM formula")
-    formulas = []
-    exist_vars = []
-    universal_vars = []
-    pre_formulas = []
+    # compute grid
+    contexts_names = contexts.keys()
+    context_ranges = [range(contexts[i]["min"],contexts[i]["max"]+1) for i in contexts_names]
+    products = list(itertools.product(*context_ranges))
+    log.info("{} Context combination to try".format(len(products)))
 
-    for i in contexts.keys():
-        pre_formulas.append(contexts[i]["min"] <= z3.Int(i))
-        pre_formulas.append(z3.Int(i) <= contexts[i]["max"])
-        universal_vars.append(z3.Int(i))
-
+    log.info("Add variables")
     if not features_as_boolean:
         for i in features:
-            formulas.append(0 <= z3.Int(i))
-            formulas.append(z3.Int(i) <= 1)
-            exist_vars.append(z3.Int(i))
-    else:
-        exist_vars += [z3.Bool(i) for i in features]
-
+            solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
     for i in attributes.keys():
-        formulas.append(attributes[i]["min"] <= z3.Int(i))
-        formulas.append(z3.Int(i) <= attributes[i]["max"])
-        exist_vars.append(z3.Int(i))
+        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
+    for i in contexts.keys():
+        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
 
+    log.info("Add constraints")
     for i in constraints:
-        formulas.append(i)
+        solver.add(i)
 
-    if universal_vars:
-        log.info("Add forall formula")
-        solver.add(z3.ForAll(universal_vars,
-            z3.Implies(z3.And(pre_formulas + context_constraints),
-                z3.Exists(exist_vars,z3.And(formulas)))))
-    else:
-        log.info("Add normal formula. Quantifiers are not needed")
-        solver.add(z3.And(formulas))
-    log.debug(solver)
+    log.info("Precheck")
+    solver.check()
 
-    log.info("Computing")
-    result = solver.check()
-    log.info("Printing output")
-
-    if result == z3.sat:
-        out_stream.write('{"result":"valid"}\n')
-    else:
-        out_stream.write('{"result":"not_valid"}\n')
+    for i in products:
+        log.debug("Exploring product {}".format(i))
+        solver.push()
+        for j in range(len(i)):
+            solver.add(i[j] == z3.Int(contexts_names[j]))
+        result = solver.check()
+        if result != z3.sat:
+            if context_constraints:
+                # check that context_constraints are not violated
+                solver1 = z3.Solver()
+                for j in range(len(i)):
+                    solver1.add(products[j] == z3.Int(contexts_names[j]))
+                solver1.add(context_constraints)
+                if solver1.check() != z3.sat:
+                    continue
+            out = {"result": "not_valid", "contexts": []}
+            for j in range(len(i)):
+                out["contexts"].append({"id": contexts_names[j], "value": unicode(i[j])})
+            json.dump(out, out_stream)
+            out_stream.write("\n")
+            return
+        solver.pop()
+    out_stream.write('{"result":"valid"}\n')
 
 
 def run_explain(
@@ -622,6 +623,8 @@ def translate_constraints(triple):
               help="Print debug messages.")
 @click.option('--validate', is_flag=True,
               help="Activate the validation mode to check if for all context the FM is not void.")
+@click.option('--validate-grid-search', is_flag=True,
+              help="Do not use the quantified formula for the validation but run instead a grid search.")
 @click.option('--explain', is_flag=True,
               help="Tries to explain why a FM is void.")
 @click.option('--check-interface',
@@ -643,6 +646,7 @@ def main(input_file,
          keep,
          verbose,
          validate,
+         validate_grid_search,
          explain,
          check_interface,
          features_as_boolean,
@@ -813,10 +817,13 @@ def main(input_file,
 
     start_running_time = datetime.datetime.now()
     if modality == "validate":
-        run_validate(features, initial_features, contexts, attributes, constraints,
+        if validate_grid_search and contexts:
+            run_validate_grid_search(features, initial_features, contexts, attributes, constraints,
+                                     preferences, contexts_constraints, features_as_boolean, out_stream)
+        else:
+            run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
-        # run_validate_no_explanation(features, initial_features, contexts, attributes, constraints,
-        #              preferences, contexts_constraints, features_as_boolean, out_stream)
+
     elif modality == "explain":
         run_explain(features, contexts, attributes, constraints,
                 data, features_as_boolean, constraints_minimization, out_stream)
