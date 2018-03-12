@@ -146,6 +146,7 @@ def run_feature_analysis(
         attributes,
         constraints,
         optional_features,
+        non_incremental_solver,
         out_stream,
         time_context=""):
     """
@@ -153,6 +154,9 @@ def run_feature_analysis(
     Assumes the interface with non boolean features
     """
     solver = z3.Solver()
+    if non_incremental_solver:
+        solver.set("combined_solver.solver2_timeout",0)
+
     log.info("Add variables")
     for i in features:
         solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
@@ -171,8 +175,9 @@ def run_feature_analysis(
         for i in optional_features:
             optional_features[i].append((0,0))
 
-    log.debug("Preliminary check")
-    solver.check()
+    if non_incremental_solver:
+        log.debug("Preliminary check")
+        solver.check()
 
     # list of the features to check
     to_check_dead = {}
@@ -196,7 +201,10 @@ def run_feature_analysis(
         log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead)))
         solver.push()
         solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
-        solver.check()
+
+        if non_incremental_solver:
+            log.debug("Preliminary check")
+            solver.check()
 
         log.debug("Checking for dead features")
         while to_check_dead[i]:
@@ -320,17 +328,25 @@ def run_validate_grid_search(
         preferences,
         context_constraints,
         features_as_boolean,
+        non_incremental_solver,
         out_stream):
     """
     Perform the validation task
     Grid search
     """
     solver = z3.Solver()
+    if non_incremental_solver:
+        log.info("Non incremental solver modality activated")
+        solver.set("combined_solver.solver2_timeout",1)
+
+
 
     # compute grid
     contexts_names = contexts.keys()
     context_ranges = [range(contexts[i]["min"],contexts[i]["max"]+1) for i in contexts_names]
     products = list(itertools.product(*context_ranges))
+    if not contexts_names: # no context is defined
+        products = [[]]
     log.info("{} Context combination to try".format(len(products)))
 
     log.info("Add variables")
@@ -346,17 +362,19 @@ def run_validate_grid_search(
     for i in constraints:
         solver.add(i)
 
-    log.info("Precheck")
-    solver.check()
+    if not non_incremental_solver:
+        log.info("Precheck")
+        solver.check()
 
     for i in products:
-        log.debug("Exploring product {}".format(i))
+        log.info("Exploring product {}".format(i))
         solver.push()
         for j in range(len(i)):
             solver.add(i[j] == z3.Int(contexts_names[j]))
         result = solver.check()
-        if result != z3.sat:
+        if result == z3.unsat:
             if context_constraints:
+                log.debug("Checking the context constraints are not violated")
                 # check that context_constraints are not violated
                 solver1 = z3.Solver()
                 for j in range(len(i)):
@@ -651,6 +669,8 @@ def translate_constraints(triple):
               help="Try to produce a minimal explanation. Option valid only in explanation mode.")
 @click.option('--no-default-preferences', is_flag=True,
               help="Do not consider default preferences to minimize the difference w.r.t. the initial configuration. Option significant only in reconfiguration mode.")
+@click.option('--non-incremental-solver', is_flag=True,
+              help="Set the timeout for the incremental solver of Z3 to 1.")
 def main(input_file,
          num_of_process,
          output_file,
@@ -664,6 +684,7 @@ def main(input_file,
          check_features,
          timeout,
          constraints_minimization,
+         non_incremental_solver,
          no_default_preferences):
     """
     INPUT_FILE Json input file
@@ -828,9 +849,10 @@ def main(input_file,
 
     start_running_time = datetime.datetime.now()
     if modality == "validate":
-        if validate_grid_search and contexts:
+        if validate_grid_search:
             run_validate_grid_search(features, initial_features, contexts, attributes, constraints,
-                                     preferences, contexts_constraints, features_as_boolean, out_stream)
+                                     preferences, contexts_constraints, features_as_boolean, non_incremental_solver,
+                                     out_stream)
         else:
             run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
@@ -848,6 +870,7 @@ def main(input_file,
                 attributes,
                 constraints,
                 data["optional_features"],
+                non_incremental_solver,
                 out_stream,
                 "" if "time_context" not in data else data["time_context"])
     else:
