@@ -198,7 +198,7 @@ def run_feature_analysis(
     data = {"dead_features": {}, "false_optionals": {}}
 
     for i in to_check_dead:
-        log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead)))
+        log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
         solver.push()
         solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
 
@@ -208,6 +208,7 @@ def run_feature_analysis(
 
         log.debug("Checking for dead features")
         while to_check_dead[i]:
+            log.debug("{} dead features to check".format(len(to_check_dead[i])))
             to_check = to_check_dead[i].pop()
             log.debug("Processing feature {}".format(to_check))
             solver.push()
@@ -231,6 +232,7 @@ def run_feature_analysis(
 
         log.debug("Checking for false optional features")
         while to_check_false[i]:
+            log.debug("{} false optional features to check".format(len(to_check_false[i])))
             to_check = to_check_false[i].pop()
             log.debug("Processing feature {}".format(to_check))
             solver.push()
