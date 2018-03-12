@@ -212,8 +212,7 @@ def run_feature_analysis(
             log.debug("{} ({}) dead (false optional) features to check".format(
                 len(to_check_dead[i]), len(to_check_false[i])))
             solver.push()
-            sum_term = z3.Sum([z3.Int(j) for j in to_check_dead[i]])
-            solver.add(sum_term.__ge__(z3.IntVal(1)))
+            solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
             result = solver.check()
             if result == z3.unsat:
                 to_check_false[i].difference_update(to_check_dead[i])
