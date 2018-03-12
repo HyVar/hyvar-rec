@@ -155,7 +155,7 @@ def run_feature_analysis(
     """
     solver = z3.Solver()
     if non_incremental_solver:
-        solver.set("combined_solver.solver2_timeout",0)
+        solver.set("combined_solver.solver2_timeout",1)
 
     log.info("Add variables")
     for i in features:
@@ -175,7 +175,7 @@ def run_feature_analysis(
         for i in optional_features:
             optional_features[i].append((0,0))
 
-    if non_incremental_solver:
+    if not non_incremental_solver:
         log.debug("Preliminary check")
         solver.check()
 
@@ -202,7 +202,7 @@ def run_feature_analysis(
         solver.push()
         solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
 
-        if non_incremental_solver:
+        if not non_incremental_solver:
             log.debug("Preliminary check")
             solver.check()
 
