@@ -197,6 +197,7 @@ def run_feature_analysis(
     log.debug(unicode(solver))
 
     log.info("Computing dead or false optional features considering {} optional features".format(len(optional_features)))
+    log.debug("Features to check: {}".format(to_check_dead))
 
     for i in to_check_dead:
         log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
@@ -207,13 +208,18 @@ def run_feature_analysis(
             log.debug("Preliminary check")
             solver.check()
 
+        solver.push()
+
         log.debug("Checking for dead features")
         while to_check_dead[i]:
             log.debug("{} ({}) dead (false optional) features to check".format(
                 len(to_check_dead[i]), len(to_check_false[i])))
-            solver.push()
+
+            start = datetime.datetime.now()
             solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
             result = solver.check()
+            delta = datetime.datetime.now() - start
+            log.debug("Solver result {}, Time {}".format(result,delta.total_seconds()))
             if result == z3.unsat:
                 to_check_false[i].difference_update(to_check_dead[i])
                 for j in to_check_dead[i]:
@@ -221,7 +227,7 @@ def run_feature_analysis(
                         data["dead_features"][j].append(i)
                     else:
                         data["dead_features"][j] = [i]
-                to_check_dead[i] = set()
+                break
             elif result == z3.sat:
                 model = solver.model()
                 for j in to_check_dead[i].copy():
@@ -229,12 +235,12 @@ def run_feature_analysis(
                         to_check_dead[i].discard(j)
                     elif model[z3.Int(j)] == z3.IntVal(0):
                         to_check_false[i].discard(j)
-            solver.pop()
+        solver.pop()
+        solver.push()
 
         log.debug("Checking for false optional features")
         while to_check_false[i]:
             log.debug("{} false optional features to check".format(len(to_check_false[i])))
-            solver.push()
             solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(0)) for j in to_check_false[i]]))
             result = solver.check()
             if result == z3.unsat:
@@ -243,13 +249,13 @@ def run_feature_analysis(
                         data["false_optionals"][j].append(i)
                     else:
                         data["false_optionals"][j] = [i]
-                to_check_false[i] = set()
+                break
             elif result == z3.sat:
                 model = solver.model()
                 for j in to_check_false[i].copy():
                     if model[z3.Int(j)] == z3.IntVal(0):
                         to_check_false[i].discard(j)
-            solver.pop()
+        solver.pop()
         solver.pop()
 
     log.info("Printing output")
