@@ -235,6 +235,155 @@ def run_feature_analysis(
                         to_check_dead[i].discard(j)
                     elif model[z3.Int(j)] == z3.IntVal(0):
                         to_check_false[i].discard(j)
+            else:
+                log.error("SMT solver returned {}. Formula may be unbounded or too big. Exiting".format(result))
+                sys.exit(1)
+        solver.pop()
+        solver.push()
+
+        log.debug("Checking for false optional features")
+        while to_check_false[i]:
+            log.debug("{} false optional features to check".format(len(to_check_false[i])))
+            solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(0)) for j in to_check_false[i]]))
+            result = solver.check()
+            if result == z3.unsat:
+                for j in to_check_false[i]:
+                    if j in data["false_optionals"]:
+                        data["false_optionals"][j].append(i)
+                    else:
+                        data["false_optionals"][j] = [i]
+                break
+            elif result == z3.sat:
+                model = solver.model()
+                for j in to_check_false[i].copy():
+                    if model[z3.Int(j)] == z3.IntVal(0):
+                        to_check_false[i].discard(j)
+        solver.pop()
+        solver.pop()
+
+    log.info("Printing output")
+    json.dump(data, out_stream)
+    out_stream.write("\n")
+
+
+def run_feature_analysis_with_optimization(
+        features,
+        contexts,
+        attributes,
+        constraints,
+        optional_features,
+        non_incremental_solver,
+        out_stream,
+        time_context=""):
+    """
+    Performs the feature analysis task.
+    Assumes the interface with non boolean features
+    """
+
+    data = {"dead_features": {}, "false_optionals": {}}
+    #solver = z3.Optimize()
+    solver = z3.Solver()
+    #solver = z3.Then('simplify', 'nla2bv', 'smt').solver()
+    if non_incremental_solver:
+        solver.set("combined_solver.solver2_timeout",1)
+
+    log.info("Add variables")
+    for i in features:
+        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
+    for i in attributes.keys():
+        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
+    for i in contexts.keys():
+        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
+
+    log.info("Add constraints")
+    for i in constraints:
+        solver.add(i)
+
+    # if time variable is not defined, create a fictional one
+    if time_context == "":
+        time_context = "_" + uuid.uuid4().hex
+        for i in optional_features:
+            optional_features[i].append((0,0))
+
+    if not non_incremental_solver:
+        log.debug("Preliminary check")
+        solver.check()
+
+    # list of the features to check
+    to_check_dead = {}
+    to_check_false = {}
+    for i in optional_features:
+        for k in optional_features[i]:
+            for j in range(k[0],k[1]+1):
+                if j in to_check_dead:
+                    to_check_dead[j].add(i)
+                    to_check_false[j].add(i)
+                else:
+                    to_check_dead[j] = set([i])
+                    to_check_false[j] = set([i])
+
+    log.debug(unicode(solver))
+
+    log.info("Computing dead or false optional features considering {} optional features".format(len(optional_features)))
+    log.debug("Features to check: {}".format(to_check_dead))
+
+    for i in to_check_dead:
+        log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
+        solver.push()
+        solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
+
+        if not non_incremental_solver:
+            log.debug("Preliminary check")
+            solver.check()
+
+        solver.push()
+
+        log.debug("Checking for dead features")
+        limit = 64
+        all_in_once = max(len(to_check_dead[i])/2,1)
+        all_in_once = min(limit,all_in_once)
+        while to_check_dead[i]:
+            log.debug("{} ({}) dead (false optional) features to check".format(
+                len(to_check_dead[i]), len(to_check_false[i])))
+
+            if all_in_once == 1:
+                solver.set('smt.timeout',4294967295)
+                solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
+            else:
+                solver.push()
+                solver.set('smt.timeout', 30000)
+                log.debug("Attempt to prune {} features at once".format(all_in_once))
+                solver.add(z3.PbGe([(z3.Int(j).__eq__(z3.IntVal(1)), 1) for j in to_check_dead[i]], all_in_once))
+
+            result = solver.check()
+            log.debug("Solver result {}".format(result))
+            if result == z3.unsat:
+                if all_in_once == 1:
+                    to_check_false[i].difference_update(to_check_dead[i])
+                    for j in to_check_dead[i]:
+                        if j in data["dead_features"]:
+                            data["dead_features"][j].append(i)
+                        else:
+                            data["dead_features"][j] = [i]
+                    break
+                else:
+                    solver.pop()
+                    all_in_once = max(all_in_once/2, 1)
+            elif result == z3.sat:
+                model = solver.model()
+                for j in to_check_dead[i].copy():
+                    if model[z3.Int(j)] == z3.IntVal(1):
+                        to_check_dead[i].discard(j)
+                    elif model[z3.Int(j)] == z3.IntVal(0):
+                        to_check_false[i].discard(j)
+                all_in_once = max(min(all_in_once,len(to_check_dead[i]) / 2), 1)
+                all_in_once = min(limit, all_in_once)
+                if all_in_once != 1:
+                    solver.pop()
+            else:
+                solver.pop()
+                all_in_once = max(all_in_once / 2, 1)
+
         solver.pop()
         solver.push()
 
@@ -728,7 +877,7 @@ def main(input_file,
         log_level = log.INFO
     elif verbose >= 3:
         log_level = log.DEBUG
-    log.basicConfig(format="%(levelname)s: %(message)s", level=log_level)
+    log.basicConfig(format="[%(asctime)s][%(levelname)s][%(name)s]%(message)s",level=log_level)
     log.info("Verbose Level: " + unicode(verbose))
 
     if verbose:
@@ -872,7 +1021,8 @@ def main(input_file,
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), features_as_boolean, out_stream)
     elif modality == "check-features":
-        run_feature_analysis(
+        #run_feature_analysis(
+        run_feature_analysis_with_optimization(
                 features,
                 contexts,
                 attributes,
