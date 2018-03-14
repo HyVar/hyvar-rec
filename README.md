@@ -160,7 +160,7 @@ Features as Booleans
 --------------------
 It is possible to use HyVarRec in explain and reconfiguring modality by entering features directly
 as booleans by using the option --features-as-boolean. In this case the feature name needs to
-match the regular expression ".[0-9]+".
+start with a letter.
 
 For example: the constraint 'feature[f111] = 1' can be encoded as 'f111'
 

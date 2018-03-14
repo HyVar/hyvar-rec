@@ -70,6 +70,8 @@
   },
   "constraints":[
     "feature[f0]",
+		"feature[_f0]",
+		"not feature[_notf0]",
     "feature[f0] impl (feature[f1] and feature[f2])",
     "(feature[f13] or feature[f14]  or feature[f15] ) impl feature[f1] ",
     "feature[f1]  impl (feature[f13] or feature[f14] or feature[f15] )",
@@ -100,5 +102,11 @@
     "feature[f4] ",
     "max(attribute[att3])"
   ],
-	"hyvar_options" : ["--features-as-boolean"]
+	"hyvar_options" : ["--features-as-boolean"],
+	"optional_features" : {
+		"_f0": [[0,1]],
+		"f16": [[0,1]],
+		"_notf0": [[0,1]]
+	},
+	"time_context" : "c0"
 }

@@ -111,7 +111,7 @@ def run_reconfigure(
         for i in attributes.keys():
             solver.minimize(z3.Int(i))
 
-    log.debug(unicode(solver))
+    #log.debug(unicode(solver))
 
     if timeout > 0:
         solver.set("timeout", timeout)
@@ -136,141 +136,6 @@ def run_reconfigure(
         out_stream.write("\n")
     else:
         out_stream.write('{"result": "unsat"}\n')
-
-
-def run_feature_analysis(
-        features,
-        contexts,
-        attributes,
-        constraints,
-        optional_features,
-        non_incremental_solver,
-        out_stream,
-        time_context=""):
-    """
-    Performs the feature analysis task.
-    Assumes the interface with non boolean features
-    """
-
-    data = {"dead_features": {}, "false_optionals": {}}
-    solver = z3.Solver()
-    if non_incremental_solver:
-        solver.set("combined_solver.solver2_timeout",1)
-
-    log.info("Add variables")
-    for i in features:
-        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
-    for i in attributes.keys():
-        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
-    for i in contexts.keys():
-        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
-
-    log.info("Add constraints")
-    for i in constraints:
-        solver.add(i)
-
-    # if time variable is not defined, create a fictional one
-    if time_context == "":
-        time_context = "_" + uuid.uuid4().hex
-        for i in optional_features:
-            optional_features[i].append((0,0))
-
-    if not non_incremental_solver:
-        log.debug("Preliminary check")
-        solver.check()
-
-    # list of the features to check
-    to_check_dead = {}
-    to_check_false = {}
-    for i in optional_features:
-        for k in optional_features[i]:
-            for j in range(k[0],k[1]+1):
-                if j in to_check_dead:
-                    to_check_dead[j].add(i)
-                    to_check_false[j].add(i)
-                else:
-                    to_check_dead[j] = set([i])
-                    to_check_false[j] = set([i])
-
-    log.debug(unicode(solver))
-
-    log.info("Computing dead or false optional features considering {} optional features".format(len(optional_features)))
-    log.debug("Features to check: {}".format(to_check_dead))
-
-    for i in to_check_dead:
-        log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
-        solver.push()
-        solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
-
-        if not non_incremental_solver:
-            log.debug("Preliminary check")
-            solver.check()
-
-        solver.push()
-
-        log.debug("Checking for dead features")
-        while to_check_dead[i]:
-            log.debug("{} ({}) dead (false optional) features to check".format(
-                len(to_check_dead[i]), len(to_check_false[i])))
-
-            start = datetime.datetime.now()
-            solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
-            result = solver.check()
-            delta = datetime.datetime.now() - start
-            log.debug("Solver result {}, Time {}".format(result,delta.total_seconds()))
-            if result == z3.unsat:
-                to_check_false[i].difference_update(to_check_dead[i])
-                for j in to_check_dead[i]:
-                    if j in data["dead_features"]:
-                        data["dead_features"][j].append(i)
-                    else:
-                        data["dead_features"][j] = [i]
-                break
-            elif result == z3.sat:
-                model = solver.model()
-                to_remove_dead = []
-                to_remove_false = []
-                for j in to_check_dead[i]:
-                    if model[z3.Int(j)] == z3.IntVal(1):
-                        to_remove_dead.append(j)
-                    elif model[z3.Int(j)] == z3.IntVal(0):
-                        to_remove_false.append(j)
-                    else:
-                        log.critical("Variable {} not instantiated".format(j))
-                        exit(0)
-                log.debug("Removed {} ({}) dead (false optional) checks".format(
-                    len(to_remove_dead),len(to_remove_false)))
-                to_check_dead[i].difference_update(to_remove_dead)
-                to_check_false[i].difference_update(to_remove_false)
-            else:
-                log.error("SMT solver returned {}. Formula may be unbounded or too big. Exiting".format(result))
-                sys.exit(1)
-        solver.pop()
-        solver.push()
-
-        log.debug("Checking for false optional features")
-        while to_check_false[i]:
-            log.debug("{} false optional features to check".format(len(to_check_false[i])))
-            solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(0)) for j in to_check_false[i]]))
-            result = solver.check()
-            if result == z3.unsat:
-                for j in to_check_false[i]:
-                    if j in data["false_optionals"]:
-                        data["false_optionals"][j].append(i)
-                    else:
-                        data["false_optionals"][j] = [i]
-                break
-            elif result == z3.sat:
-                model = solver.model()
-                for j in to_check_false[i].copy():
-                    if model[z3.Int(j)] == z3.IntVal(0):
-                        to_check_false[i].discard(j)
-        solver.pop()
-        solver.pop()
-
-    log.info("Printing output")
-    json.dump(data, out_stream)
-    out_stream.write("\n")
 
 
 def run_explain(
@@ -581,7 +446,7 @@ def main(input_file,
     """
 
     start_time = datetime.datetime.now()
-    modality = "" # default modality is to proceed with the reconfiguration
+    modality = "reconfigure" # default modality is to proceed with the reconfiguration
     interface_file = ""
 
     # only one modality can be active
@@ -706,24 +571,25 @@ def main(input_file,
             data["constraints"].append(i)
     log.info("Constraint processed so far: {}".format(len("constraints")))
 
-    # SMT formulas direct encoding also for preferences
-    # these preferences have the highest priority
-    # here we assume that the features are already declared
-    if "smt_preferences" in data:
-        log.info("Processing special input preferences modality. Pref added as higher priority.")
-        for i in data["smt_preferences"]:
-            preferences.append(z3.parse_smt2_string(i))
+    if modality == "reconfigure":
+        # SMT formulas direct encoding also for preferences
+        # these preferences have the highest priority
+        # here we assume that the features are already declared
+        if "smt_preferences" in data:
+            log.info("Processing special input preferences modality. Pref added as higher priority.")
+            for i in data["smt_preferences"]:
+                preferences.append(z3.parse_smt2_string(i))
 
-    log.info("Processing Preferences")
-    for i in data["preferences"]:
-        try:
-            d = SpecTranslator.translate_preference(i, data, features_as_boolean)
-            log.debug("Find preference " + unicode(d))
-            preferences.append(d["formula"])
-        except Exception as e:
-            log.critical("Parsing failed while processing " + i + ": " + str(e))
-            log.critical("Exiting")
-            sys.exit(1)
+        log.info("Processing Preferences")
+        for i in data["preferences"]:
+            try:
+                d = SpecTranslator.translate_preference(i, data, features_as_boolean)
+                log.debug("Find preference " + unicode(d))
+                preferences.append(d["formula"])
+            except Exception as e:
+                log.critical("Parsing failed while processing " + i + ": " + str(e))
+                log.critical("Exiting")
+                sys.exit(1)
 
     log.info("Processing Context Constraints")
     if "context_constraints" in data:
@@ -759,6 +625,7 @@ def main(input_file,
         if check_features_modality == "grid":
             check_features_module.run_feature_analysis_grid_search(
                 features,
+                features_as_boolean,
                 contexts,
                 attributes,
                 constraints,
@@ -769,6 +636,7 @@ def main(input_file,
         elif check_features_modality == "forall":
             check_features_module.run_feature_analysis_forall(
                 features,
+                features_as_boolean,
                 contexts,
                 attributes,
                 constraints,
@@ -779,6 +647,7 @@ def main(input_file,
         elif check_features_modality == "pruning":
             check_features_module.run_feature_analysis_with_optimization(
                 features,
+                features_as_boolean,
                 contexts,
                 attributes,
                 constraints,
@@ -786,9 +655,12 @@ def main(input_file,
                 non_incremental_solver,
                 out_stream,
                 "" if "time_context" not in data else data["time_context"])
-    else:
+    elif modality == "reconfigure":
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,
                         features_as_boolean, timeout, no_default_preferences, out_stream)
+    else:
+        log.critical("No modality matched. Exiting.")
+        sys.exit(1)
 
     delta = datetime.datetime.now() - start_running_time
     log.info("Seconds taken to run the backend {}".format(delta.total_seconds()))

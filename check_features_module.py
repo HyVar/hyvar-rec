@@ -4,6 +4,8 @@ import uuid
 import json
 import sys
 
+STARTING_LEVEL_FEATURE_SPECULATIVE_PRUNING = 64
+SPECULATIVE_PRUNING_TIMEOUT = 30000
 
 def get_dic_of_features_to_check(optional_features):
     to_check = {}
@@ -17,11 +19,12 @@ def get_dic_of_features_to_check(optional_features):
     return to_check
 
 
-def get_basic_formula_list(features, attributes, contexts, constraints):
+def get_basic_formula_list(features, attributes, contexts, constraints, features_as_boolean):
     formulas = []
-    for i in features:
-        formulas.append(0 <= z3.Int(i))
-        formulas.append(z3.Int(i) <= 1)
+    if not features_as_boolean:
+        for i in features:
+            formulas.append(0 <= z3.Int(i))
+            formulas.append(z3.Int(i) <= 1)
     for i in attributes.keys():
         formulas.append(attributes[i]["min"] <= z3.Int(i))
         formulas.append(z3.Int(i) <= attributes[i]["max"])
@@ -34,22 +37,34 @@ def get_basic_formula_list(features, attributes, contexts, constraints):
 
 
 def get_time_context(time_context, optional_features):
-    if time_context == "":
+    if not time_context:
         time_context = "_" + uuid.uuid4().hex
         for i in optional_features:
             optional_features[i].append((0,0))
     return time_context
 
 
-def get_fail_checks_from_model(dead_ls, false_ls, model):
+def get_fail_checks_from_model(dead_ls, false_ls, model, features_as_boolean):
     dead_remove = []
     false_remove = []
-    for j in dead_ls:
-        if model[z3.Int(j)] == z3.IntVal(1):
-            dead_remove.append(j)
-    for j in false_ls:
-        if model[z3.Int(j)] == z3.IntVal(0):
-            false_remove.append(j)
+    if features_as_boolean:
+        val_true = z3.BoolVal(True)
+        val_zero = z3.BoolVal(False)
+        for j in dead_ls:
+            if model[z3.Bool(j)] == val_true:
+                dead_remove.append(j)
+        for j in false_ls:
+            if model[z3.Bool(j)] == val_zero:
+                false_remove.append(j)
+    else:
+        val1 = z3.IntVal(1)
+        val0 = z3.IntVal(0)
+        for j in dead_ls:
+            if model[z3.Int(j)] == val1:
+                dead_remove.append(j)
+        for j in false_ls:
+            if model[z3.Int(j)] == val0:
+                false_remove.append(j)
     log.debug("Removed {} ({}) dead (false optional) checks".format(
         len(dead_remove), len(false_remove)))
     return dead_remove, false_remove
@@ -57,6 +72,7 @@ def get_fail_checks_from_model(dead_ls, false_ls, model):
 
 def run_feature_analysis_with_optimization(
         features,
+        features_as_boolean,
         contexts,
         attributes,
         constraints,
@@ -82,7 +98,7 @@ def run_feature_analysis_with_optimization(
     time_context = get_time_context(time_context, optional_features)
 
     log.debug("Add basic constraints")
-    solver.add(get_basic_formula_list(features, attributes, contexts, constraints))
+    solver.add(get_basic_formula_list(features, attributes, contexts, constraints,features_as_boolean))
 
     if not non_incremental_solver:
         log.debug("Preliminary check")
@@ -108,7 +124,7 @@ def run_feature_analysis_with_optimization(
         solver.push()
 
         log.debug("Checking for dead features")
-        limit = 64
+        limit = STARTING_LEVEL_FEATURE_SPECULATIVE_PRUNING
         all_in_once = max(len(to_check_dead[i])/2,1)
         all_in_once = min(limit,all_in_once)
 
@@ -119,12 +135,18 @@ def run_feature_analysis_with_optimization(
 
             if all_in_once == 1:
                 solver.set('smt.timeout',4294967295)
-                solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
+                if features_as_boolean:
+                    solver.add(z3.Or([z3.Bool(j) for j in to_check_dead[i]]))
+                else:
+                    solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(1)) for j in to_check_dead[i]]))
             else:
                 solver.push()
-                solver.set('smt.timeout', 30000)
+                solver.set('smt.timeout', SPECULATIVE_PRUNING_TIMEOUT)
                 log.debug("Attempt to prune {} features at once".format(all_in_once))
-                solver.add(z3.PbGe([(z3.Int(j).__eq__(z3.IntVal(1)), 1) for j in to_check_dead[i]], all_in_once))
+                if features_as_boolean:
+                    solver.add(z3.PbGe([(z3.Bool(j), 1) for j in to_check_dead[i]], all_in_once))
+                else:
+                    solver.add(z3.PbGe([(z3.Int(j).__eq__(z3.IntVal(1)), 1) for j in to_check_dead[i]], all_in_once))
 
             result = solver.check()
             log.debug("Solver result {}".format(result))
@@ -142,7 +164,7 @@ def run_feature_analysis_with_optimization(
                     all_in_once = max(all_in_once/2, 1)
             elif result == z3.sat:
                 to_remove_dead, to_remove_false = get_fail_checks_from_model(
-                    to_check_dead[i], to_check_false[i], solver.model())
+                    to_check_dead[i], to_check_false[i], solver.model(), features_as_boolean)
                 to_check_dead[i].difference_update(to_remove_dead)
                 to_check_false[i].difference_update(to_remove_false)
 
@@ -161,7 +183,10 @@ def run_feature_analysis_with_optimization(
         log.debug("Checking for false optional features")
         while to_check_false[i]:
             log.debug("{} false optional features to check".format(len(to_check_false[i])))
-            solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(0)) for j in to_check_false[i]]))
+            if features_as_boolean:
+                solver.add(z3.Or([z3.Not(z3.Bool(j)) for j in to_check_false[i]]))
+            else:
+                solver.add(z3.Or([z3.Int(j).__eq__(z3.IntVal(0)) for j in to_check_false[i]]))
             result = solver.check()
             if result == z3.unsat:
                 for j in to_check_false[i]:
@@ -172,7 +197,7 @@ def run_feature_analysis_with_optimization(
                 break
             elif result == z3.sat:
                 _, to_remove_false = get_fail_checks_from_model(
-                    [], to_check_false[i], solver.model())
+                    [], to_check_false[i], solver.model(), features_as_boolean)
                 to_check_false[i].difference_update(to_remove_false)
         solver.pop()
         solver.pop()
@@ -184,6 +209,7 @@ def run_feature_analysis_with_optimization(
 
 def run_feature_analysis_grid_search(
         features,
+        features_as_boolean,
         contexts,
         attributes,
         constraints,
@@ -207,7 +233,7 @@ def run_feature_analysis_grid_search(
     time_context = get_time_context(time_context, optional_features)
 
     log.debug("Add basic constraints")
-    solver.add(get_basic_formula_list(features, attributes, contexts, constraints))
+    solver.add(get_basic_formula_list(features, attributes, contexts, constraints, features_as_boolean))
 
     if not non_incremental_solver:
         log.debug("Preliminary check")
@@ -217,7 +243,7 @@ def run_feature_analysis_grid_search(
     to_check = get_dic_of_features_to_check(optional_features)
     to_check_dead = {i: set(to_check[i]) for i in to_check}
     to_check_false = {i: set(to_check[i]) for i in to_check}
-    log.info("Features to check: {}, Time context".format(
+    log.info("Features to check: {}, Time context {}".format(
         len(optional_features), len(to_check)))
 
     for i in to_check_dead:
@@ -237,7 +263,7 @@ def run_feature_analysis_grid_search(
             continue
         elif result == z3.sat:
             to_remove_dead, to_remove_false = get_fail_checks_from_model(
-                to_check_dead[i], to_check_false[i], solver.model())
+                to_check_dead[i], to_check_false[i], solver.model(), features_as_boolean)
             to_check_dead[i].difference_update(to_remove_dead)
             to_check_false[i].difference_update(to_remove_false)
         else:
@@ -245,11 +271,17 @@ def run_feature_analysis_grid_search(
             sys.exit(1)
 
         log.debug("Checking for dead features")
+        counter = len(to_check_dead[i])
         for j in to_check_dead[i]:
-            log.debug("Processing feature {}".format(j))
+            log.debug("Processing feature {}, remaining {}".format(j, counter))
+            counter -= 1
             solver.push()
-            solver.add(z3.Int(j).__eq__(z3.IntVal(1)))
+            if features_as_boolean:
+                solver.add(z3.Bool(j))
+            else:
+                solver.add(z3.Int(j).__eq__(z3.IntVal(1)))
             result = solver.check()
+            log.debug("Result {}".format(result))
             if result == z3.unsat:
                 log.debug("{} is a dead feature".format(j))
                 if j in data["dead_features"]:
@@ -257,20 +289,34 @@ def run_feature_analysis_grid_search(
                 else:
                     data["dead_features"][j] = [i]
                 to_check_false[i].discard(j)
+            elif result != z3.sat:
+                log.debug("Problems checking feature{} at time {}. Z3 returned {}".format(
+                    j, i, result))
+                sys.exit(1)
             solver.pop()
 
         log.debug("Checking for false optional features")
+        counter = len(to_check_false[i])
         for j in to_check_false[i]:
-            log.debug("Processing feature {}".format(j))
+            log.debug("Processing feature {}, remaining".format(j, counter))
+            counter -= 1
             solver.push()
-            solver.add(z3.Int(j).__eq__(z3.IntVal(0)))
+            if features_as_boolean:
+                solver.add(z3.Not(z3.Bool(j)))
+            else:
+                solver.add(z3.Int(j).__eq__(z3.IntVal(0)))
             result = solver.check()
+            log.debug("Result {}".format(result))
             if result == z3.unsat:
                 log.debug("{} is a false optional feature".format(j))
                 if j in data["false_optionals"]:
                     data["false_optionals"][j].append(i)
                 else:
                     data["false_optionals"][j] = [i]
+            elif result != z3.sat:
+                log.debug("Problems checking feature{} at time {}. Z3 returned {}".format(
+                    j, i, result))
+                sys.exit(1)
             solver.pop()
         solver.pop()
 
@@ -279,11 +325,9 @@ def run_feature_analysis_grid_search(
     out_stream.write("\n")
 
 
-
-
-
 def run_feature_analysis_forall(
         features,
+        features_as_boolean,
         contexts,
         attributes,
         constraints,
@@ -293,34 +337,24 @@ def run_feature_analysis_forall(
         time_context=""):
     """
     Performs the feature analysis task.
-    Assumes the interface with non boolean features
+    A quantifier formula is solved to detect the anomalies
     """
 
     data = {"dead_features": {}, "false_optionals": {}}
     solver = z3.Solver()
-    solver.set("smt.relevancy", 0)
+    #solver.set("smt.relevancy", 0)
     if non_incremental_solver:
         solver.set("combined_solver.solver2_timeout",1)
 
-    log.info("Building the FM formula")
-    formulas = []
-    for i in features:
-        formulas.append(0 <= z3.Int(i))
-        formulas.append(z3.Int(i) <= 1)
-
-    for i in attributes.keys():
-        formulas.append(attributes[i]["min"] <= z3.Int(i))
-        formulas.append(z3.Int(i) <= attributes[i]["max"])
-
-    for i in constraints:
-        formulas.append(i)
-
-
     # if time variable is not defined, create a fictional one
-    if time_context == "":
-        time_context = "_" + uuid.uuid4().hex
-        for i in optional_features:
-            optional_features[i].append((0,0))
+    time_context = get_time_context(time_context, optional_features)
+    # add it in context if not present
+    if time_context not in contexts:
+        contexts[time_context]['min'] = 0
+        contexts[time_context]['max'] = 0
+
+    log.info("Building the FM formula")
+    formulas = get_basic_formula_list(features, attributes, contexts, constraints, features_as_boolean)
 
     if not non_incremental_solver:
         log.debug("Preliminary check")
@@ -329,39 +363,37 @@ def run_feature_analysis_forall(
     # list of the features to check
     to_check_dic = get_dic_of_features_to_check(optional_features)
     to_check = [(i,j) for i in to_check_dic for j in to_check_dic[i]]
-    log.debug(unicode(solver))
-
-    # update bounds of fresh variable
-
-    formulas.append(min(to_check_dic.keys()) <= z3.Int(time_context))
-    formulas.append(z3.Int(time_context) <= max(to_check_dic.keys()))
-
+    #log.debug(unicode(solver))
 
     log.info("Computing dead or false optional features considering {} optional features, {} possibilities".format(
         len(optional_features), len(to_check)))
 
+    # update bounds of fresh variable
     fresh_var = "_" + uuid.uuid4().hex
     solver.add(0 <= z3.Int(fresh_var))
     solver.add(z3.Int(fresh_var) < z3.IntVal(len(to_check)))
 
-    # TODO for improvement: remove features running the system one
+    if features_as_boolean:
+        z3_features = [z3.Bool(j) for j in features]
+    else:
+        z3_features = [z3.Int(j) for j in features]
 
     solver.push()
+
     log.info("Search for dead features")
+    # exist d . for all features/attributes f_d = 0 \/ not FD
+    solver.add(
+        z3.ForAll(z3_features + [z3.Int(j) for j in attributes.keys()] + [z3.Int(j) for j in contexts],
+                  z3.Implies(
+                      z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
+                                         z3.And([z3.Bool(to_check[i][1]) if features_as_boolean else
+                                                 z3.Int(to_check[i][1]).__eq__(z3.IntVal(1)),
+                                                 z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
+                              for i in range(len(to_check))]),
+                      z3.Not(z3.And(formulas)))))
+    #log.debug(unicode(solver))
+
     while True:
-
-        # exist d . for all features/attributes f_d = 0 \/ not FD
-        solver.add(
-            z3.ForAll([z3.Int(j) for j in features] + [z3.Int(j) for j in attributes.keys()] + [z3.Int(time_context)],
-                z3.Implies(
-                    z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
-                                       z3.And([z3.Int(to_check[i][1]).__eq__(z3.IntVal(1)),
-                                       z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
-                            for i in range(len(to_check))]),
-                    z3.Not(z3.And(formulas)))))
-
-        log.debug(unicode(solver))
-
         log.info("Computing")
         result = solver.check()
 
@@ -383,19 +415,18 @@ def run_feature_analysis_forall(
     solver.pop()
 
     log.info("Search for false positive features")
+    solver.add(
+        z3.ForAll(z3_features + [z3.Int(j) for j in attributes.keys()] + [z3.Int(j) for j in contexts],
+                  z3.Implies(
+                      z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
+                                         z3.And([z3.Not(z3.Bool(to_check[i][1])) if features_as_boolean else
+                                                 z3.Int(to_check[i][1]).__eq__(z3.IntVal(0)),
+                                                 z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
+                              for i in range(len(to_check))]),
+                      z3.Not(z3.And(formulas)))))
+    #log.debug(unicode(solver))
+
     while True:
-
-        solver.add(
-            z3.ForAll([z3.Int(j) for j in features] + [z3.Int(j) for j in attributes.keys()] + [z3.Int(time_context)],
-                z3.Implies(
-                    z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
-                                       z3.And([z3.Int(to_check[i][1]).__eq__(z3.IntVal(0)),
-                                       z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
-                            for i in range(len(to_check))]),
-                    z3.Not(z3.And(formulas)))))
-
-        log.debug(unicode(solver))
-
         log.info("Computing")
         result = solver.check()
 
