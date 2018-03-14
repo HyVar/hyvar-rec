@@ -30,8 +30,18 @@ class SpecificationGrammarVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by SpecificationGrammarParser#b_factor.
-    def visitB_factor(self, ctx):
+    # Visit a parse tree produced by SpecificationGrammarParser#bFactorFact.
+    def visitBFactorFact(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecificationGrammarParser#bFactorRelation.
+    def visitBFactorRelation(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SpecificationGrammarParser#bFactorOneOnly.
+    def visitBFactorOneOnly(self, ctx):
         return self.visitChildren(ctx)
 
 

@@ -3,6 +3,42 @@ import z3
 import uuid
 import json
 
+
+def get_dic_of_features_to_check(optional_features):
+    to_check = {}
+    for i in optional_features:
+        for k in optional_features[i]:
+            for j in range(k[0],k[1]+1):
+                if j in to_check:
+                    to_check[j].append(i)
+                else:
+                    to_check[j] = [i]
+    return to_check
+
+def get_basic_formula_list(features, attributes, contexts, constraints):
+    formulas = []
+    for i in features:
+        formulas.append(0 <= z3.Int(i))
+        formulas.append(z3.Int(i) <= 1)
+    for i in attributes.keys():
+        formulas.append(attributes[i]["min"] <= z3.Int(i))
+        formulas.append(z3.Int(i) <= attributes[i]["max"])
+    for i in contexts.keys():
+        formulas.append(contexts[i]["min"] <= z3.Int(i))
+        formulas.append(z3.Int(i) <= contexts[i]["max"])
+    for i in constraints:
+        formulas.append(i)
+    return formulas
+
+def get_time_context(time_context, optional_features):
+    if time_context == "":
+        time_context = "_" + uuid.uuid4().hex
+        for i in optional_features:
+            optional_features[i].append((0,0))
+    return time_context
+
+
+
 def run_feature_analysis_with_optimization(
         features,
         contexts,
@@ -18,51 +54,28 @@ def run_feature_analysis_with_optimization(
     """
 
     data = {"dead_features": {}, "false_optionals": {}}
-    #solver = z3.Optimize()
     solver = z3.Solver()
     #solver = z3.Then('simplify', 'nla2bv', 'smt').solver()
     if non_incremental_solver:
         solver.set("combined_solver.solver2_timeout",1)
 
-    log.info("Add variables")
-    for i in features:
-        solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
-    for i in attributes.keys():
-        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
-    for i in contexts.keys():
-        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
-
-    log.info("Add constraints")
-    for i in constraints:
-        solver.add(i)
-
     # if time variable is not defined, create a fictional one
-    if time_context == "":
-        time_context = "_" + uuid.uuid4().hex
-        for i in optional_features:
-            optional_features[i].append((0,0))
+    time_context = get_time_context(time_context, optional_features)
+
+    log.debug("Add basic constraints")
+    solver.add(get_basic_formula_list(features, attributes, contexts, constraints))
 
     if not non_incremental_solver:
         log.debug("Preliminary check")
         solver.check()
 
     # list of the features to check
-    to_check_dead = {}
-    to_check_false = {}
-    for i in optional_features:
-        for k in optional_features[i]:
-            for j in range(k[0],k[1]+1):
-                if j in to_check_dead:
-                    to_check_dead[j].add(i)
-                    to_check_false[j].add(i)
-                else:
-                    to_check_dead[j] = set([i])
-                    to_check_false[j] = set([i])
+    to_check = get_dic_of_features_to_check(optional_features)
+    to_check_dead = {i: set(to_check[i]) for i in to_check}
+    to_check_false = {i: set(to_check[i]) for i in to_check}
 
-    log.debug(unicode(solver))
-
-    log.info("Computing dead or false optional features considering {} optional features".format(len(optional_features)))
-    log.debug("Features to check: {}".format(to_check_dead))
+    log.info("Features to check: {}, Time context".format(
+        len(optional_features), len(to_check)))
 
     for i in to_check_dead:
         log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
@@ -81,6 +94,7 @@ def run_feature_analysis_with_optimization(
         all_in_once = min(limit,all_in_once)
 
         while to_check_dead[i]:
+
             log.debug("{} ({}) dead (false optional) features to check".format(
                 len(to_check_dead[i]), len(to_check_false[i])))
 
@@ -176,11 +190,15 @@ def my_test(
 
     data = {"dead_features": {}, "false_optionals": {}}
     solver = z3.Solver()
-    # if non_incremental_solver:
-    #     solver.set("combined_solver.solver2_timeout",1)
+    solver.set("smt.relevancy", 0)
+    if non_incremental_solver:
+        solver.set("combined_solver.solver2_timeout",1)
 
     log.info("Building the FM formula")
     formulas = []
+    for i in features:
+        formulas.append(0 <= z3.Int(i))
+        formulas.append(z3.Int(i) <= 1)
 
     for i in attributes.keys():
         formulas.append(attributes[i]["min"] <= z3.Int(i))
@@ -196,70 +214,101 @@ def my_test(
         for i in optional_features:
             optional_features[i].append((0,0))
 
-    fresh_var = "_" + uuid.uuid4().hex
-
-    # if not non_incremental_solver:
-    #     log.debug("Preliminary check")
-    #     solver.check()
+    if not non_incremental_solver:
+        log.debug("Preliminary check")
+        solver.check()
 
     # list of the features to check
-    to_check_dead = {}
-    to_check_false = {}
-    for i in optional_features:
-        for k in optional_features[i]:
-            for j in range(k[0],k[1]+1):
-                if j in to_check_dead:
-                    to_check_dead[j].append(i)
-                    to_check_false[j].append(i)
-                else:
-                    to_check_dead[j] = [i]
-                    to_check_false[j] = [i]
-
+    to_check_dic = get_dic_of_features_to_check(optional_features)
+    to_check = [(i,j) for i in to_check_dic for j in to_check_dic[i]]
     log.debug(unicode(solver))
 
-    log.info("Computing dead or false optional features considering {} optional features".format(len(optional_features)))
-    log.debug("Features to check: {}".format(to_check_dead))
+    # update bounds of fresh variable
 
-    for i in to_check_dead:
-
-        log.debug("Processing time instant {}, features to check {}".format(i,len(to_check_dead[i])))
-        solver.push()
-        solver.add(z3.Int(time_context).__eq__(z3.IntVal(i)))
-
-        # if not non_incremental_solver:
-        #     log.debug("Preliminary check")
-        #     solver.check()
-
-        solver.add(0 <= z3.Int(fresh_var))
-        solver.add(z3.Int(fresh_var) < z3.IntVal(len(to_check_dead[i])))
+    formulas.append(min(to_check_dic.keys()) <= z3.Int(time_context))
+    formulas.append(z3.Int(time_context) <= max(to_check_dic.keys()))
 
 
+    log.info("Computing dead or false optional features considering {} optional features, {} possibilities".format(
+        len(optional_features), len(to_check)))
 
-        solver.add()
+    fresh_var = "_" + uuid.uuid4().hex
+    solver.add(0 <= z3.Int(fresh_var))
+    solver.add(z3.Int(fresh_var) < z3.IntVal(len(to_check)))
 
-        # exist d in DeadF . for all features/attributes f_d = 0 \/ not FD
-        solver.add(z3.ForAll([z3.Int(j) for j in features] + [z3.Int(j) for j in attributes.keys()],
-            z3.Implies(
-                z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(j)),
-                               z3.Int(to_check_dead[i][j]).__eq__(z3.IntVal(1)))
-                    for j in range(len(to_check_dead[i]))]),
-                z3.Not(z3.And(formulas)))))
+    # TODO for improvement: remove features running the system one
+
+    solver.push()
+    log.info("Search for dead features")
+    while True:
+
+        # exist d . for all features/attributes f_d = 0 \/ not FD
+        solver.add(
+            z3.ForAll([z3.Int(j) for j in features] + [z3.Int(j) for j in attributes.keys()] + [z3.Int(time_context)],
+                z3.Implies(
+                    z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
+                                       z3.And([z3.Int(to_check[i][1]).__eq__(z3.IntVal(1)),
+                                       z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
+                            for i in range(len(to_check))]),
+                    z3.Not(z3.And(formulas)))))
 
         log.debug(unicode(solver))
 
         log.info("Computing")
         result = solver.check()
-        log.info("Printing output")
 
         if result == z3.sat:
             model = solver.model()
-            # out = {"result": "not_valid", "contexts": []}
-            # for i in contexts.keys():
-            #     out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
-            # json.dump(out, out_stream)
             value = model[z3.Int(fresh_var)].as_long()
-            log.critical("Dead feature for time {}: {}".format(i, to_check_dead[i][value]))
-            out_stream.write("\n")
+            found_context = to_check[value][0]
+            found_feature = to_check[value][1]
+            log.debug("Dead feature for time {}: {}".format(found_context, found_feature))
+            if found_feature in data["dead_features"]:
+                data["dead_features"][found_feature].append(found_context)
+            else:
+                data["dead_features"][found_feature] = [found_context]
+            # add constraint for next iteration
+            solver.add(z3.Int(fresh_var).__ne__(z3.IntVal(value)))
         else:
-            out_stream.write('Unsat\n')
-        solver.pop()
+            log.debug("Formula found unsat. No more dead features.")
+            break
+    solver.pop()
+
+    log.info("Search for false positive features")
+    while True:
+
+        solver.add(
+            z3.ForAll([z3.Int(j) for j in features] + [z3.Int(j) for j in attributes.keys()] + [z3.Int(time_context)],
+                z3.Implies(
+                    z3.And([z3.Implies(z3.Int(fresh_var).__eq__(z3.IntVal(i)),
+                                       z3.And([z3.Int(to_check[i][1]).__eq__(z3.IntVal(0)),
+                                       z3.Int(time_context).__eq__(z3.IntVal(to_check[i][0]))]))
+                            for i in range(len(to_check))]),
+                    z3.Not(z3.And(formulas)))))
+
+        log.debug(unicode(solver))
+
+        log.info("Computing")
+        result = solver.check()
+
+        if result == z3.sat:
+            model = solver.model()
+            value = model[z3.Int(fresh_var)].as_long()
+            found_context = to_check[value][0]
+            found_feature = to_check[value][1]
+            log.debug("False positive feature for time {}: {}".format(found_context, found_feature))
+            if found_feature in data["false_optionals"]:
+                data["false_optionals"][found_feature].append(found_context)
+            else:
+                data["false_optionals"][found_feature] = [found_context]
+            # add constraint for next iteration
+            solver.add(z3.Int(fresh_var).__ne__(z3.IntVal(value)))
+        else:
+            log.debug("Formula found unsat. No more false positives.")
+            break
+
+
+    log.info("Printing output")
+    json.dump(data, out_stream)
+    out_stream.write("\n")
+

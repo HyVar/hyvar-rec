@@ -13,7 +13,9 @@ b_expr : b_term ( (AND | OR | IMPL | IFF | XOR) b_term )* ;
 
 b_term : (NOT)? b_factor ;
 
-b_factor : boolFact | relation ;
+b_factor : boolFact                             #bFactorFact |
+           relation                             #bFactorRelation |
+           ONEONLY '[' b_expr (',' b_expr)* ']'              #bFactorOneOnly;
 
 relation : expr ((LEQ | EQ | GEQ | LT | GT | NEQ) expr)? ;
 
@@ -33,6 +35,7 @@ boolFact : TRUE | FALSE;
 AND : 'and';
 OR : 'or';
 XOR : 'xor';
+ONEONLY : 'oneonly';
 NOT : 'not';
 TRUE : 'true';
 FALSE : 'false';

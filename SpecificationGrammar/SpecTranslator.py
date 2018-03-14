@@ -82,6 +82,12 @@ class MyVisitor(SpecificationGrammarVisitor):
             return z3.Not(formula)
         return formula
 
+    def visitBFactorOneOnly(self, ctx):
+        formulas = []
+        for i in range(2,ctx.getChildCount()-1,2):
+            formulas.append(ctx.getChild(i).accept(self))
+        return z3.PbEq([(i,1) for i in formulas],1)
+
     def visitRelation(self, ctx):
         formula = ctx.getChild(0).accept(self)
         for i in range(1, ctx.getChildCount(), 2):

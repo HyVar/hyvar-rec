@@ -2,6 +2,8 @@
 {"result": "unsat"}
 {"result": "unsat", "constraints": ["feature[_id14] = 1", "(feature[_id14] = 1 impl (context[_idc1] <  50 ))"]}
 {"result":"valid"}
+{"result":"valid"}
+{"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "18"}], "result": "not_valid"}
 {"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "18"}], "result": "not_valid"}
 {"result":"valid"}
 {"contexts": [{"id": "_idc0", "value": "1"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "0"}], "attributes": [], "result": "not_valid", "features": [{"id": "_id15", "value": "1"}, {"id": "_id0", "value": "1"}]}
@@ -9,3 +11,5 @@
 {"attributes": [{"id": "att3", "value": "80"}, {"id": "att8", "value": "1"}], "result": "sat", "features": ["f11", "f6", "f7", "f3", "f2", "f8", "f4", "f17", "f13", "f1", "f0"]}
 {"attributes": [{"id": "_idatt8", "value": "1"}, {"id": "_idatt3", "value": "80"}], "result": "sat", "features": ["_id8", "_id4", "_id6", "_id7", "_id0", "_id1", "_id2", "_id3", "_id18", "_id17", "_id12", "_id13", "_id11"]}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"attributes": [], "result": "sat", "features": ["_b", "_a"]}

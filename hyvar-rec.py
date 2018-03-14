@@ -46,9 +46,8 @@ def get_true_boolean_features_from_model(model):
     ls = []
     for decl in model.decls():
         if z3.is_true(model[decl]):
-            m = re.match('\(declare-fun\s(.[0-9]+)\s\(\)\sBool\)$', decl.sexpr())
-            if m:
-                ls.append(m.group(1))
+            if not "!" in decl.__repr__():
+                ls.append(decl.__repr__())
     return ls
 
 def run_reconfigure(
@@ -288,6 +287,7 @@ def run_validate(
     """Perform the validation task
     """
     solver = z3.Solver()
+    solver.set("smt.relevancy",0)
 
     log.info("Add context variables")
     for i in contexts.keys():
@@ -886,7 +886,7 @@ def main(input_file,
     elif modality == "check-features":
         #run_feature_analysis(
         check_features_module.run_feature_analysis_with_optimization(
-        #check_features_module.my_test(
+        # check_features_module.my_test(
                 features,
                 contexts,
                 attributes,
