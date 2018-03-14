@@ -683,6 +683,11 @@ def translate_constraints(triple):
               help="Require features in constraints defined as booleans.")
 @click.option('--check-features', is_flag=True,
               help="Starts the check to list all the mandatory and dead features.")
+@click.option('--check-features-modality',
+              help="Modality for conducting the check feature search.",
+              default="grid",
+              type=click.Choice(["grid", "forall", "pruning"]),
+              show_default=True)
 @click.option('--timeout', type=click.INT, default=0,
               help="Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in reconfiguration mode.")
 @click.option('--constraints-minimization', is_flag=True,
@@ -702,6 +707,7 @@ def main(input_file,
          check_interface,
          features_as_boolean,
          check_features,
+         check_features_modality,
          timeout,
          constraints_minimization,
          non_incremental_solver,
@@ -884,9 +890,29 @@ def main(input_file,
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), features_as_boolean, out_stream)
     elif modality == "check-features":
-        #run_feature_analysis(
-        check_features_module.run_feature_analysis_with_optimization(
-        # check_features_module.my_test(
+
+        if check_features_modality == "grid":
+            check_features_module.run_feature_analysis_grid_search(
+                features,
+                contexts,
+                attributes,
+                constraints,
+                data["optional_features"],
+                non_incremental_solver,
+                out_stream,
+                "" if "time_context" not in data else data["time_context"])
+        elif check_features_modality == "forall":
+            check_features_module.run_feature_analysis_forall(
+                features,
+                contexts,
+                attributes,
+                constraints,
+                data["optional_features"],
+                non_incremental_solver,
+                out_stream,
+                "" if "time_context" not in data else data["time_context"])
+        elif check_features_modality == "pruning":
+            check_features_module.run_feature_analysis_with_optimization(
                 features,
                 contexts,
                 attributes,

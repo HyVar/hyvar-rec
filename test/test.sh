@@ -16,6 +16,10 @@ python ../hyvar-rec.py --features-as-boolean sat_bool.json >> $LOG_FILE
 python ../hyvar-rec.py sat_special_smt_constraints.json >> $LOG_FILE
 python ../hyvar-rec.py --check-features evolution_sat.json >> $LOG_FILE
 python ../hyvar-rec.py --check-features --non-incremental-solver evolution_sat.json >> $LOG_FILE
+python ../hyvar-rec.py --check-features --check-features-modality forall evolution_sat.json >> $LOG_FILE
+python ../hyvar-rec.py --check-features --check-features-modality forall --non-incremental-solver evolution_sat.json >> $LOG_FILE
+python ../hyvar-rec.py --check-features --check-features-modality pruning evolution_sat.json >> $LOG_FILE
+python ../hyvar-rec.py --check-features --check-features-modality pruning --non-incremental-solver evolution_sat.json >> $LOG_FILE
 python ../hyvar-rec.py --features-as-boolean test3_oneonly.json >> $LOG_FILE
 
 diff $LOG_FILE output.txt

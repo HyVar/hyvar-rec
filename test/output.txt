@@ -12,4 +12,8 @@
 {"attributes": [{"id": "_idatt8", "value": "1"}, {"id": "_idatt3", "value": "80"}], "result": "sat", "features": ["_id8", "_id4", "_id6", "_id7", "_id0", "_id1", "_id2", "_id3", "_id18", "_id17", "_id12", "_id13", "_id11"]}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"attributes": [], "result": "sat", "features": ["_b", "_a"]}
