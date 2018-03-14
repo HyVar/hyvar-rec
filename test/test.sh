@@ -9,6 +9,8 @@ python ../hyvar-rec.py --validate sat.json >> $LOG_FILE
 python ../hyvar-rec.py --validate --non-incremental-solver sat.json >> $LOG_FILE
 python ../hyvar-rec.py --validate unsat.json >> $LOG_FILE
 python ../hyvar-rec.py --validate --non-incremental-solver unsat.json >> $LOG_FILE
+python ../hyvar-rec.py --validate --validate-modality grid unsat.json >> $LOG_FILE
+python ../hyvar-rec.py --validate --validate-modality grid --non-incremental-solver unsat.json >> $LOG_FILE
 python ../hyvar-rec.py --check-interface interface.json sat.json >> $LOG_FILE
 python ../hyvar-rec.py --check-interface no_interface.json sat.json >> $LOG_FILE
 python ../hyvar-rec.py test1.json >> $LOG_FILE

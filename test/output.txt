@@ -5,6 +5,8 @@
 {"result":"valid"}
 {"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "18"}], "result": "not_valid"}
 {"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "18"}], "result": "not_valid"}
+{"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "0"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "0"}], "result": "not_valid"}
+{"contexts": [{"id": "_idc0", "value": "0"}, {"id": "_idc1", "value": "0"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "0"}], "result": "not_valid"}
 {"result":"valid"}
 {"contexts": [{"id": "_idc0", "value": "1"}, {"id": "_idc1", "value": "50"}, {"id": "_idc2", "value": "0"}, {"id": "_idc3", "value": "0"}], "attributes": [], "result": "not_valid", "features": [{"id": "_id15", "value": "1"}, {"id": "_id0", "value": "1"}]}
 {"attributes": [], "result": "sat", "features": ["_b", "_a"]}

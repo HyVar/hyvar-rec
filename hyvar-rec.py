@@ -16,11 +16,9 @@ import multiprocessing
 import click
 import z3
 import datetime
-import itertools
 import uuid
 
 import SpecificationGrammar.SpecTranslator as SpecTranslator
-import check_features_module
 
 DEVNULL = open(os.devnull, 'wb')
 
@@ -273,143 +271,6 @@ def run_feature_analysis(
     log.info("Printing output")
     json.dump(data, out_stream)
     out_stream.write("\n")
-
-def run_validate(
-        features,
-        initial_features,
-        contexts,
-        attributes,
-        constraints,
-        preferences,
-        context_constraints,
-        features_as_boolean,
-        out_stream):
-    """Perform the validation task
-    """
-    solver = z3.Solver()
-    solver.set("smt.relevancy",0)
-
-    log.info("Add context variables")
-    for i in contexts.keys():
-        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
-
-    log.info("Add contexts constraints")
-    for i in context_constraints:
-        solver.add(i)
-
-    log.info("Building the FM formula")
-    formulas = []
-    if not features_as_boolean:
-        for i in features:
-            formulas.append(0 <= z3.Int(i))
-            formulas.append(z3.Int(i) <= 1)
-
-    for i in attributes.keys():
-        formulas.append(attributes[i]["min"] <= z3.Int(i))
-        formulas.append(z3.Int(i) <= attributes[i]["max"])
-
-    for i in constraints:
-        formulas.append(i)
-
-    log.info("Add forall not FM formula")
-    if features_as_boolean:
-        solver.add(z3.ForAll(
-            [z3.Bool(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
-            z3.Not(z3.And(formulas))
-        ))
-    else:
-        solver.add(z3.ForAll(
-            [z3.Int(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
-            z3.Not(z3.And(formulas))
-        ))
-    log.debug(solver)
-
-    log.info("Computing")
-    result = solver.check()
-    log.info("Printing output")
-
-    if result == z3.sat:
-        model = solver.model()
-        out = {"result": "not_valid", "contexts": []}
-        for i in contexts.keys():
-            out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
-        json.dump(out, out_stream)
-        out_stream.write("\n")
-    else:
-        out_stream.write('{"result":"valid"}\n')
-
-
-def run_validate_grid_search(
-        features,
-        initial_features,
-        contexts,
-        attributes,
-        constraints,
-        preferences,
-        context_constraints,
-        features_as_boolean,
-        non_incremental_solver,
-        out_stream):
-    """
-    Perform the validation task
-    Grid search
-    """
-    solver = z3.Solver()
-    if non_incremental_solver:
-        log.info("Non incremental solver modality activated")
-        solver.set("combined_solver.solver2_timeout",1)
-
-
-
-    # compute grid
-    contexts_names = contexts.keys()
-    context_ranges = [range(contexts[i]["min"],contexts[i]["max"]+1) for i in contexts_names]
-    products = list(itertools.product(*context_ranges))
-    if not contexts_names: # no context is defined
-        products = [[]]
-    log.info("{} Context combination to try".format(len(products)))
-
-    log.info("Add variables")
-    if not features_as_boolean:
-        for i in features:
-            solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
-    for i in attributes.keys():
-        solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
-    for i in contexts.keys():
-        solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
-
-    log.info("Add constraints")
-    for i in constraints:
-        solver.add(i)
-
-    if not non_incremental_solver:
-        log.info("Precheck")
-        solver.check()
-
-    for i in products:
-        log.info("Exploring product {}".format(i))
-        solver.push()
-        for j in range(len(i)):
-            solver.add(i[j] == z3.Int(contexts_names[j]))
-        result = solver.check()
-        if result == z3.unsat:
-            if context_constraints:
-                log.debug("Checking the context constraints are not violated")
-                # check that context_constraints are not violated
-                solver1 = z3.Solver()
-                for j in range(len(i)):
-                    solver1.add(products[j] == z3.Int(contexts_names[j]))
-                solver1.add(context_constraints)
-                if solver1.check() != z3.sat:
-                    continue
-            out = {"result": "not_valid", "contexts": []}
-            for j in range(len(i)):
-                out["contexts"].append({"id": contexts_names[j], "value": unicode(i[j])})
-            json.dump(out, out_stream)
-            out_stream.write("\n")
-            return
-        solver.pop()
-    out_stream.write('{"result":"valid"}\n')
 
 
 def run_explain(
@@ -672,8 +533,11 @@ def translate_constraints(triple):
               help="Print debug messages.")
 @click.option('--validate', is_flag=True,
               help="Activate the validation mode to check if for all context the FM is not void.")
-@click.option('--validate-grid-search', is_flag=True,
-              help="Do not use the quantified formula for the validation but run instead a grid search.")
+@click.option('--validate-modality',
+              help="Modality for conducting the validation",
+              default="forall",
+              type=click.Choice(["grid", "forall"]),
+              show_default=True)
 @click.option('--explain', is_flag=True,
               help="Tries to explain why a FM is void.")
 @click.option('--check-interface',
@@ -702,7 +566,7 @@ def main(input_file,
          keep,
          verbose,
          validate,
-         validate_grid_search,
+         validate_modality,
          explain,
          check_interface,
          features_as_boolean,
@@ -875,12 +739,13 @@ def main(input_file,
 
     start_running_time = datetime.datetime.now()
     if modality == "validate":
-        if validate_grid_search:
-            run_validate_grid_search(features, initial_features, contexts, attributes, constraints,
+        import validate_module
+        if validate_modality == "grid":
+            validate_module.run_validate_grid_search(features, initial_features, contexts, attributes, constraints,
                                      preferences, contexts_constraints, features_as_boolean, non_incremental_solver,
                                      out_stream)
-        else:
-            run_validate(features, initial_features, contexts, attributes, constraints,
+        elif validate_modality == "forall":
+            validate_module.run_validate(features, initial_features, contexts, attributes, constraints,
                  preferences, contexts_constraints, features_as_boolean, out_stream)
 
     elif modality == "explain":
@@ -890,7 +755,7 @@ def main(input_file,
         run_check_interface(features, contexts, attributes, constraints, contexts_constraints,
                         read_json(interface_file), features_as_boolean, out_stream)
     elif modality == "check-features":
-
+        import check_features_module
         if check_features_modality == "grid":
             check_features_module.run_feature_analysis_grid_search(
                 features,
