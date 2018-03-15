@@ -298,7 +298,7 @@ def run_feature_analysis_grid_search(
         log.debug("Checking for false optional features")
         counter = len(to_check_false[i])
         for j in to_check_false[i]:
-            log.debug("Processing feature {}, remaining".format(j, counter))
+            log.debug("Processing feature {}, remaining {}".format(j, counter))
             counter -= 1
             solver.push()
             if features_as_boolean:
@@ -403,6 +403,8 @@ def run_feature_analysis_forall(
             value = model[z3.Int(fresh_var)].as_long()
             found_context = to_check[value][0]
             found_feature = to_check[value][1]
+            # remove check for false optional
+            to_check.remove((found_context, found_feature))
             log.debug("Dead feature for time {}: {}".format(found_context, found_feature))
             if found_feature in data["dead_features"]:
                 data["dead_features"][found_feature].append(found_context)
