@@ -86,6 +86,10 @@ class MyVisitor(SpecificationGrammarVisitor):
         formulas = []
         for i in range(2,ctx.getChildCount()-1,2):
             formulas.append(ctx.getChild(i).accept(self))
+        if not formulas:
+            return z3.BoolVal(False)
+        elif len(formulas) == 1:
+            return formulas[0]
         return z3.PbEq([(i,1) for i in formulas],1)
 
     def visitRelation(self, ctx):
