@@ -350,6 +350,7 @@ def run_feature_analysis_forall(
     time_context = get_time_context(time_context, optional_features)
     # add it in context if not present
     if time_context not in contexts:
+        contexts[time_context] = {}
         contexts[time_context]['min'] = 0
         contexts[time_context]['max'] = 0
 
