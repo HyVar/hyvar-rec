@@ -1020,7 +1020,7 @@
  "context[evo] = 998 impl (feature[f0] iff (feature[f1] or feature[f2]))" 
  ],
   "preferences":[],
-	"hyvar_options" : ["--features-as-boolean"],
+	"hyvar_options" : ["--features-as-boolean", "--check-features", "--check-features-modality", "forall" ],
 	"optional_features" : {
 		"f1": [[0,999]],
 		"f2": [[0,999]]
