@@ -26,6 +26,7 @@ python ../hyvar-rec.py --features-as-boolean test3_oneonly.json >> $LOG_FILE
 python ../hyvar-rec.py --features-as-boolean --check-features --check-features-modality forall sat_bool.json >> $LOG_FILE
 python ../hyvar-rec.py --features-as-boolean --check-features --check-features-modality grid sat_bool.json >> $LOG_FILE
 python ../hyvar-rec.py --features-as-boolean --check-features --check-features-modality pruning sat_bool.json >> $LOG_FILE
+python ../hyvar-rec.py --check-features --check-features-modality forall --features-as-boolean test5_forall_check.json >> $LOG_FILE
 diff $LOG_FILE output.txt
 rm $LOG_FILE
 

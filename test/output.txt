@@ -15,10 +15,11 @@
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
-{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [4, 3]}}
+{"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"dead_features": {"_f1": [2]}, "false_optionals": {"_f2": [3, 4]}}
 {"attributes": [], "result": "sat", "features": ["_b", "_a"]}
-{"dead_features": {"_notf0": [1, 0]}, "false_optionals": {"_f0": [0, 1]}}
 {"dead_features": {"_notf0": [0, 1]}, "false_optionals": {"_f0": [0, 1]}}
 {"dead_features": {"_notf0": [0, 1]}, "false_optionals": {"_f0": [0, 1]}}
+{"dead_features": {"_notf0": [0, 1]}, "false_optionals": {"_f0": [0, 1]}}
+{"dead_features": {}, "false_optionals": {"f1": [900], "f2": [900]}}
