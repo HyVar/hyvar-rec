@@ -414,7 +414,7 @@ def translate_constraints(triple):
               help="Starts the check to list all the mandatory and dead features.")
 @click.option('--check-features-modality',
               help="Modality for conducting the check feature search.",
-              default="grid",
+              default="forall",
               type=click.Choice(["grid", "forall", "pruning"]),
               show_default=True)
 @click.option('--timeout', type=click.INT, default=0,

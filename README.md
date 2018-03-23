@@ -198,6 +198,28 @@ If the --features-as-boolean option is activated then the constraint can be ente
 
 Note that in this case it is not needed to specify the list of the features introduced.
 
+Other options
+-------------
+
+HyVarRec allow the possibility to set different options. Among all the option available
+we would like to underline the following ones:
+* `--num-of-process INTEGER` It is used to speed up the parsing of the constraints (not the execution of the solver).
+  It can be useful for large instances
+* `--validate-modality [grid|forall]`, default: forall. When the tool is used for the validation, by default HyVarRec
+  will use a universal quantifier formula to perform the task. If the modality is instead `grid` it will perform 
+  an interactive search, one context at the time
+* `--check-features-modality [grid|forall|pruning]`, default: forall. When the tool is used for the checking
+  of features anomalies, by default HyVarRec will use a universal quantifier formula to perform the task.
+  If the modality is instead `grid` it will perform an interactive search, one context at the time. In pruning
+  modality the tool will try to prune the features to check by repetive calls to the solver
+* `--timeout INTEGER`. Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in
+  reconfiguration mode.
+* `--constraints-minimization`. Tries to produce a minimal explanation when used in explain mode
+* `--no-default-preferences`. Does not consider default preferences to minimize the difference w.r.t. the initial
+  configuration. Option significant only in reconfiguration mode.
+* `--non-incremental-solver`. Do not use an incremental solver. Option significant when checking the features
+  and in validation mode
+
 Limitations & Notes
 ------------
 Operator have left associativity: e.g., x + x * y is interpreted as (x + x) * y
