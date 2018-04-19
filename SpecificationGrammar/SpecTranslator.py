@@ -69,9 +69,11 @@ class MyVisitor(SpecificationGrammarVisitor):
             elif op == "impl":
                 formula = z3.Implies(formula, f)
             elif op == "iff":
-                formula = z3.simplify(formula == f)
+                formula = z3.simplify(z3.And(z3.Implies(formula, f), z3.Implies(f,formula)))
+                #formula = z3.simplify(formula == f)
             elif op == "xor":
-                formula = z3.simplify(formula == z3.Not(f))
+                formula = z3.simplify((z3.And(z3.Implies(formula, z3.Not(f)), z3.Implies(z3.Not(formula),f))))
+                #formula = z3.simplify(formula == z3.Not(f))
             else:
                 raise Exception("Boolean operator " + op + "not recognised")
         return formula

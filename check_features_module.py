@@ -354,6 +354,12 @@ def run_feature_analysis_forall(
         contexts[time_context]['min'] = 0
         contexts[time_context]['max'] = 0
 
+
+    # these constraints will also be added in the forall formula and are redundant
+    # hopefully they will help the SMT solver to solve the forall formula
+    solver.add(contexts[time_context]["min"] <= z3.Int(time_context))
+    solver.add(z3.Int(time_context) <= contexts[time_context]["max"])
+
     log.info("Building the FM formula")
     # will repeat the constraints about the bounds on the environment but that is OK
     formulas = get_basic_formula_list(features, attributes, contexts, constraints, features_as_boolean)
@@ -403,7 +409,7 @@ def run_feature_analysis_forall(
                                          z3.Bool(i) if features_as_boolean else z3.Int(i).__eq__(z3.IntVal(1)))
                               for i in opt_features_ls]),
                       z3.Not(z3.And(formulas)))))
-    #log.debug(unicode(solver))
+    log.debug(unicode(solver))
 
     while True:
         log.info("Computing")
@@ -427,9 +433,14 @@ def run_feature_analysis_forall(
             # add constraint for next iteration
             solver.add(z3.Not(z3.And(z3.Bool(found_feature + fresh_var),
                                      z3.Int(time_context).__eq__(z3.IntVal(found_context)))))
-        else:
+        elif result == z3.unsat:
             log.debug("Formula found unsat. No more dead features.")
             break
+        else:
+            log.critical("SMT solver can not solve the forall formula (result unknown).")
+            log.critical("Exiting")
+            sys.exit(1)
+
     solver.pop()
 
     log.info("Search for false positive features")
@@ -468,9 +479,14 @@ def run_feature_analysis_forall(
             # add constraint for next iteration
             solver.add(z3.Not(z3.And(z3.Bool(found_feature + fresh_var),
                                      z3.Int(time_context).__eq__(z3.IntVal(found_context)))))
-        else:
+        elif result == z3.unsat:
             log.debug("Formula found unsat. No more false positives.")
             break
+        else:
+            log.critical("SMT solver can not solve the forall formula (result unknown).")
+            log.critical("Exiting")
+            sys.exit(1)
+
 
 
     log.info("Printing output")
