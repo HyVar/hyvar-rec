@@ -21,7 +21,7 @@ def run_validate(
     solver.set("smt.relevancy",0)
 
     log.info("Add context variables")
-    for i in contexts.keys():
+    for i in list(contexts.keys()):
         solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
 
     log.info("Add contexts constraints")
@@ -35,7 +35,7 @@ def run_validate(
             formulas.append(0 <= z3.Int(i))
             formulas.append(z3.Int(i) <= 1)
 
-    for i in attributes.keys():
+    for i in list(attributes.keys()):
         formulas.append(attributes[i]["min"] <= z3.Int(i))
         formulas.append(z3.Int(i) <= attributes[i]["max"])
 
@@ -45,12 +45,12 @@ def run_validate(
     log.info("Add forall not FM formula")
     if features_as_boolean:
         solver.add(z3.ForAll(
-            [z3.Bool(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
+            [z3.Bool(i) for i in features] + [z3.Int(i) for i in list(attributes.keys())],
             z3.Not(z3.And(formulas))
         ))
     else:
         solver.add(z3.ForAll(
-            [z3.Int(i) for i in features] + [z3.Int(i) for i in attributes.keys()],
+            [z3.Int(i) for i in features] + [z3.Int(i) for i in list(attributes.keys())],
             z3.Not(z3.And(formulas))
         ))
     log.debug(solver)
@@ -62,8 +62,8 @@ def run_validate(
     if result == z3.sat:
         model = solver.model()
         out = {"result": "not_valid", "contexts": []}
-        for i in contexts.keys():
-            out["contexts"].append({"id": i, "value": unicode(model[z3.Int(i)])})
+        for i in list(contexts.keys()):
+            out["contexts"].append({"id": i, "value": str(model[z3.Int(i)])})
         json.dump(out, out_stream)
         out_stream.write("\n")
     else:
@@ -91,8 +91,8 @@ def run_validate_grid_search(
         solver.set("combined_solver.solver2_timeout",1)
 
     # compute grid
-    contexts_names = contexts.keys()
-    context_ranges = [range(contexts[i]["min"],contexts[i]["max"]+1) for i in contexts_names]
+    contexts_names = list(contexts.keys())
+    context_ranges = [list(range(contexts[i]["min"],contexts[i]["max"]+1)) for i in contexts_names]
     products = list(itertools.product(*context_ranges))
     if not contexts_names: # no context is defined
         products = [[]]
@@ -102,9 +102,9 @@ def run_validate_grid_search(
     if not features_as_boolean:
         for i in features:
             solver.add(0 <= z3.Int(i), z3.Int(i) <= 1)
-    for i in attributes.keys():
+    for i in list(attributes.keys()):
         solver.add(attributes[i]["min"] <= z3.Int(i), z3.Int(i) <= attributes[i]["max"])
-    for i in contexts.keys():
+    for i in list(contexts.keys()):
         solver.add(contexts[i]["min"] <= z3.Int(i), z3.Int(i) <= contexts[i]["max"])
 
     log.info("Add constraints")
@@ -133,7 +133,7 @@ def run_validate_grid_search(
                     continue
             out = {"result": "not_valid", "contexts": []}
             for j in range(len(i)):
-                out["contexts"].append({"id": contexts_names[j], "value": unicode(i[j])})
+                out["contexts"].append({"id": contexts_names[j], "value": str(i[j])})
             json.dump(out, out_stream)
             out_stream.write("\n")
             return

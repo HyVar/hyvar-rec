@@ -1,43 +1,44 @@
-# Generated from SpecificationGrammar.g4 by ANTLR 4.7
+# Generated from SpecificationGrammar.g4 by ANTLR 4.7.2
 # encoding: utf-8
-from __future__ import print_function
 from antlr4 import *
 from io import StringIO
+from typing.io import TextIO
 import sys
+
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"\"^\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4")
-        buf.write(u"\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3")
-        buf.write(u"\2\5\2\35\n\2\3\3\3\3\3\3\3\4\3\4\3\4\7\4%\n\4\f\4\16")
-        buf.write(u"\4(\13\4\3\5\5\5+\n\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6")
-        buf.write(u"\3\6\7\6\66\n\6\f\6\16\69\13\6\3\6\3\6\5\6=\n\6\3\7\3")
-        buf.write(u"\7\3\7\5\7B\n\7\3\b\3\b\3\b\7\bG\n\b\f\b\16\bJ\13\b\3")
-        buf.write(u"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write(u"\t\5\tZ\n\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2")
-        buf.write(u"\7\3\2\24\25\4\2\13\r\22\23\3\2\27\34\3\2\35\37\3\2\20")
-        buf.write(u"\21\2`\2\34\3\2\2\2\4\36\3\2\2\2\6!\3\2\2\2\b*\3\2\2")
-        buf.write(u"\2\n<\3\2\2\2\f>\3\2\2\2\16C\3\2\2\2\20Y\3\2\2\2\22[")
-        buf.write(u"\3\2\2\2\24\35\5\4\3\2\25\26\t\2\2\2\26\27\7\3\2\2\27")
-        buf.write(u"\30\7\4\2\2\30\31\7 \2\2\31\32\7\5\2\2\32\33\7\6\2\2")
-        buf.write(u"\33\35\7\2\2\3\34\24\3\2\2\2\34\25\3\2\2\2\35\3\3\2\2")
-        buf.write(u"\2\36\37\5\6\4\2\37 \7\2\2\3 \5\3\2\2\2!&\5\b\5\2\"#")
-        buf.write(u"\t\3\2\2#%\5\b\5\2$\"\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'")
-        buf.write(u"\3\2\2\2\'\7\3\2\2\2(&\3\2\2\2)+\7\17\2\2*)\3\2\2\2*")
-        buf.write(u"+\3\2\2\2+,\3\2\2\2,-\5\n\6\2-\t\3\2\2\2.=\5\22\n\2/")
-        buf.write(u"=\5\f\7\2\60\61\7\16\2\2\61\62\7\7\2\2\62\67\5\6\4\2")
-        buf.write(u"\63\64\7\b\2\2\64\66\5\6\4\2\65\63\3\2\2\2\669\3\2\2")
-        buf.write(u"\2\67\65\3\2\2\2\678\3\2\2\28:\3\2\2\29\67\3\2\2\2:;")
-        buf.write(u"\7\5\2\2;=\3\2\2\2<.\3\2\2\2</\3\2\2\2<\60\3\2\2\2=\13")
-        buf.write(u"\3\2\2\2>A\5\16\b\2?@\t\4\2\2@B\5\16\b\2A?\3\2\2\2AB")
-        buf.write(u"\3\2\2\2B\r\3\2\2\2CH\5\20\t\2DE\t\5\2\2EG\5\20\t\2F")
-        buf.write(u"D\3\2\2\2GJ\3\2\2\2HF\3\2\2\2HI\3\2\2\2I\17\3\2\2\2J")
-        buf.write(u"H\3\2\2\2KZ\7!\2\2LM\7\t\2\2MN\7 \2\2NZ\7\5\2\2OP\7\n")
-        buf.write(u"\2\2PQ\7 \2\2QZ\7\5\2\2RS\7\4\2\2ST\7 \2\2TZ\7\5\2\2")
-        buf.write(u"UV\7\3\2\2VW\5\6\4\2WX\7\6\2\2XZ\3\2\2\2YK\3\2\2\2YL")
-        buf.write(u"\3\2\2\2YO\3\2\2\2YR\3\2\2\2YU\3\2\2\2Z\21\3\2\2\2[\\")
-        buf.write(u"\t\6\2\2\\\23\3\2\2\2\n\34&*\67<AHY")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\"")
+        buf.write("^\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3\2\5")
+        buf.write("\2\35\n\2\3\3\3\3\3\3\3\4\3\4\3\4\7\4%\n\4\f\4\16\4(\13")
+        buf.write("\4\3\5\5\5+\n\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7")
+        buf.write("\6\66\n\6\f\6\16\69\13\6\3\6\3\6\5\6=\n\6\3\7\3\7\3\7")
+        buf.write("\5\7B\n\7\3\b\3\b\3\b\7\bG\n\b\f\b\16\bJ\13\b\3\t\3\t")
+        buf.write("\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tZ")
+        buf.write("\n\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\7\3\2\24")
+        buf.write("\25\4\2\13\r\22\23\3\2\27\34\3\2\35\37\3\2\20\21\2`\2")
+        buf.write("\34\3\2\2\2\4\36\3\2\2\2\6!\3\2\2\2\b*\3\2\2\2\n<\3\2")
+        buf.write("\2\2\f>\3\2\2\2\16C\3\2\2\2\20Y\3\2\2\2\22[\3\2\2\2\24")
+        buf.write("\35\5\4\3\2\25\26\t\2\2\2\26\27\7\3\2\2\27\30\7\4\2\2")
+        buf.write("\30\31\7 \2\2\31\32\7\5\2\2\32\33\7\6\2\2\33\35\7\2\2")
+        buf.write("\3\34\24\3\2\2\2\34\25\3\2\2\2\35\3\3\2\2\2\36\37\5\6")
+        buf.write("\4\2\37 \7\2\2\3 \5\3\2\2\2!&\5\b\5\2\"#\t\3\2\2#%\5\b")
+        buf.write("\5\2$\"\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2\'\7\3\2")
+        buf.write("\2\2(&\3\2\2\2)+\7\17\2\2*)\3\2\2\2*+\3\2\2\2+,\3\2\2")
+        buf.write("\2,-\5\n\6\2-\t\3\2\2\2.=\5\22\n\2/=\5\f\7\2\60\61\7\16")
+        buf.write("\2\2\61\62\7\7\2\2\62\67\5\6\4\2\63\64\7\b\2\2\64\66\5")
+        buf.write("\6\4\2\65\63\3\2\2\2\669\3\2\2\2\67\65\3\2\2\2\678\3\2")
+        buf.write("\2\28:\3\2\2\29\67\3\2\2\2:;\7\5\2\2;=\3\2\2\2<.\3\2\2")
+        buf.write("\2</\3\2\2\2<\60\3\2\2\2=\13\3\2\2\2>A\5\16\b\2?@\t\4")
+        buf.write("\2\2@B\5\16\b\2A?\3\2\2\2AB\3\2\2\2B\r\3\2\2\2CH\5\20")
+        buf.write("\t\2DE\t\5\2\2EG\5\20\t\2FD\3\2\2\2GJ\3\2\2\2HF\3\2\2")
+        buf.write("\2HI\3\2\2\2I\17\3\2\2\2JH\3\2\2\2KZ\7!\2\2LM\7\t\2\2")
+        buf.write("MN\7 \2\2NZ\7\5\2\2OP\7\n\2\2PQ\7 \2\2QZ\7\5\2\2RS\7\4")
+        buf.write("\2\2ST\7 \2\2TZ\7\5\2\2UV\7\3\2\2VW\5\6\4\2WX\7\6\2\2")
+        buf.write("XZ\3\2\2\2YK\3\2\2\2YL\3\2\2\2YO\3\2\2\2YR\3\2\2\2YU\3")
+        buf.write("\2\2\2Z\21\3\2\2\2[\\\t\6\2\2\\\23\3\2\2\2\n\34&*\67<")
+        buf.write("AHY")
         return buf.getvalue()
 
 
@@ -51,19 +52,19 @@ class SpecificationGrammarParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'('", u"'attribute['", u"']'", u"')'", 
-                     u"'['", u"','", u"'context['", u"'feature['", u"'and'", 
-                     u"'or'", u"'xor'", u"'oneonly'", u"'not'", u"'true'", 
-                     u"'false'", u"'impl'", u"'iff'", u"'min'", u"'max'", 
-                     u"'abs'", u"'<='", u"'='", u"'>='", u"'<'", u"'>'", 
-                     u"'!='", u"'+'", u"'-'", u"'*'" ]
+    literalNames = [ "<INVALID>", "'('", "'attribute['", "']'", "')'", "'['", 
+                     "','", "'context['", "'feature['", "'and'", "'or'", 
+                     "'xor'", "'oneonly'", "'not'", "'true'", "'false'", 
+                     "'impl'", "'iff'", "'min'", "'max'", "'abs'", "'<='", 
+                     "'='", "'>='", "'<'", "'>'", "'!='", "'+'", "'-'", 
+                     "'*'" ]
 
-    symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
-                      u"<INVALID>", u"AND", u"OR", u"XOR", u"ONEONLY", u"NOT", 
-                      u"TRUE", u"FALSE", u"IMPL", u"IFF", u"MIN", u"MAX", 
-                      u"ABS", u"LEQ", u"EQ", u"GEQ", u"LT", u"GT", u"NEQ", 
-                      u"PLUS", u"MINUS", u"TIMES", u"ID", u"INT", u"WS" ]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "AND", "OR", "XOR", "ONEONLY", "NOT", 
+                      "TRUE", "FALSE", "IMPL", "IFF", "MIN", "MAX", "ABS", 
+                      "LEQ", "EQ", "GEQ", "LT", "GT", "NEQ", "PLUS", "MINUS", 
+                      "TIMES", "ID", "INT", "WS" ]
 
     RULE_preference = 0
     RULE_constraint = 1
@@ -75,8 +76,8 @@ class SpecificationGrammarParser ( Parser ):
     RULE_term = 7
     RULE_boolFact = 8
 
-    ruleNames =  [ u"preference", u"constraint", u"b_expr", u"b_term", u"b_factor", 
-                   u"relation", u"expr", u"term", u"boolFact" ]
+    ruleNames =  [ "preference", "constraint", "b_expr", "b_term", "b_factor", 
+                   "relation", "expr", "term", "boolFact" ]
 
     EOF = Token.EOF
     T__0=1
@@ -112,18 +113,19 @@ class SpecificationGrammarParser ( Parser ):
     INT=31
     WS=32
 
-    def __init__(self, input, output=sys.stdout):
-        super(SpecificationGrammarParser, self).__init__(input, output=output)
-        self.checkVersion("4.7")
+    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+        super().__init__(input, output)
+        self.checkVersion("4.7.2")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
 
 
+
     class PreferenceContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.PreferenceContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
 
@@ -131,23 +133,23 @@ class SpecificationGrammarParser ( Parser ):
             return SpecificationGrammarParser.RULE_preference
 
      
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.PreferenceContext, self).copyFrom(ctx)
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
 
 
 
     class ConstraintPreferenceContext(PreferenceContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.PreferenceContext)
-            super(SpecificationGrammarParser.ConstraintPreferenceContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.PreferenceContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def constraint(self):
             return self.getTypedRuleContext(SpecificationGrammarParser.ConstraintContext,0)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitConstraintPreference"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstraintPreference" ):
                 return visitor.visitConstraintPreference(self)
             else:
                 return visitor.visitChildren(self)
@@ -155,8 +157,8 @@ class SpecificationGrammarParser ( Parser ):
 
     class MinMaxPreferenceContext(PreferenceContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.PreferenceContext)
-            super(SpecificationGrammarParser.MinMaxPreferenceContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.PreferenceContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def ID(self):
@@ -168,8 +170,8 @@ class SpecificationGrammarParser ( Parser ):
         def MAX(self):
             return self.getToken(SpecificationGrammarParser.MAX, 0)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitMinMaxPreference"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMinMaxPreference" ):
                 return visitor.visitMinMaxPreference(self)
             else:
                 return visitor.visitChildren(self)
@@ -225,10 +227,11 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class ConstraintContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.ConstraintContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
         def b_expr(self):
@@ -241,8 +244,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_constraint
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitConstraint"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstraint" ):
                 return visitor.visitConstraint(self)
             else:
                 return visitor.visitChildren(self)
@@ -268,44 +271,45 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class B_exprContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.B_exprContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
-        def b_term(self, i=None):
+        def b_term(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(SpecificationGrammarParser.B_termContext)
             else:
                 return self.getTypedRuleContext(SpecificationGrammarParser.B_termContext,i)
 
 
-        def AND(self, i=None):
+        def AND(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.AND)
             else:
                 return self.getToken(SpecificationGrammarParser.AND, i)
 
-        def OR(self, i=None):
+        def OR(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.OR)
             else:
                 return self.getToken(SpecificationGrammarParser.OR, i)
 
-        def IMPL(self, i=None):
+        def IMPL(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.IMPL)
             else:
                 return self.getToken(SpecificationGrammarParser.IMPL, i)
 
-        def IFF(self, i=None):
+        def IFF(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.IFF)
             else:
                 return self.getToken(SpecificationGrammarParser.IFF, i)
 
-        def XOR(self, i=None):
+        def XOR(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.XOR)
             else:
@@ -314,8 +318,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_b_expr
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitB_expr"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitB_expr" ):
                 return visitor.visitB_expr(self)
             else:
                 return visitor.visitChildren(self)
@@ -357,10 +361,11 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class B_termContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.B_termContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
         def b_factor(self):
@@ -373,8 +378,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_b_term
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitB_term"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitB_term" ):
                 return visitor.visitB_term(self)
             else:
                 return visitor.visitChildren(self)
@@ -407,10 +412,11 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class B_factorContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.B_factorContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
 
@@ -418,23 +424,23 @@ class SpecificationGrammarParser ( Parser ):
             return SpecificationGrammarParser.RULE_b_factor
 
      
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.B_factorContext, self).copyFrom(ctx)
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
 
 
 
     class BFactorRelationContext(B_factorContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.B_factorContext)
-            super(SpecificationGrammarParser.BFactorRelationContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.B_factorContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def relation(self):
             return self.getTypedRuleContext(SpecificationGrammarParser.RelationContext,0)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBFactorRelation"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBFactorRelation" ):
                 return visitor.visitBFactorRelation(self)
             else:
                 return visitor.visitChildren(self)
@@ -442,16 +448,16 @@ class SpecificationGrammarParser ( Parser ):
 
     class BFactorFactContext(B_factorContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.B_factorContext)
-            super(SpecificationGrammarParser.BFactorFactContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.B_factorContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def boolFact(self):
             return self.getTypedRuleContext(SpecificationGrammarParser.BoolFactContext,0)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBFactorFact"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBFactorFact" ):
                 return visitor.visitBFactorFact(self)
             else:
                 return visitor.visitChildren(self)
@@ -459,21 +465,21 @@ class SpecificationGrammarParser ( Parser ):
 
     class BFactorOneOnlyContext(B_factorContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.B_factorContext)
-            super(SpecificationGrammarParser.BFactorOneOnlyContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.B_factorContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def ONEONLY(self):
             return self.getToken(SpecificationGrammarParser.ONEONLY, 0)
-        def b_expr(self, i=None):
+        def b_expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(SpecificationGrammarParser.B_exprContext)
             else:
                 return self.getTypedRuleContext(SpecificationGrammarParser.B_exprContext,i)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBFactorOneOnly"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBFactorOneOnly" ):
                 return visitor.visitBFactorOneOnly(self)
             else:
                 return visitor.visitChildren(self)
@@ -536,13 +542,14 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class RelationContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.RelationContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
-        def expr(self, i=None):
+        def expr(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(SpecificationGrammarParser.ExprContext)
             else:
@@ -570,8 +577,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_relation
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitRelation"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitRelation" ):
                 return visitor.visitRelation(self)
             else:
                 return visitor.visitChildren(self)
@@ -611,32 +618,33 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class ExprContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.ExprContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
-        def term(self, i=None):
+        def term(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(SpecificationGrammarParser.TermContext)
             else:
                 return self.getTypedRuleContext(SpecificationGrammarParser.TermContext,i)
 
 
-        def PLUS(self, i=None):
+        def PLUS(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.PLUS)
             else:
                 return self.getToken(SpecificationGrammarParser.PLUS, i)
 
-        def MINUS(self, i=None):
+        def MINUS(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.MINUS)
             else:
                 return self.getToken(SpecificationGrammarParser.MINUS, i)
 
-        def TIMES(self, i=None):
+        def TIMES(self, i:int=None):
             if i is None:
                 return self.getTokens(SpecificationGrammarParser.TIMES)
             else:
@@ -645,8 +653,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_expr
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitExpr"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpr" ):
                 return visitor.visitExpr(self)
             else:
                 return visitor.visitChildren(self)
@@ -688,10 +696,11 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class TermContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.TermContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
 
@@ -699,22 +708,22 @@ class SpecificationGrammarParser ( Parser ):
             return SpecificationGrammarParser.RULE_term
 
      
-        def copyFrom(self, ctx):
-            super(SpecificationGrammarParser.TermContext, self).copyFrom(ctx)
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
 
 
 
     class TermContextContext(TermContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.TermContext)
-            super(SpecificationGrammarParser.TermContextContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.TermContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def ID(self):
             return self.getToken(SpecificationGrammarParser.ID, 0)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitTermContext"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTermContext" ):
                 return visitor.visitTermContext(self)
             else:
                 return visitor.visitChildren(self)
@@ -722,15 +731,15 @@ class SpecificationGrammarParser ( Parser ):
 
     class TermFeatureContext(TermContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.TermContext)
-            super(SpecificationGrammarParser.TermFeatureContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.TermContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def ID(self):
             return self.getToken(SpecificationGrammarParser.ID, 0)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitTermFeature"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTermFeature" ):
                 return visitor.visitTermFeature(self)
             else:
                 return visitor.visitChildren(self)
@@ -738,15 +747,15 @@ class SpecificationGrammarParser ( Parser ):
 
     class TermIntContext(TermContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.TermContext)
-            super(SpecificationGrammarParser.TermIntContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.TermContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def INT(self):
             return self.getToken(SpecificationGrammarParser.INT, 0)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitTermInt"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTermInt" ):
                 return visitor.visitTermInt(self)
             else:
                 return visitor.visitChildren(self)
@@ -754,16 +763,16 @@ class SpecificationGrammarParser ( Parser ):
 
     class TermBracketsContext(TermContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.TermContext)
-            super(SpecificationGrammarParser.TermBracketsContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.TermContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def b_expr(self):
             return self.getTypedRuleContext(SpecificationGrammarParser.B_exprContext,0)
 
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitTermBrackets"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTermBrackets" ):
                 return visitor.visitTermBrackets(self)
             else:
                 return visitor.visitChildren(self)
@@ -771,15 +780,15 @@ class SpecificationGrammarParser ( Parser ):
 
     class TermAttributeContext(TermContext):
 
-        def __init__(self, parser, ctx): # actually a SpecificationGrammarParser.TermContext)
-            super(SpecificationGrammarParser.TermAttributeContext, self).__init__(parser)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a SpecificationGrammarParser.TermContext
+            super().__init__(parser)
             self.copyFrom(ctx)
 
         def ID(self):
             return self.getToken(SpecificationGrammarParser.ID, 0)
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitTermAttribute"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTermAttribute" ):
                 return visitor.visitTermAttribute(self)
             else:
                 return visitor.visitChildren(self)
@@ -851,10 +860,11 @@ class SpecificationGrammarParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class BoolFactContext(ParserRuleContext):
 
-        def __init__(self, parser, parent=None, invokingState=-1):
-            super(SpecificationGrammarParser.BoolFactContext, self).__init__(parent, invokingState)
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
             self.parser = parser
 
         def TRUE(self):
@@ -866,8 +876,8 @@ class SpecificationGrammarParser ( Parser ):
         def getRuleIndex(self):
             return SpecificationGrammarParser.RULE_boolFact
 
-        def accept(self, visitor):
-            if hasattr(visitor, "visitBoolFact"):
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBoolFact" ):
                 return visitor.visitBoolFact(self)
             else:
                 return visitor.visitChildren(self)

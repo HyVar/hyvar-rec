@@ -1,6 +1,6 @@
 grammar SpecificationGrammar;
 
-// To generate files run antlr4 -Dlanguage=Python2 -visitor -no-listener
+// To generate files run antlr4 -Dlanguage=Python3 -visitor -no-listener
 
 preference:
   constraint                                 #constraintPreference |

@@ -11,9 +11,9 @@ __email__ = "mauro.jacopo@gmail.com"
 __status__ = "Prototype"
 
 from antlr4 import *
-from SpecificationGrammarLexer import SpecificationGrammarLexer
-from SpecificationGrammarParser import SpecificationGrammarParser
-from SpecificationGrammarVisitor import SpecificationGrammarVisitor
+from .SpecificationGrammarLexer import SpecificationGrammarLexer
+from .SpecificationGrammarParser import SpecificationGrammarParser
+from .SpecificationGrammarVisitor import SpecificationGrammarVisitor
 import z3
 
 
