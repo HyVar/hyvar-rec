@@ -40,7 +40,7 @@ def run_validate(
         formulas.append(z3.Int(i) <= attributes[i]["max"])
 
     for i in constraints:
-        formulas += i
+        formulas.append(i)
 
     log.info("Add forall not FM formula")
     if features_as_boolean:

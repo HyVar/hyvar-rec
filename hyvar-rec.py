@@ -545,7 +545,7 @@ def main(input_file,
         results = pool.map(translate_constraints, [(x,data,features_as_boolean) for x in data["constraints"]])
         log.debug("Converting smt into z3 expressions")
         for smt_f,fs in results:
-            constraints.append(z3.parse_smt2_string(smt_f))
+            constraints += z3.parse_smt2_string(smt_f)
             features.update(fs)
     else:
         for i in data["constraints"]:
@@ -565,7 +565,7 @@ def main(input_file,
         log.info("Processing special input constraint modality")
         features.update(data["smt_constraints"]["features"])
         for i in data["smt_constraints"]["formulas"]:
-            constraints.append(z3.parse_smt2_string(i))
+            constraints += z3.parse_smt2_string(i)
             # for explain purposes add smt_constraint to constraints
             data["constraints"].append(i)
     log.info("Constraint processed so far: {}".format(len("constraints")))
@@ -577,7 +577,7 @@ def main(input_file,
         if "smt_preferences" in data:
             log.info("Processing special input preferences modality. Pref added as higher priority.")
             for i in data["smt_preferences"]:
-                preferences.append(z3.parse_smt2_string(i))
+                preferences += z3.parse_smt2_string(i)
 
         log.info("Processing Preferences")
         for i in data["preferences"]:
