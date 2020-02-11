@@ -27,4 +27,4 @@ ENV PATH /hyvar-rec/test/cafm_generator/Power-Law-Random-SAT-Generator:$PATH
 
 #EXPOSE 9001
 WORKDIR /hyvar-rec
-CMD ["python3", "hyvar-rec.py"]
+CMD ["python", "hyvar-rec.py", "--help"]
