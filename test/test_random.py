@@ -71,9 +71,9 @@ def run_hyvar(text, tempdir, cmd, infile, outfile):
         except:
             out += "ErrorJson;Unk;"
     elif process.returncode == 124:
-        out += f"Timeout{TIMEOUT};"
+        out += f"Timeout{TIMEOUT};;"
     else:
-        out += f"Error{process.returncode};"
+        out += f"Error{process.returncode};;"
     out += "\n"
 
     with open(outfile, "a") as f:
@@ -105,7 +105,7 @@ def main(verbose,
 
     # head of csv file
     with open(output_file, "a") as f:
-        f.write(f"features;contexts;ratio;i;j;cmd;time;result;text")
+        f.write(f"features;contexts;ratio;i;j;cmd;time;result;text\n")
 
     for f in FEATURES:
         for c in CONTEXTS:
