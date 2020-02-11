@@ -90,36 +90,38 @@ def main(verbose,
     # generate the random files
     tempdir = tempfile.mkdtemp()
 
+    # head of csv file
+    with open(output_file, "a") as f:
+        f.write(f"features;contexts;ratio;i;j;seed;cmd;time;result")
+
     for f in FEATURES:
         for c in CONTEXTS:
             for r in RATIOS:
                 for i in range(REPETITIONS):
-                    seed = 0
                     # generate random json file
-                    cmd = f"python /hyvar-rec/test/cafm_generator/cafm_gen.py -f {f} -c {c} -r {r} -o /mydir/{f}_{c}_{r}_{seed}.json -s {seed}"
+                    cmd = f"python /hyvar-rec/test/cafm_generator/cafm_gen.py -f {f} -c {c} -r {r} -o /mydir/{f}_{c}_{r}_{i}.json -s {i}"
                     docker_cmd = (f"docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} " + cmd).split(" ")
                     logging.debug(f"Run command: {' '.join(docker_cmd)}")
                     process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, stderr = process.communicate()
 
                     for j in range(RETESTS):
-                        info = f"{f};{c};{r};{i};{j};{seed};"
-                        input_file = f"/mydir/{f}_{c}_{r}_{seed}.json"
+                        info = f"{f};{c};{r};{i};{j};"
+                        input_file = f"/mydir/{f}_{c}_{r}_{i}.json"
                         cmd = f"--features-as-boolean --validate --validate-modality forall"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
 
                         cmd = f"--features-as-boolean --validate --validate-modality grid"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
 
-                        cmd = f"--features-as-boolean --check-features --check-features-modality grid"
+                        cmd = f"--features-as-boolean --check-features --check-features-modality grid --stop-at-first-anomaly"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
 
-                        cmd = f"--features-as-boolean --check-features --check-features-modality forall"
+                        cmd = f"--features-as-boolean --check-features --check-features-modality forall --stop-at-first-anomaly"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
 
-                        cmd = f"--features-as-boolean --check-features --check-features-modality pruning"
+                        cmd = f"--features-as-boolean --check-features --check-features-modality pruning --stop-at-first-anomaly"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
-                        seed += 1
     shutil.rmtree(tempdir)
 
 

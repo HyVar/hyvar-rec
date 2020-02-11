@@ -416,6 +416,8 @@ def translate_constraints(triple):
               default="forall",
               type=click.Choice(["grid", "forall", "pruning"]),
               show_default=True)
+@click.option('--stop-at-first-anomaly', is_flag=True,
+              help="Stop the check feature task as soon as one feature anomaly is detected.")
 @click.option('--timeout', type=click.INT, default=0,
               help="Timeout in milliseconds for the solver (0 = no-timeout). Valid only when used in reconfiguration mode.")
 @click.option('--constraints-minimization', is_flag=True,
@@ -439,7 +441,8 @@ def main(input_file,
          timeout,
          constraints_minimization,
          non_incremental_solver,
-         no_default_preferences):
+         no_default_preferences,
+         stop_at_first_anomaly):
     """
     INPUT_FILE Json input file
     """
@@ -631,6 +634,7 @@ def main(input_file,
                 data["optional_features"],
                 non_incremental_solver,
                 out_stream,
+                stop_at_first_anomaly,
                 "" if "time_context" not in data else data["time_context"])
         elif check_features_modality == "forall":
             check_features_module.run_feature_analysis_forall(
@@ -642,6 +646,7 @@ def main(input_file,
                 data["optional_features"],
                 non_incremental_solver,
                 out_stream,
+                stop_at_first_anomaly,
                 "" if "time_context" not in data else data["time_context"])
         elif check_features_modality == "pruning":
             check_features_module.run_feature_analysis_with_optimization(
@@ -653,6 +658,7 @@ def main(input_file,
                 data["optional_features"],
                 non_incremental_solver,
                 out_stream,
+                stop_at_first_anomaly,
                 "" if "time_context" not in data else data["time_context"])
     elif modality == "reconfigure":
         run_reconfigure(features, initial_features, contexts, attributes, constraints, preferences,

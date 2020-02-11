@@ -4,8 +4,8 @@ import uuid
 import json
 import sys
 
-STARTING_LEVEL_FEATURE_SPECULATIVE_PRUNING = 64
-SPECULATIVE_PRUNING_TIMEOUT = 30000
+# STARTING_LEVEL_FEATURE_SPECULATIVE_PRUNING = 64
+# SPECULATIVE_PRUNING_TIMEOUT = 30000
 
 def get_dic_of_features_to_check(optional_features):
     to_check = {}
@@ -79,6 +79,7 @@ def run_feature_analysis_with_optimization(
         optional_features,
         non_incremental_solver,
         out_stream,
+        stop_at_first_anomaly,
         time_context=""):
     """
     Performs the feature analysis task.
@@ -159,6 +160,11 @@ def run_feature_analysis_with_optimization(
                             data["dead_features"][j].append(i)
                         else:
                             data["dead_features"][j] = [i]
+                        if stop_at_first_anomaly:
+                            log.debug("Find an anomaly")
+                            json.dump(data, out_stream)
+                            out_stream.write("\n")
+                            return None
                     break
                 # else:
                 #     solver.pop()
@@ -195,6 +201,11 @@ def run_feature_analysis_with_optimization(
                         data["false_optionals"][j].append(i)
                     else:
                         data["false_optionals"][j]= [i]
+                    if stop_at_first_anomaly:
+                        log.debug("Find an anomaly")
+                        json.dump(data, out_stream)
+                        out_stream.write("\n")
+                        return None
                 break
             elif result == z3.sat:
                 _, to_remove_false = get_fail_checks_from_model(
@@ -217,6 +228,7 @@ def run_feature_analysis_grid_search(
         optional_features,
         non_incremental_solver,
         out_stream,
+        stop_at_first_anomaly,
         time_context=""):
     """
     Performs the feature analysis one feature at the time with push and pops. Time context is set to all its values
@@ -261,6 +273,11 @@ def run_feature_analysis_grid_search(
                     data["dead_features"][j].append(i)
                 else:
                     data["dead_features"][j] = [i]
+                if stop_at_first_anomaly:
+                    log.debug("Find an anomaly")
+                    json.dump(data, out_stream)
+                    out_stream.write("\n")
+                    return None
             continue
         elif result == z3.sat:
             to_remove_dead, to_remove_false = get_fail_checks_from_model(
@@ -289,6 +306,11 @@ def run_feature_analysis_grid_search(
                     data["dead_features"][j].append(i)
                 else:
                     data["dead_features"][j] = [i]
+                if stop_at_first_anomaly:
+                    log.debug("Find an anomaly")
+                    json.dump(data, out_stream)
+                    out_stream.write("\n")
+                    return None
                 to_check_false[i].discard(j)
             elif result != z3.sat:
                 log.debug("Problems checking feature{} at time {}. Z3 returned {}".format(
@@ -314,6 +336,11 @@ def run_feature_analysis_grid_search(
                     data["false_optionals"][j].append(i)
                 else:
                     data["false_optionals"][j] = [i]
+                if stop_at_first_anomaly:
+                    log.debug("Find an anomaly")
+                    json.dump(data, out_stream)
+                    out_stream.write("\n")
+                    return None
             elif result != z3.sat:
                 log.debug("Problems checking feature{} at time {}. Z3 returned {}".format(
                     j, i, result))
@@ -335,6 +362,7 @@ def run_feature_analysis_forall(
         optional_features,
         non_incremental_solver,
         out_stream,
+        stop_at_first_anomaly,
         time_context=""):
     """
     Performs the feature analysis task.
@@ -379,7 +407,7 @@ def run_feature_analysis_forall(
         log.warning("Nothing to check")
         json.dump(data, out_stream)
         out_stream.write("\n")
-        return
+        return None
     elif len(opt_features_ls) == 1: # zip problem raised by smt if list of one element is used for z3.PbEq
         solver.add(z3.Bool(opt_features_ls[0] + fresh_var))
     else:
@@ -431,6 +459,11 @@ def run_feature_analysis_forall(
                 data["dead_features"][found_feature].append(found_context)
             else:
                 data["dead_features"][found_feature] = [found_context]
+            if stop_at_first_anomaly:
+                log.debug("Find an anomaly")
+                json.dump(data, out_stream)
+                out_stream.write("\n")
+                return None
             # add constraint for next iteration
             solver.add(z3.Not(z3.And(z3.Bool(found_feature + fresh_var),
                                      z3.Int(time_context).__eq__(z3.IntVal(found_context)))))
@@ -477,6 +510,11 @@ def run_feature_analysis_forall(
                 data["false_optionals"][found_feature].append(found_context)
             else:
                 data["false_optionals"][found_feature] = [found_context]
+            if stop_at_first_anomaly:
+                log.debug("Find an anomaly")
+                json.dump(data, out_stream)
+                out_stream.write("\n")
+                return None
             # add constraint for next iteration
             solver.add(z3.Not(z3.And(z3.Bool(found_feature + fresh_var),
                                      z3.Int(time_context).__eq__(z3.IntVal(found_context)))))
