@@ -38,6 +38,19 @@ REPETITIONS = 1
 RETESTS = 1
 
 
+def parse_result(data):
+    if "result" in data:
+        return data["result"]
+    elif "dead_features" in data:
+        if len(data["dead_features"]) > 0:
+            return "dead"
+        elif len(data["false_optionals"]) > 0:
+            return "false"
+        else:
+            return "no_anomaly"
+    return "unknown"
+
+
 def run_hyvar(text, tempdir, cmd, infile, outfile):
     start_time = time.time()
     docker_cmd = f"timeout {TIMEOUT} docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} python hyvar-rec.py".split(" ") \
@@ -54,9 +67,9 @@ def run_hyvar(text, tempdir, cmd, infile, outfile):
     if process.returncode == 0:
         try:
             data = json.loads(stdout)
-            out += f"{elapsed_time};{json.dumps(data)}"
+            out += f"{elapsed_time};{parse_result(data)};{json.dumps(data)}"
         except:
-            out += "ErrorJson;"
+            out += "ErrorJson;Unk;"
     elif process.returncode == 124:
         out += f"Timeout{TIMEOUT};"
     else:
@@ -92,7 +105,7 @@ def main(verbose,
 
     # head of csv file
     with open(output_file, "a") as f:
-        f.write(f"features;contexts;ratio;i;j;cmd;time;result")
+        f.write(f"features;contexts;ratio;i;j;cmd;time;result;text")
 
     for f in FEATURES:
         for c in CONTEXTS:
@@ -108,7 +121,7 @@ def main(verbose,
                     stdout, stderr = process.communicate()
 
                     for j in range(RETESTS):
-                        info = f"{f};{c};{r};{i};{j};"
+                        info = f"{f};{c};{r};{i};{j}"
                         input_file = f"/mydir/{f}_{c}_{r}_{i}.json"
                         cmd = f"--features-as-boolean --validate --validate-modality forall"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
