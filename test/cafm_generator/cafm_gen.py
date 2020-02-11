@@ -28,17 +28,29 @@ template = {
     "smt_constraints": {"formulas": [], "features": [] },
 }
 
-def var_to_smt(n,c):
+def var_to_smt(n,c,reverse=False):
     if n > 0:
         if n > c:
-            return f"f{n}"
+            if reverse:
+                return f"(not f{n})"
+            else:
+                return f"f{n}"
         else:
-            return f"(= 1 c{n})"
+            if reverse:
+                return f"(= 0 c{n})"
+            else:
+                return f"(= 1 c{n})"
     else:
         if n < -c:
-            return f"(not f{-n})"
+            if reverse:
+                return f"f{-n}"
+            else:
+                return f"(not f{-n})"
         else:
-            return f"(= 0 c{-n})"
+            if reverse:
+                return f"(= 1 c{-n})"
+            else:
+                return f"(= 0 c{-n})"
 
 def var_to_declare(n,c):
     if n > 0:
@@ -66,12 +78,15 @@ def var_to_declare(n,c):
 @click.option('--output-file', '-o',
               type=click.Path(exists=False, file_okay=True, dir_okay=False, writable=True, readable=True, resolve_path=True),
               help='Output file', default="cafm_example.json", show_default=True)
+@click.option('--reverse', is_flag=True,
+              help="Considers positive literals as negative.")
 def main(num_of_features,
          num_of_contexts,
          ratio,
          output_file,
          sat_gen_cmd,
-         seed):
+         seed,
+         reverse):
 
     tmpdir = tempfile.mkdtemp()
 
@@ -106,7 +121,7 @@ def main(num_of_features,
     template["smt_constraints"]["features"] = [f"f{x + num_of_contexts+1}" for x in range(num_of_features)]
     for i in lines:
         formula = " ".join([var_to_declare(x,num_of_contexts) for x in i]) + "(assert (or "
-        formula += " ".join([var_to_smt(x,num_of_contexts) for x in i]) + "))"
+        formula += " ".join([var_to_smt(x,num_of_contexts,reverse) for x in i]) + "))"
         template["smt_constraints"]["formulas"].append(formula)
     with open(output_file, 'w') as f:
         json.dump(template, f, indent=2)

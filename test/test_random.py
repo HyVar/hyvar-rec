@@ -92,7 +92,7 @@ def main(verbose,
 
     # head of csv file
     with open(output_file, "a") as f:
-        f.write(f"features;contexts;ratio;i;j;seed;cmd;time;result")
+        f.write(f"features;contexts;ratio;i;j;cmd;time;result")
 
     for f in FEATURES:
         for c in CONTEXTS:
@@ -100,6 +100,8 @@ def main(verbose,
                 for i in range(REPETITIONS):
                     # generate random json file
                     cmd = f"python /hyvar-rec/test/cafm_generator/cafm_gen.py -f {f} -c {c} -r {r} -o /mydir/{f}_{c}_{r}_{i}.json -s {i}"
+                    if i % 2 == 1:
+                        cmd += " --reverse"
                     docker_cmd = (f"docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} " + cmd).split(" ")
                     logging.debug(f"Run command: {' '.join(docker_cmd)}")
                     process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
