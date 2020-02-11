@@ -11,6 +11,8 @@ import datetime
 import json
 from subprocess import Popen, PIPE
 import time
+import click
+import tempfile
 
 import importlib
 
@@ -23,9 +25,11 @@ __email__ = "mauro.jacopo@gmail.com"
 __status__ = "Prototype"
 
 # timeout in seconds
-TIMEOUT = 3600
-
-script_directory = os.path.dirname(os.path.realpath(__file__))
+TIMEOUT = 300
+CONTEXTS = [10]
+FEATURES = [500,750]
+RATIOS = [4.2,4.3,4.4,4.5]
+REPETITIONS = 1
 
 def read_json(json_file):
     json_data = open(json_file)
@@ -33,27 +37,35 @@ def read_json(json_file):
     json_data.close()
     return data
 
+@click.command()
+@click.option('--verbose', '-v', count=True,
+              help="Print debug messages.")
+@click.option('--output-file', '-o',
+              type=click.Path(exists=False, file_okay=True, dir_okay=False, writable=True, readable=True, resolve_path=True),
+              help='Output file - Otherwise the output is printed on stdout.')
+def main(verbose,
+         output_file,
+         ):
 
-def main(argv):
+    log_level = logging.ERROR
+    if verbose == 1:
+        log_level = logging.WARNING
+    elif verbose == 2:
+        log_level = logging.INFO
+    elif verbose >= 3:
+        log_level = logging.DEBUG
+    logging.basicConfig(format="[%(asctime)s][%(levelname)s][%(name)s]%(message)s",level=log_level)
+    logging.info("Verbose Level: " + str(verbose))
 
-    try:
-        opts, args = getopt.getopt(argv, "hv", ["help","verbose"])
-    except getopt.GetoptError as err:
-        print(str(err))
-        print(__doc__)
-        sys.exit(1)
-    for opt, arg in opts:
-        if opt in ('-h', "--help"):
-            print(__doc__)
-            sys.exit()
-        elif opt in ("-v", "--verbose"):
-            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
-            logging.info("Verbose output.")
+    # generate the random files
+    dir = tempfile.gettempdir()
 
-    if len(args) != 1:
-        print("one arguments is required")
-        print(__doc__)
-        sys.exit(1)
+    for f in FEATURES:
+        for c in CONTEXTS:
+            for r in RATIOS:
+                # generate file
+
+
 
     directory = os.path.abspath(args[0])
     temp_file = "/tmp/hyvarrec_output.json"
@@ -159,4 +171,4 @@ def main(argv):
         ",".join([x + "," + str(results[x]) + "," + str(time_results[x]) for x in sorted(results.keys())]))
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()

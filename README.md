@@ -34,8 +34,8 @@ The image of HyVarRec is available on Docker Hub. To run it please execute the
 following commands.
 
 ```
-sudo docker pull jacopomauro/hyvar-rec
-sudo docker run -d -p <PORT>:9001 --name hyvarrec_container jacopomauro/hyvar-rec
+sudo docker pull jacopomauro/hyvar-rec:v0.3
+sudo docker run -d -p <PORT>:9001 --name hyvarrec_container jacopomauro/hyvar-rec:v0.3
 ```
 
 where \<PORT\> is the port used to use the functionalities of the service.
@@ -59,7 +59,7 @@ To clean up please lunch the following commands:
 ```
 sudo docker stop hyvarrec_container
 sudo docker rm hyvarrec_container
-sudo docker rmi jacopomauro/hyvar-rec
+sudo docker rmi jacopomauro/hyvar-rec:v0.3
 ```
 
 For more information, please see the Docker documentation at docs.docker.com
