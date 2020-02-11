@@ -37,6 +37,25 @@ def read_json(json_file):
     json_data.close()
     return data
 
+
+def run(cmd):
+    start_time = time.time()
+    docker_cmd = "docker run --rm -v {dir}:/mydir hyvar-rec""
+    proc = Popen(["timeout", str(TIMEOUT), "python", "../hyvar-rec.py", "-o", temp_file,
+                  os.path.join(directory, i)],
+                 cwd=script_directory, stdout=PIPE, stderr=PIPE)
+    # proc = Popen(["timeout", unicode(TIMEOUT), "python", "../hyvar-rec.py", "--validate", "-o", temp_file,
+    #       os.path.join(directory, i)],
+    #      cwd=script_directory, stdout=PIPE, stderr=PIPE)
+    out, err = proc.communicate()
+    elapsed_time = time.time() - start_time
+    logging.debug('Stdout')
+    logging.debug(out)
+    logging.debug('Stderr')
+    logging.debug(err)
+    logging.debug('Return code:' + str(proc.returncode))
+
+
 @click.command()
 @click.option('--verbose', '-v', count=True,
               help="Print debug messages.")
@@ -64,7 +83,7 @@ def main(verbose,
         for c in CONTEXTS:
             for r in RATIOS:
 
-                # generate file
+                # generate random json file
                 cmd = f"python3 ./test/cafm_generator/cafm_gen.py -f {f} -c {c} -r {r} -o /mydir/{f}_{c}_{r}.json"
                 docker_cmd = "docker run --rm -v {dir}:/mydir hyvar-rec".split(" ")
                 docker_cmd.insert("entrypoint=\"{cmd}\"")
@@ -72,10 +91,22 @@ def main(verbose,
                 process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = process.communicate()
 
+                logging.debug("Processing " + i)
 
-
-
-
+                start_time = time.time()
+                proc = Popen(["timeout", str(TIMEOUT), "python", "../hyvar-rec.py", "-o", temp_file,
+                              os.path.join(directory, i)],
+                             cwd=script_directory, stdout=PIPE, stderr=PIPE)
+                # proc = Popen(["timeout", unicode(TIMEOUT), "python", "../hyvar-rec.py", "--validate", "-o", temp_file,
+                #       os.path.join(directory, i)],
+                #      cwd=script_directory, stdout=PIPE, stderr=PIPE)
+                out, err = proc.communicate()
+                elapsed_time = time.time() - start_time
+                logging.debug('Stdout')
+                logging.debug(out)
+                logging.debug('Stderr')
+                logging.debug(err)
+                logging.debug('Return code:' + str(proc.returncode))
 
     directory = os.path.abspath(args[0])
     temp_file = "/tmp/hyvarrec_output.json"
@@ -83,12 +114,12 @@ def main(verbose,
 
     jsons = sorted([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)) and f[-5:] == ".json"])
 
-    sum_time = 0
-    max = 0
-    min = TIMEOUT
-    count = 0
-    results = {}
-    time_results = {}
+    # sum_time = 0
+    # max = 0
+    # min = TIMEOUT
+    # count = 0
+    # results = {}
+    # time_results = {}
 
     for i in jsons:
         logging.debug("Processing " + i)

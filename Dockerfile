@@ -18,7 +18,7 @@ RUN pip3 install click z3-solver antlr4-python3-runtime
 
 RUN cd / && \
 	git clone https://github.com/HyVar/hyvar-rec.git && \
-	cd test/cafm_generator && \
+	cd hyvar-rec/test/cafm_generator && \
 	git clone https://github.com/RalfRothenberger/Power-Law-Random-SAT-Generator && \
 	cd Power-Law-Random-SAT-Generator && \
 	make
