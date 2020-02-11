@@ -23,6 +23,7 @@ RUN cd / && \
 	cd Power-Law-Random-SAT-Generator && \
 	make
 ENV PATH /hyvar-rec:$PATH
+ENV PATH /hyvar-rec/test/cafm_generator/Power-Law-Random-SAT-Generator:$PATH
 
 #EXPOSE 9001
 WORKDIR /hyvar-rec

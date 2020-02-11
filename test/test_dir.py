@@ -9,7 +9,7 @@ import logging
 import os
 import datetime
 import json
-from subprocess import Popen, PIPE
+import subprocess
 import time
 import click
 import tempfile
@@ -63,7 +63,17 @@ def main(verbose,
     for f in FEATURES:
         for c in CONTEXTS:
             for r in RATIOS:
+
                 # generate file
+                cmd = f"python3 ./test/cafm_generator/cafm_gen.py -f {f} -c {c} -r {r} -o /mydir/{f}_{c}_{r}.json"
+                docker_cmd = "docker run --rm -v {dir}:/mydir hyvar-rec".split(" ")
+                docker_cmd.insert("entrypoint=\"{cmd}\"")
+                logging.debug(f"Run command: {docker_cmd}")
+                process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stdout, stderr = process.communicate()
+
+
+
 
 
 
