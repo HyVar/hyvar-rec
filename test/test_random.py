@@ -15,8 +15,8 @@ import click
 import tempfile
 import shutil
 import psutil
+import uuid
 
-import importlib
 
 __author__ = "Jacopo Mauro"
 __copyright__ = "Copyright 2016, Jacopo Mauro"
@@ -28,7 +28,7 @@ __status__ = "Prototype"
 
 # timeout in seconds
 TIMEOUT = 300
-MEMORY_LIMIT = 4 * 1024 * 1024 * 1024
+MEMORY_LIMIT = 6 * 1024 * 1024 * 1024
 DOCKERIMAGE="jacopomauro/hyvar-rec"
 
 CONTEXTS = [10]
@@ -54,41 +54,53 @@ def parse_result(data):
 
 
 def run_hyvar(text, tempdir, cmd, infile, outfile):
+    name = uuid.uuid1().hex
     out = f"{text};{cmd};"
-    docker_cmd = f"docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} python hyvar-rec.py".split(" ") \
+    docker_cmd = f"timeout {TIMEOUT} docker run --name {name} --rm -v {tempdir}:/mydir {DOCKERIMAGE} python hyvar-rec.py".split(" ") \
                  + cmd.split(" ") + [infile]
     logging.debug(f"Running command: {' '.join(docker_cmd)}")
 
     start_time = time.time()
     process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    parent = psutil.Process(process.pid).rlimit(
-        psutil.RLIMIT_AS, (MEMORY_LIMIT, MEMORY_LIMIT))
+    psutil.Process(process.pid).rlimit(
+         psutil.RLIMIT_AS, (MEMORY_LIMIT, MEMORY_LIMIT))
     try:
-        stdout, stderr = process.communicate(timeout=TIMEOUT)
+        stdout, stderr = process.communicate(timeout=TIMEOUT+60)
         elapsed_time = time.time() - start_time
 
         logging.debug(f"Return code: {process.returncode}")
-        logging.debug(f"Stdout: {stdout}")
-        logging.debug(f"Stderror: {stderr}")
+        # logging.debug(f"Stdout: {stdout}")
+        if stderr:
+            logging.debug(f"Stderror: {stderr}")
 
         if process.returncode == 0:
             try:
                 data = json.loads(stdout)
                 out += f"{elapsed_time};{parse_result(data)};{json.dumps(data)}"
             except json.JSONDecodeError:
-                out += "ErrorJson;Unk;"
+                out += f"ErrorJson;Unk;{stdout}"
+        elif process.returncode == 124:
+            out += f"Timeout{TIMEOUT};{TIMEOUT*10};"
         else:
             out += f"Error{process.returncode};;"
         out += "\n"
 
     except subprocess.TimeoutExpired:
-        # kill all child process if the parent process has not been terminated
-        if parent:
-            for child in parent.children(recursive=True):  # or parent.children() for recursive=False
-                child.kill()
-            parent.kill()
-        out += f"Timeout{TIMEOUT};;"
-        logging.debug(f"Timeout: {TIMEOUT}")
+        # kill the container. Should not happens since the timeout should prevent this but misteriously some processes
+        # were still running. Better safe than sorry
+
+        cmd = f"docker kill {name}"
+        process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        logging.debug(f"Stdout: {stdout}")
+        logging.debug(f"Stderror: {stderr}")
+
+        # if parent:
+        #     for child in parent.children(recursive=True):  # or parent.children() for recursive=False
+        #         child.kill()
+        #     parent.kill()
+        out += f"Timeout{TIMEOUT}++;;"
+        logging.debug(f"Popen Timeout: {TIMEOUT}")
     finally:
         with open(outfile, "a") as f:
             f.write(out)
