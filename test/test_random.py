@@ -54,42 +54,44 @@ def parse_result(data):
 
 
 def run_hyvar(text, tempdir, cmd, infile, outfile):
-    start_time = time.time()
-    docker_cmd = f"timeout {TIMEOUT} docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} python hyvar-rec.py".split(" ") \
+    out = f"{text};{cmd};"
+    docker_cmd = f"docker run --rm -v {tempdir}:/mydir {DOCKERIMAGE} python hyvar-rec.py".split(" ") \
                  + cmd.split(" ") + [infile]
     logging.debug(f"Running command: {' '.join(docker_cmd)}")
+
+    start_time = time.time()
     process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     parent = psutil.Process(process.pid).rlimit(
         psutil.RLIMIT_AS, (MEMORY_LIMIT, MEMORY_LIMIT))
-    stdout, stderr = process.communicate(timeout=TIMEOUT+1)
-    elapsed_time = time.time() - start_time
+    try:
+        stdout, stderr = process.communicate(timeout=TIMEOUT)
+        elapsed_time = time.time() - start_time
 
-    # kill all child process if the parent process has not been terminated
-    if parent:
-        for child in parent.children(recursive=True):  # or parent.children() for recursive=False
-            child.kill()
-        parent.kill()
+        logging.debug(f"Return code: {process.returncode}")
+        logging.debug(f"Stdout: {stdout}")
+        logging.debug(f"Stderror: {stderr}")
 
+        if process.returncode == 0:
+            try:
+                data = json.loads(stdout)
+                out += f"{elapsed_time};{parse_result(data)};{json.dumps(data)}"
+            except json.JSONDecodeError:
+                out += "ErrorJson;Unk;"
+        else:
+            out += f"Error{process.returncode};;"
+        out += "\n"
 
-    logging.debug(f"Return code: {process.returncode}")
-    logging.debug(f"Stdout: {stdout}")
-    logging.debug(f"Stderror: {stderr}")
-
-    out = f"{text};{cmd};"
-    if process.returncode == 0:
-        try:
-            data = json.loads(stdout)
-            out += f"{elapsed_time};{parse_result(data)};{json.dumps(data)}"
-        except:
-            out += "ErrorJson;Unk;"
-    elif process.returncode == 124:
+    except subprocess.TimeoutExpired:
+        # kill all child process if the parent process has not been terminated
+        if parent:
+            for child in parent.children(recursive=True):  # or parent.children() for recursive=False
+                child.kill()
+            parent.kill()
         out += f"Timeout{TIMEOUT};;"
-    else:
-        out += f"Error{process.returncode};;"
-    out += "\n"
-
-    with open(outfile, "a") as f:
-        f.write(out)
+        logging.debug(f"Timeout: {TIMEOUT}")
+    finally:
+        with open(outfile, "a") as f:
+            f.write(out)
 
 
 @click.command()
