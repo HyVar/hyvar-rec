@@ -14,6 +14,7 @@ import time
 import click
 import tempfile
 import shutil
+import psutil
 
 import importlib
 
@@ -27,6 +28,7 @@ __status__ = "Prototype"
 
 # timeout in seconds
 TIMEOUT = 300
+MEMORY_LIMIT = 4 * 1024 * 1024 * 1024
 DOCKERIMAGE="jacopomauro/hyvar-rec"
 
 CONTEXTS = [10]
@@ -57,8 +59,18 @@ def run_hyvar(text, tempdir, cmd, infile, outfile):
                  + cmd.split(" ") + [infile]
     logging.debug(f"Running command: {' '.join(docker_cmd)}")
     process = subprocess.Popen(docker_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
+    parent = psutil.Process(process.pid).rlimit(
+        psutil.RLIMIT_AS, (MEMORY_LIMIT, MEMORY_LIMIT))
+    stdout, stderr = process.communicate(timeout=TIMEOUT+1)
     elapsed_time = time.time() - start_time
+
+    # kill all child process if the parent process has not been terminated
+    if parent:
+        for child in parent.children(recursive=True):  # or parent.children() for recursive=False
+            child.kill()
+        parent.kill()
+
+
     logging.debug(f"Return code: {process.returncode}")
     logging.debug(f"Stdout: {stdout}")
     logging.debug(f"Stderror: {stderr}")
