@@ -33,10 +33,9 @@ DOCKERIMAGE="jacopomauro/hyvar-rec"
 
 CONTEXTS = [10]
 FEATURES = [250]
-# FEATURES = [250,500,750,100]
-RATIOS = [4.26]
-# RATIOS = [4,4.5,5,5.5,6]
-REPETITIONS = 1
+RATIOS = [4]
+# RATIOS = [4,4.5,5,5.5,6,7]
+REPETITIONS = 2
 RETESTS = 1
 
 
@@ -78,8 +77,10 @@ def run_hyvar(text, tempdir, cmd, infile, outfile):
                 data = json.loads(stdout)
                 out += f"{elapsed_time};{parse_result(data)};{json.dumps(data)}"
             except json.JSONDecodeError:
+                logging.debug(f"Json decoding error")
                 out += f"ErrorJson;Unk;{stdout}"
         elif process.returncode == 124:
+            logging.debug(f"Normal timeout{TIMEOUT}")
             out += f"Timeout{TIMEOUT};{TIMEOUT*10};"
         else:
             out += f"Error{process.returncode};;"
@@ -99,7 +100,7 @@ def run_hyvar(text, tempdir, cmd, infile, outfile):
         #     for child in parent.children(recursive=True):  # or parent.children() for recursive=False
         #         child.kill()
         #     parent.kill()
-        out += f"Timeout{TIMEOUT}++;;"
+        out += f"Timeout{TIMEOUT}++;;\n"
         logging.debug(f"Popen Timeout: {TIMEOUT}")
     finally:
         with open(outfile, "a") as f:
@@ -164,6 +165,7 @@ def main(verbose,
                         cmd = f"--features-as-boolean --check-features --check-features-modality pruning --stop-at-first-anomaly"
                         run_hyvar(info, tempdir, cmd, input_file, output_file)
     shutil.rmtree(tempdir)
+    logging.debug("Finish")
 
 
 if __name__ == "__main__":
