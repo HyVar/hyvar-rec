@@ -1,5 +1,6 @@
 """
-Program to run hyvarrec on all the files contained in a directory reporting their running times
+Run hyvarrec on random instances using differen execution modalities.
+Report their running times
 Usage:
   test_dir.py <directory containing the json files>
 """
